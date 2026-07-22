@@ -30,13 +30,35 @@
     >
     <!-- <meta name="twitter:image" content="https://pocket-watch-murex.vercel.app/assets/preview.png"> -->
     <!-- Favicon -->
-    <link rel="shortcut icon" id="shortcut-icon" href="/assets/icons/light/favicon.ico">
+    <link rel="shortcut icon" id="shortcut-icon" type="image/png" href="/assets/icons/light/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/light/android-chrome-512x512.png" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/light/android-chrome-192x192.png" media="(prefers-color-scheme: light)">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/light/favicon-32x32.png" media="(prefers-color-scheme: light)">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/light/favicon-16x16.png" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/icons/dark/android-chrome-512x512.png" media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/dark/android-chrome-192x192.png" media="(prefers-color-scheme: dark)">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/dark/favicon-32x32.png" media="(prefers-color-scheme: dark)">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/dark/favicon-16x16.png" media="(prefers-color-scheme: dark)">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/light/apple-touch-icon.png">
     <link rel="manifest" id="manifest-link" href="/assets/icons/light/site.webmanifest">
+    <script>
+        const themeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+        const updateTheme = () => {
+            const dark = themeMedia.matches;
+            const themeColorMeta = document.getElementById('theme-color-meta');
+            const manifestLink = document.getElementById('manifest-link');
+            const shortcutIcon = document.getElementById('shortcut-icon');
+            if (themeColorMeta) themeColorMeta.content = dark ? '#000000' : '#ffffff';
+            if (manifestLink) manifestLink.href = dark ? '/assets/icons/dark/site.webmanifest' : '/assets/icons/light/site.webmanifest';
+            if (shortcutIcon) shortcutIcon.href = dark ? '/assets/icons/dark/android-chrome-512x512.png' : '/assets/icons/light/android-chrome-512x512.png';
+        };
+        if (themeMedia.addEventListener) {
+            themeMedia.addEventListener('change', updateTheme);
+        } else if (themeMedia.addListener) {
+            themeMedia.addListener(updateTheme);
+        }
+        updateTheme();
+    </script>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
     <title>Pocket Watch | Personal Finance Dashboard</title>
