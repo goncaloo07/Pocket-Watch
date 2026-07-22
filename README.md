@@ -12,7 +12,7 @@ The project is currently under development, with more features and improvements 
 
 You can try the current version of Pocket Watch here:
 
-**[Open Pocket Watch](https://pocket-watch-4qt63q97f-goncalo-pinto.vercel.app/)**
+**[Open Pocket Watch](https://pocket-watch-murex.vercel.app/)**
 
 ## License
 
