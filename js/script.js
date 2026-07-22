@@ -6,7 +6,7 @@ const updateTheme = () => {
     const shortcutIcon = document.getElementById('shortcut-icon');
     if (themeColorMeta) themeColorMeta.content = dark ? '#000000' : '#ffffff';  //if the user has a preference for dark mode, the theme color will be set to black, otherwise it will be set to white
     if (manifestLink) manifestLink.href = dark ? '../assets/icons/dark/site.webmanifest' : '../assets/icons/light/site.webmanifest'; // if the user has a preference for dark mode, the manifest will be set to the dark version, otherwise it will be set to the light version
-    if (shortcutIcon) shortcutIcon.href = dark ? '../assets/icons/dark/favicon.ico' : '../assets/icons/light/favicon.ico'; // if the user has a preference for dark mode, the shortcut icon will be set to the dark version, otherwise it will be set to the light version
+    if (shortcutIcon) shortcutIcon.href = dark ? '/assets/icons/dark/android-chrome-512x512.png' : '/assets/icons/light/android-chrome-512x512.png'; // if the user has a preference for dark mode, the shortcut icon will be set to the dark version, otherwise it will be set to the light version
     document.documentElement.dataset.theme = dark ? 'dark' : 'light'; // if the user has a preference for dark mode, the data-theme attribute will be set to dark, otherwise it will be set to light
 };
 if (themeMedia.addEventListener) {
