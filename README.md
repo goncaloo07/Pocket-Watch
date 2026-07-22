@@ -2,12 +2,18 @@
 
 **Still in progress**
 
-Pocket Watch is a personal finance website designed to help users keep track of their spending and savings, and better understand how they manage their money.
+Pocket Watch is a personal finance web application designed to help users track their spending and savings, and better understand how they manage their money.
 
-This project is built entirely with **HTML, CSS, and JavaScript**. It does not use a backend or database and runs completely in the browser.
+The project is built entirely with **HTML, CSS, and JavaScript**. It has no backend or database and runs completely in the browser.
 
-More features and improvements will be added as development continues.
+The project is currently under development, with more features and improvements planned as development continues.
+
+## Live Demo
+
+You can try the current version of Pocket Watch here:
+
+**[Open Pocket Watch](https://pocket-watch-4qt63q97f-goncalo-pinto.vercel.app/)**
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License**.
