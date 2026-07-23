@@ -44,13 +44,48 @@
     <div id="menu-placeholder"></div>
     <main id="main-content" class="main-content">
         <div id="priority-content" class="priority-content">
-            <div id="current-balance-div" class="container balance-div">
-                <h1 id="current-balance-label" class="container-title">Current Balance</h1>
-                <h1 id="current-balance-value" class="balance-value">0.00€</h1>
+            <div id="balance-div" class="container balance-div">
+                <h1 id="balance-label" class="container-title">Current Balance</h1>
+                <h1 id="balance-value" class="balance-value">0.00€</h1>
             </div>
-            <div id="transactions-div" class="container">
+            <div id="transactions-div" class="container transactions-div">
                 <h1 class="container-title">Transactions</h1>
-                <p>No transactions yet</p>
+                <!-- <div id="transactions-empty" class="transactions-empty">
+                    <p class="transactions-empty-title">No transactions yet</p>
+                    <p class="transactions-empty-subtitle">Add your first one to start tracking.</p>
+                </div> -->
+                <ul id="transactions-list" class="transactions-list">
+                    <li class="transaction-row">
+                        <div class="transaction-left">
+                            <div class="transaction-icon"><i class="bi bi-cart" aria-hidden="true"></i></div>
+                            <div class="transaction-info">
+                                <span class="transaction-name">Placeholder</span>
+                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
+                            </div>
+                        </div>
+                        <span class="transaction-amount negative">-42.30€</span>
+                    </li>
+                    <li class="transaction-row">
+                        <div class="transaction-left">
+                            <div class="transaction-icon"><i class="bi bi-cart" aria-hidden="true"></i></div>
+                            <div class="transaction-info">
+                                <span class="transaction-name">Placeholder</span>
+                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
+                            </div>
+                        </div>
+                        <span class="transaction-amount">0.00€</span>
+                    </li>
+                    <li class="transaction-row">
+                        <div class="transaction-left">
+                            <div class="transaction-icon"><i class="bi bi-cash" aria-hidden="true"></i></div>
+                            <div class="transaction-info">
+                                <span class="transaction-name">Placeholder</span>
+                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
+                            </div>
+                        </div>
+                        <span class="transaction-amount positive">42.30€</span>
+                    </li>
+                </ul>
             </div>
         </div>
     </main>

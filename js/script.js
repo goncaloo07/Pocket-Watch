@@ -68,26 +68,19 @@ const initHeader = () => {
     const logoLink = document.getElementById('logo-link');
     const menuBtn = document.getElementById('menu-btn');
 
-    getTheme();
+    getTheme(); // gets and sets the theme
 
-    themeToggle.addEventListener('click', changeTheme);
+    themeToggle.addEventListener('click', changeTheme); // if the theme changes
 
-    logoLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            window.location.href = '/';
-        }
-    });
+    logoLink.addEventListener('click', sendToHomePage); // if the logo is clicked
 
     menuBtn.addEventListener('click', () => {
         const isOpen = menu.classList.toggle('open');
-        document.body.classList.toggle('menu-open', isOpen);
+        document.body.classList.toggle('menu-open', isOpen); // if the menu is opened it will add the isOpen class to the menu
         menuBtn.setAttribute('aria-expanded', isOpen);
 
         if (isOpen) {
-            menuBtnIcon.classList.remove('bi-list');
+            menuBtnIcon.classList.remove('bi-list'); // it will change the menu icon for a close menu icon
             menuBtnIcon.classList.add('bi-x');
         } else {
             menuBtnIcon.classList.remove('bi-x');
@@ -96,7 +89,7 @@ const initHeader = () => {
     });
 
     const setHeaderHeightVar = () => {
-        document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+        document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`); //sets the size of the header, so that the menu never overlaps with the header
     };
     setHeaderHeightVar();
     window.addEventListener('resize', setHeaderHeightVar);
@@ -104,8 +97,19 @@ const initHeader = () => {
 
 const initMenu = () => {
     menu = document.getElementById('menu');
+    const indexLink = document.getElementById("index-link");
+
+    indexLink.addEventListener("click", sendToHomePage);
 }
 
-document.addEventListener('header:loaded', initHeader); // Aguarda o evento de carregamento do header antes de inicializar a lógica do header
+const sendToHomePage = (e) => { // makes it so that when users that are on the main page click on something that would send them to the main page, doesnt do that and instead it just scrolls up
+    e.preventDefault();
+    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        window.location.href = '/';
+    }
+}
 
-document.addEventListener('menu:loaded', initMenu); // Aguarda o evento de carregamento do menu antes de inicializar a lógica do menu
+document.addEventListener('header:loaded', initHeader); // waits for the header to load before initializing the logic
+document.addEventListener('menu:loaded', initMenu); // waits for the menu to load before initializing the logic

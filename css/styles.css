@@ -8,6 +8,7 @@
     --navcolor: #e4e2e2;
     --border-color: #acaaaa;
     --secondary-color: #686868;
+    --positive-color: #00731f;
     --negative-color: #ff4d4f;
     --header-height: 0px;
     --menu-width: min(20%, 400px);
@@ -109,7 +110,6 @@ body {
 #logo-link {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
     text-decoration: none;
 }
 
@@ -219,7 +219,7 @@ body {
     transition: background-color 0.15s ease;
 }
 
-.menu ul li a {
+.menu ul a  {
     text-decoration: none;
     color: var(--textcolor);
     font-size: 1.2rem;
@@ -235,10 +235,8 @@ body {
 
 .main-content {
     max-width: calc(100% - 2rem);
-    margin: 1rem 1rem;
     padding: 1rem;
     border-radius: 8px;
-    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     transition: margin-left 0.3s ease;
@@ -278,6 +276,8 @@ body.menu-open #main-content {
 .balance-div {
     display: flex;
     flex-direction: column;
+    align-self: flex-start; 
+    background: linear-gradient(180deg,var(--bgcolor) 0%, var(--bgcolor) 80%, var(--positive-color) 100%);
 }
 
 .balance-value {
@@ -286,7 +286,75 @@ body.menu-open #main-content {
     margin-bottom: 0;
     margin-top: 0;
     font-size: 3rem;
+    background-image: linear-gradient(var(--textcolor), var(--positive-color));
+    color: transparent;
+    background-clip: text;
 }
+
+.transactions-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.transaction-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.transaction-row:last-child {
+    border-bottom: none;
+}
+
+.transaction-left {
+    display: flex;
+}
+
+.transaction-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: var(--navcolor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+    flex-shrink: 0;
+    margin-right: 1rem;
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.transaction-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.transaction-meta {
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+}
+
+.transaction-amount {
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.transaction-date {
+    text-align: right
+}
+
+.transaction-amount.positive { color: var(--positive-color); }
+.transaction-amount.negative { color: var(--negative-color); }
 
 @media (max-width: 600px) {
     :root {
