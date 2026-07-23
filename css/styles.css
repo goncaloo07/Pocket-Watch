@@ -1,0 +1,230 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Sora:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bgcolor: #e2e2e2;
+    --textcolor: #1f1f1f;
+    --header-bgcolor: #f0f0f0;
+    --accent-color: #3a8c63;
+    --navcolor: #f0f0f0;
+    --border-color: #bbb9b9;
+    --secondary-color: #686868;
+    --header-height: 0px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bgcolor);
+    color: var(--textcolor);
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/* Header */
+
+#header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--header-bgcolor);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0.75rem 1.5rem;
+    min-height: 64px; 
+}
+
+#menu-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+#menu-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+#menu-btn:hover i {
+    color: var(--bgcolor);
+}
+
+#menu-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.menu-icon-wrap {
+    position: relative;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: inline-block;
+}
+
+.menu-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 1.75rem;
+    color: var(--textcolor);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.icon-x {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+#menu-btn.open .icon-list {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+#menu-btn.open .icon-x {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+}
+
+#logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+#logo-link:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+#logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+}
+
+#logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    color: var(--textcolor);
+}
+
+#logo-text .highlight {
+    color: var(--accent-color);
+}
+
+#header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-action-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.header-action-btn:hover {
+    background-color: var(--navcolor);
+}
+
+.header-action-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.header-action-btn i {
+    font-size: 1.3rem;
+    color: var(--textcolor);
+}
+
+@media (max-width: 480px) {
+    .header-nav {
+        padding: 0.5rem 1rem;
+    }
+    #logo-text {
+        font-size: 1.2rem;
+    }
+    #logo-img {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Menu */
+
+.menu {
+    position: fixed;
+    height: calc(100vh - var(--header-height, 64px));
+    z-index: 101;
+    background-color: var(--navcolor);
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    max-width: 400px;
+    top: var(--header-height, 64px);
+    left: 0;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.menu.open {
+    transform: translateX(0);
+}
+
+.menu ul {
+    padding: 0;
+    margin: 0;
+}
+
+.menu ul li {
+    list-style: none;
+    padding: 2rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.15s ease;
+}
+
+.menu ul li a {
+    text-decoration: none;
+    color: var(--textcolor);
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}  
+
+.menu ul li:hover{
+    background-color: var(--secondary-color);
+}
