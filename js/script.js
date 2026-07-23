@@ -4,7 +4,7 @@ const favicon32 = document.getElementById('favicon-32');
 const appleTouchIcon = document.getElementById('apple-touch-icon');
 const manifestLink = document.getElementById('manifest-link');
 
-let logoImg, header, themeToggle, themeToggleIcon;
+let logoImg, header, themeToggle, themeToggleIcon, menu;
 
 const applyTheme = (theme) => {
     const themePath = theme === 'dark' ? 'dark' : 'light'; // Define the path based on the theme
@@ -19,12 +19,12 @@ const applyTheme = (theme) => {
         themeToggleIcon.classList.remove('bi-sun');
         themeToggleIcon.classList.add('bi-moon');
     } else {
-        document.documentElement.style.setProperty('--bgcolor', '#e2e2e2');
+        document.documentElement.style.setProperty('--bgcolor', '#cdcdcd');
         document.documentElement.style.setProperty('--textcolor', '#1f1f1f');
-        document.documentElement.style.setProperty('--header-bgcolor', '#f0f0f0');
+        document.documentElement.style.setProperty('--header-bgcolor', '#e4e2e2');
         document.documentElement.style.setProperty('--accent-color', '#3a8c63');
-        document.documentElement.style.setProperty('--navcolor', '#f0f0f0');
-        document.documentElement.style.setProperty('--border-color', '#bbb9b9');
+        document.documentElement.style.setProperty('--navcolor', '#e4e2e2');
+        document.documentElement.style.setProperty('--border-color', '#acaaaa');
         document.documentElement.style.setProperty('--secondary-color', '#686868');
         themeToggleIcon.classList.remove('bi-moon');
         themeToggleIcon.classList.add('bi-sun');
@@ -82,10 +82,17 @@ const initHeader = () => {
     });
 
     menuBtn.addEventListener('click', () => {
-        const menu = document.getElementById('menu');
         const isOpen = menu.classList.toggle('open');
-        menuBtn.classList.toggle('open', isOpen);
+        document.body.classList.toggle('menu-open', isOpen);
         menuBtn.setAttribute('aria-expanded', isOpen);
+
+        if (isOpen) {
+            menuBtnIcon.classList.remove('bi-list');
+            menuBtnIcon.classList.add('bi-x');
+        } else {
+            menuBtnIcon.classList.remove('bi-x');
+            menuBtnIcon.classList.add('bi-list');
+        }
     });
 
     const setHeaderHeightVar = () => {
@@ -96,7 +103,7 @@ const initHeader = () => {
 };
 
 const initMenu = () => {
-    const menu = document.getElementById('menu');
+    menu = document.getElementById('menu');
 }
 
 document.addEventListener('header:loaded', initHeader); // Aguarda o evento de carregamento do header antes de inicializar a lógica do header
