@@ -240,6 +240,7 @@ body {
     display: flex;
     flex-direction: column;
     transition: margin-left 0.3s ease;
+    margin: auto;
 }
 
 .priority-content {
@@ -263,6 +264,40 @@ body {
 .container-title {
     margin-top: 0;
     padding-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.add-btn:hover {
+    background-color: var(--positive-color);
+    transform: scale(1.05);
+}
+
+.add-btn:active {
+    transform: scale(0.95);
+}
+
+.add-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
 }
 
 .priority-content > .balance-column,
@@ -365,8 +400,39 @@ body.menu-open #main-content {
     text-align: right
 }
 
+.hidden {
+    display: none !important;
+}
+
 .transactions-empty {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1rem;
+    gap: 0.35rem;
+}
+
+.transactions-empty-icon {
+    font-size: 2.25rem;
+    color: var(--secondary-color);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+}
+
+.transactions-empty-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--textcolor);
+}
+
+.transactions-empty-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    max-width: 26ch;
 }
 
 .transaction-amount.positive { color: var(--positive-color); }
@@ -417,13 +483,401 @@ body.menu-open #main-content {
 
     .priority-content {
         flex-direction: column;
+        align-items: stretch;
     }
 
-    .priority-content {
-        flex-direction: column;
+    .balance-column {
+        display: contents;
+    }
+
+    .balance-div {
+        order: 1;
+    }
+
+    .priority-content > .transactions-div {
+        order: 2;
+        flex: 1 1 auto;
+        width: 100%;
     }
 
     .sr-div {
+        order: 3;
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+@media (max-width: 1100px) and (min-width: 601px) {
+    .priority-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .balance-column {
+        display: contents;
+    }
+
+    .balance-div {
+        order: 1;
+    }
+
+    .priority-content > .transactions-div {
+        order: 2;
+        flex: 1 1 auto;   
+        width: 100%;
+    }
+
+    .sr-div {
+        order: 3;
+        flex-direction: row;
+        width: 100%;
+    }
+
+    :root {
+        --menu-width: min(45%, 320px);
+    }
+
+    .main-content {
+        max-width: calc(100% - 1.5rem);
+        padding: 0.75rem;
+    }
+}
+
+/* Transaction Modal */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background-color: var(--bgcolor);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    animation: modal-pop 0.2s ease;
+}
+
+@keyframes modal-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header .container-title {
+    padding-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--textcolor);
+    margin-bottom: 0.75rem;
+    transition: background-color 0.15s ease;
+}
+
+.close-btn i {
+    font-size: 1.4rem;
+}
+
+.close-btn:hover {
+    background-color: var(--navcolor);
+}
+
+.close-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--textcolor);
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+    background-color: var(--navcolor);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+    color: var(--textcolor);
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.form-group input[type="text"]::placeholder {
+    color: var(--secondary-color);
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus {
+    border-color: var(--accent-color);
+}
+
+.form-group input[type="date"] {
+    color-scheme: light;
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><path fill='%23686868' d='M4 6l4 4 4-4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+}
+
+.form-group select:invalid,
+.form-group select option[value=""] {
+    color: var(--secondary-color);
+}
+
+[data-theme="dark"] .form-group input[type="date"] {
+    color-scheme: dark;
+}
+
+/* Type toggle (spending / receiving) */
+
+.type-toggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.type-toggle input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.type-option {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    background-color: var(--navcolor);
+    transition: all 0.15s ease;
+}
+
+.type-option i {
+    font-size: 1.1rem;
+}
+
+#type-spending:checked ~ .type-spending,
+#type-spending:checked + .type-spending {
+    border-color: var(--negative-color);
+    color: var(--negative-color);
+    background-color: color-mix(in srgb, var(--negative-color) 12%, var(--navcolor));
+}
+
+#type-receiving:checked ~ .type-receiving,
+#type-receiving:checked + .type-receiving {
+    border-color: var(--positive-color);
+    color: var(--positive-color);
+    background-color: color-mix(in srgb, var(--positive-color) 12%, var(--navcolor));
+}
+
+.type-option:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Modal action buttons */
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-secondary {
+    background-color: var(--navcolor);
+    color: var(--textcolor);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--secondary-color);
+    color: var(--bgcolor);
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--positive-color);
+}
+
+@media (max-width: 480px) {
+    .type-toggle {
         flex-direction: column;
     }
+}
+
+/* Category select swapping based on transaction type */
+
+.category-label-receiving,
+.category-select-receiving {
+    display: none;
+}
+
+.modal-form:has(#type-receiving:checked) .category-label-spending,
+.modal-form:has(#type-receiving:checked) .category-select-spending {
+    display: none;
+}
+
+.modal-form:has(#type-receiving:checked) .category-label-receiving,
+.modal-form:has(#type-receiving:checked) .category-select-receiving {
+    display: block;
+}
+
+/* Amount input */
+
+.amount-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--navcolor);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem 0.9rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.amount-currency {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    transition: color 0.2s ease;
+}
+
+.amount-input-wrap input[type="number"] {
+    flex: 1 1 0;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--textcolor);
+    -moz-appearance: textfield;
+    appearance: textfield;
+    transition: color 0.2s ease;
+}
+
+.amount-input-wrap input[type="number"]::placeholder {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.amount-input-wrap input[type="number"]::-webkit-outer-spin-button,
+.amount-input-wrap input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.amount-input-wrap:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 20%, transparent);
+}
+
+/* Amount input reacts to spending / receiving selection */
+
+.modal-form:has(#type-spending:checked) .amount-input-wrap:focus-within {
+    border-color: var(--negative-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--negative-color) 20%, transparent);
+}
+
+.modal-form:has(#type-spending:checked) .amount-currency,
+.modal-form:has(#type-spending:checked) .amount-input-wrap input[type="number"]:not(:placeholder-shown) {
+    color: var(--negative-color);
+}
+
+.modal-form:has(#type-receiving:checked) .amount-input-wrap:focus-within {
+    border-color: var(--positive-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--positive-color) 20%, transparent);
+}
+
+.modal-form:has(#type-receiving:checked) .amount-currency,
+.modal-form:has(#type-receiving:checked) .amount-input-wrap input[type="number"]:not(:placeholder-shown) {
+    color: var(--positive-color);
 }

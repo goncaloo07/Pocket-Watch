@@ -90,43 +90,95 @@
             </div>
 
             <div id="transactions-div" class="container transactions-div">
-                <h1 class="container-title">Transactions</h1>
-                <div id="transactions-empty" class="transactions-empty">
+                <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
+                <div id="transactions-empty" class="transactions-empty hidden">
+                    <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
                     <p class="transactions-empty-title">No transactions yet</p>
-                    <p class="transactions-empty-subtitle">Add your first one to start tracking.</p>
+                    <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
                 </div>
                 <ul id="transactions-list" class="transactions-list">
-                    <li class="transaction-row">
-                        <div class="transaction-left">
-                            <div class="transaction-icon"><i class="bi bi-cart" aria-hidden="true"></i></div>
-                            <div class="transaction-info">
-                                <span class="transaction-name">Placeholder</span>
-                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
-                            </div>
-                        </div>
-                        <span class="transaction-amount negative">-42.30€</span>
-                    </li>
-                    <li class="transaction-row">
-                        <div class="transaction-left">
-                            <div class="transaction-icon"><i class="bi bi-cart" aria-hidden="true"></i></div>
-                            <div class="transaction-info">
-                                <span class="transaction-name">Placeholder</span>
-                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
-                            </div>
-                        </div>
-                        <span class="transaction-amount">0.00€</span>
-                    </li>
-                    <li class="transaction-row">
-                        <div class="transaction-left">
-                            <div class="transaction-icon"><i class="bi bi-cash" aria-hidden="true"></i></div>
-                            <div class="transaction-info">
-                                <span class="transaction-name">Placeholder</span>
-                                <span class="transaction-meta">Placeholder category | <span class="transaction-date">Random Date</span></span>
-                            </div>
-                        </div>
-                        <span class="transaction-amount positive">42.30€</span>
-                    </li>
                 </ul>
+            </div>
+        </div>
+        <div id="transaction-modal-overlay" class="modal-overlay">
+            <div id="transaction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="transaction-modal-title">
+                <div class="modal-header">
+                    <h1 id="transaction-modal-title" class="container-title">Add Transaction</h1>
+                    <button id="close-modal-btn" class="close-btn" aria-label="Close">
+                        <i class="bi bi-x" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <form id="transaction-form" class="modal-form">
+                    <div class="form-group">
+                        <label for="transaction-name">Name</label>
+                        <input type="text" id="transaction-name" name="transaction-name" placeholder="e.g. Groceries" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <div class="type-toggle">
+                            <input type="radio" id="type-spending" name="transaction-type" value="spending" checked>
+                            <label for="type-spending" class="type-option type-spending">
+                                <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> Spending
+                            </label>
+
+                            <input type="radio" id="type-receiving" name="transaction-type" value="receiving">
+                            <label for="type-receiving" class="type-option type-receiving">
+                                <i class="bi bi-arrow-up-circle" aria-hidden="true"></i> Receiving
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transaction-amount">Amount</label>
+                        <div class="amount-input-wrap">
+                            <span class="amount-currency">€</span>
+                            <input type="number" id="transaction-amount" name="transaction-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transaction-date">Date</label>
+                        <input type="date" id="transaction-date" name="transaction-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transaction-category-spending" class="category-label-spending">
+                            Category
+                        </label>
+                        <select id="transaction-category-spending" name="transaction-category-spending" class="category-select-spending">
+                            <option value="Other">Other</option>
+                            <option value="Food">Food</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Housing">Housing</option>
+                            <option value="Bills">Bills & Utilities</option>
+                            <option value="Health">Health</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Education">Education</option>
+                        </select>
+
+                        <label for="transaction-category-receiving" class="category-label-receiving">
+                            Category
+                        </label>
+                        <select id="transaction-category-receiving" name="transaction-category-receiving" class="category-select-receiving">
+                            <option value="Other">Other</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Gift">Gift</option>
+                            <option value="Investment">Investment</option>
+                            <option value="Loan">Loan</option>
+                            <option value="Refund">Refund</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" id="cancel-transaction-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="save-transaction-btn" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </main>
