@@ -9,6 +9,7 @@ const transactionsListEl = document.getElementById('transactions-list');
 const balanceValue = document.getElementById("balance-value");
 const balanceDiv = document.getElementById("balance-div");
 const balanceEl = document.getElementById('balance-value');
+const chartMode = document.querySelectorAll('[name="chart-mode"]');
 
 const toggleTransactionModal = () => { //opens and closes the modal and gets the default date for the date input
     const isOpen = transactionModal.classList.toggle('open');
@@ -25,6 +26,7 @@ addTransactionBtn.addEventListener('click', toggleTransactionModal);
 closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
 cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
 transactionForm.addEventListener('submit', addTransaction);
+chartMode.forEach((mode => mode.addEventListener("change", renderChart)));
 
 document.getElementById('transaction-amount').addEventListener('input', (e) => {
     if (parseFloat(e.target.value) > 0) {
@@ -36,3 +38,4 @@ document.getElementById('transaction-amount').addEventListener('input', (e) => {
 renderTransactions();
 renderSpendingReceiving();
 renderBalance();
+renderChart();
