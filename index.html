@@ -87,17 +87,53 @@
                 </div>
             </div>
 
-            <div id="transactions-div" class="container transactions-div">
-                <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
-                <div id="transactions-empty" class="transactions-empty hidden">
-                    <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
-                    <p class="transactions-empty-title">No transactions yet</p>
-                    <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+            <div id="transactions-column" class="transactions-column">
+                <div id="transactions-div" class="container transactions-div">
+                    <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
+                    <div id="transactions-empty" class="transactions-empty hidden">
+                        <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
+                        <p class="transactions-empty-title">No transactions yet</p>
+                        <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+                    </div>
+                    <ul id="transactions-list" class="transactions-list">
+                    </ul>
                 </div>
-                <ul id="transactions-list" class="transactions-list">
-                </ul>
+
+                <div id="chart-div" class="container chart-div">
+                    <div class="chart-header">
+                        <h1 class="container-title">Breakdown</h1>
+                        <div class="chart-toggle">
+                            <input type="radio" id="chart-mode-category" name="chart-mode" value="category" checked>
+                            <label for="chart-mode-category" class="chart-toggle-option">By Category</label>
+
+                            <input type="radio" id="chart-mode-type" name="chart-mode" value="type">
+                            <label for="chart-mode-type" class="chart-toggle-option">Spending vs Receiving</label>
+                        </div>
+                    </div>
+
+                    <div id="chart-empty" class="chart-empty hidden">
+                        <i class="bi bi-pie-chart chart-empty-icon" aria-hidden="true"></i>
+                        <p class="transactions-empty-title">Nothing to show yet</p>
+                        <p class="transactions-empty-subtitle">Add a transaction to see your breakdown.</p>
+                    </div>
+
+                    <div id="chart-content" class="chart-content">
+                        <div class="chart-svg-wrap">
+                            <svg id="chart-svg" viewBox="0 0 200 200" class="chart-svg" aria-hidden="true">
+                                <g id="chart-segments"></g>
+                            </svg>
+                            <div class="chart-center">
+                                <span id="chart-center-value" class="chart-center-value"></span>
+                                <span id="chart-center-label" class="chart-center-label"></span>
+                            </div>
+                            <div id="chart-tooltip" class="chart-tooltip hidden"></div>
+                        </div>
+                        <ul id="chart-legend" class="chart-legend"></ul>
+                    </div>
+                </div>
             </div>
         </div>
+
         <div id="transaction-modal-overlay" class="modal-overlay">
             <div id="transaction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="transaction-modal-title">
                 <div class="modal-header">
@@ -189,6 +225,7 @@
     <script src="js/transactions.js"></script>
     <script src="js/balance.js"></script>
     <script src="js/render.js"></script>
+    <script src="js/chart.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
