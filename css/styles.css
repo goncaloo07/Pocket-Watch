@@ -639,6 +639,11 @@ body.menu-open #main-content {
     .chart-div {
         order: 4;
     }
+
+    .container-title {
+        margin-bottom: 0;
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 1100px) and (min-width: 601px) {
@@ -1036,6 +1041,10 @@ input.input-invalid {
 }
 /* Breakdown Chart */
 
+.chart-div {
+    max-width: 100%
+}
+
 .chart-header {
     display: flex;
     align-items: center;
@@ -1248,5 +1257,19 @@ input.input-invalid {
     .chart-legend {
         width: 100%;
         flex: 1 1;
+    }
+
+    .chart-toggle {
+        width: 100%;
+    }
+
+    .chart-toggle-option {
+        flex: 1 1 0;
+        padding: 0.4rem 0.4rem;
+        font-size: 0.7rem;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.2;
+        align-items: center;
     }
 }
