@@ -63,6 +63,7 @@ const addTransaction = (e) => {
     renderSpendingReceiving();
     renderBalance();
     renderChart();
+    renderBudgets();
 };
 
 const getTransactions = () => { //if there is a transactions in localStorage, it will return it, if not it will create it

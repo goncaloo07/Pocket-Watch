@@ -92,3 +92,39 @@ const animateBalance = (targetValue, duration = 800) => {
     // Kick off the animation loop
     requestAnimationFrame(step);
 };
+
+const buildBudgetRow = ({budgetCat, budgetLimit}) => {
+    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots';
+    const totalSpent = getSpentByCat(budgetCat);
+    const perc = ((totalSpent / budgetLimit) * 100)
+
+    const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : '';
+
+    return `
+        <li class="budget-row">
+            <div class="budget-row-top">
+                <div class="transaction-left">
+                    <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
+                    <span class="transaction-name">${budgetCat}</span>
+                </div>
+                <span class="budget-amounts ${barClass}">${totalSpent.toFixed(2)}€ <span class="budget-amounts-sep">/</span> ${budgetLimit.toFixed(2)}€</span>
+            </div>
+            <div class="budget-bar-track">
+                <div class="budget-bar-fill ${barClass}" style="width: ${perc > 100 ? 100 : perc}%;"></div>
+            </div>
+        </li>
+    `
+}
+
+const renderBudgets = () => {
+    const budgets = getBudgets();
+    if (budgets.length === 0) { 
+        budgetEmpty.classList.remove('hidden');
+        budgetList.classList.add("hidden");
+    } else {
+        budgetEmpty.classList.add('hidden');
+        budgetList.classList.remove("hidden");
+    }
+    budgets.sort((a,b) => (getSpentByCat(b.budgetCat) / b.budgetLimit) - (getSpentByCat(a.budgetCat) / a.budgetLimit));
+    budgetList.innerHTML = budgets.slice(0,3).map(buildBudgetRow).join('');
+}

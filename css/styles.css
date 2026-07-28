@@ -1,5 +1,11 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Space+Grotesk:wght@700;800&family=Sora:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@500;700&family=Bodoni+Moda:wght@500;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Space+Grotesk:wght@700;800&family=Sora:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fon<ts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Instrument+Serif:wght@400&family=JetBrains+Mono:wght@500;700&family=Bodoni+Moda:wght@500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 :root {
     --bgcolor: #cdcdcd;
@@ -26,7 +32,7 @@ html {
 body {
     background-color: var(--bgcolor);
     color: var(--textcolor);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Cabinet Grotesk', sans-serif;
     padding: 0;
     margin: 0;
 }
@@ -449,6 +455,7 @@ body.menu-open #main-content {
 
 .transaction-left {
     display: flex;
+    align-items: center;
 }
 
 .transaction-icon {
@@ -462,7 +469,7 @@ body.menu-open #main-content {
     justify-content: center;
     color: var(--accent-color);
     flex-shrink: 0;
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     font-size: 0.95rem;
 }
 
@@ -805,7 +812,7 @@ body.menu-open #main-content {
     padding: 0.6rem 0.75rem;
     font-size: 0.95rem;
     color: var(--textcolor);
-    font-family: 'Inter', sans-serif;
+    font-family: 'Manrope', sans-serif;
     outline: none;
     transition: border-color 0.15s ease;
 }
@@ -1282,6 +1289,10 @@ input.input-invalid {
 
 /* Budget */
 
+.budget-div {
+    max-width: 100%;
+}
+
 .budget-empty {
     display: flex;
     flex-direction: column;
@@ -1305,14 +1316,11 @@ input.input-invalid {
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 1.1rem;
 }
 
 .budget-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.5rem 0.25rem;
+    padding: 0.4rem 0.25rem;
 }
 
 .budget-row-top {
@@ -1320,13 +1328,30 @@ input.input-invalid {
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
+    margin-bottom: 0.55rem;
 }
 
 .budget-amounts {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: var(--secondary-color);
     white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.2s ease;
+}
+
+.budget-amounts-sep {
+    color: var(--secondary-color);
+    font-weight: 500;
+    margin: 0 0.15rem;
+}
+
+.budget-amounts.near-limit {
+    color: #e0a72e;
+}
+
+.budget-amounts.over-limit {
+    color: var(--negative-color);
 }
 
 .budget-amounts.negative {
@@ -1346,7 +1371,15 @@ input.input-invalid {
     height: 100%;
     border-radius: 999px;
     background-color: var(--accent-color);
-    transition: width 0.4s ease-out, background-color 0.2s ease;
+    transition: width 0.6s ease-out;
+}
+
+.budget-bar-fill.near-limit {
+    background-color: #e0a72e;
+}
+
+.budget-bar-fill.over-limit {
+    background-color: var(--negative-color);
 }
 
 .budget-bar-fill.over {

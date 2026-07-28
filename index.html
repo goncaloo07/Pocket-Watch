@@ -94,19 +94,6 @@
                         <p class="transactions-empty-subtitle">Set a limit for a category to start tracking it.</p>
                     </div>
                     <ul id="budget-list" class="budget-list hidden">
-                        <!-- example row for styling reference, remove once JS renders real ones -->
-                        <li class="budget-row">
-                            <div class="budget-row-top">
-                                <div class="transaction-left">
-                                    <div class="transaction-icon"><i class="bi bi-basket" aria-hidden="true"></i></div>
-                                    <span class="transaction-name">Groceries</span>
-                                </div>
-                                <span class="budget-amounts">142.30€ / 200.00€</span>
-                            </div>
-                            <div class="budget-bar-track">
-                                <div class="budget-bar-fill" style="width: 71%;"></div>
-                            </div>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -182,6 +169,7 @@
                             <span id="budget-limit-value" class="budget-slider-value" tabindex="0">100€</span>
                             <input type="number" id="budget-limit-input" class="budget-slider-input hidden" min="0" step="5" value="100">
                         </div>
+                        <span id="budget-limit-error" class="input-error hidden">Limit must be greater than 0€</span>
                     </div>
 
                     <div class="modal-actions">

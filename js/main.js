@@ -20,6 +20,10 @@ const budgetCategory = document.getElementById("budget-category-spending");
 const budgetLimit = document.getElementById("budget-limit");
 const budgetLimitInput = document.getElementById("budget-limit-input");
 const budgetLimitValue = document.getElementById("budget-limit-value");
+const budgetForm = document.getElementById("budget-form");
+const budgetLimitError = document.getElementById("budget-limit-error");
+const budgetEmpty = document.getElementById("budget-empty");
+const budgetList = document.getElementById("budget-list");
 
 const CATEGORIES_SPENDING = [
     "Other",
@@ -90,6 +94,7 @@ chartMode.forEach((mode => mode.addEventListener("change", renderChart)));
 addBudgetBtn.addEventListener("click", toggleBudgetModal);
 closeBudgetModalBtn.addEventListener("click", toggleBudgetModal);
 cancelBudgetModalBtn.addEventListener("click", toggleBudgetModal);
+budgetForm.addEventListener('submit', addBudget);
 
 budgetLimitValue.addEventListener("click", () => {
     budgetLimitValue.classList.add("hidden");
@@ -103,14 +108,20 @@ budgetLimitInput.addEventListener('blur', () => {
         value = 0;
     }
     const sliderMax = parseFloat(budgetLimit.max);
-    value = Math.min(value, sliderMax);
+    const sliderValue = Math.min(value, sliderMax);
     value = value.toFixed(2);
     budgetLimitValue.textContent = `${value}€`;
-    budgetLimit.value = value;
+    budgetLimit.value = sliderValue;
+    budgetLimitInput.value = parseFloat(value);
     budgetLimitInput.classList.add("hidden");
     budgetLimitValue.classList.remove("hidden");
 });
+
 budgetLimit.addEventListener("input", (e) => {
+    if (parseFloat(e.target.value) > 0) {
+        budgetLimitError.classList.add('hidden');
+        e.target.closest('.budget-slider-wrap').classList.remove('input-invalid');
+    }
     budgetLimitInput.value = e.target.value;
     budgetLimitValue.textContent = e.target.value + "€";
 })
@@ -126,3 +137,4 @@ renderTransactions();
 renderSpendingReceiving();
 renderBalance();
 renderChart();
+renderBudgets();
