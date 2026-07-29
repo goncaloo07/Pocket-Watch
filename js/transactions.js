@@ -33,7 +33,7 @@ const addTransaction = (e) => {
     const amountInput = document.getElementById('transaction-amount');
     const amountError = document.getElementById('amount-error');
 
-    if (rawAmount === 0) {
+    if (rawAmount === 0) { // doesn't let the amount of a transaction be 0
         amountInput.closest('.amount-input-wrap').classList.add('input-invalid');
         amountError.classList.remove('hidden');
         amountInput.focus();

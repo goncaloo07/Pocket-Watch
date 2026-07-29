@@ -7,13 +7,13 @@ const chartCenterLabel = document.getElementById("chart-center-label");
 const chartToolTip = document.getElementById("chart-tooltip");
 const chartSVGWrap = document.querySelector(".chart-svg-wrap");
 
-const CHART_RADIUS = 80;
+const CHART_RADIUS = 80; // radius of the circle
 const CHART_CIRCUMFERENCE = 2 * Math.PI * CHART_RADIUS;
-const CHART_PALETTE = ['#3a8c63', '#5b9bd5', '#e0a72e', '#c1666b', '#7d5ba6', '#4fb0a5'];
+const CHART_PALETTE = ['#3a8c63', '#5b9bd5', '#e0a72e', '#c1666b', '#7d5ba6', '#4fb0a5']; // colors for the categories
 
 const getCategoryTotals = () => {
     const transactions = getTransactions();
-    const spending = transactions.filter(transaction => transaction.transactionType === "spending");
+    const spending = transactions.filter(transaction => transaction.transactionType === "spending"); // gets only the spending transactions
     const spendingMap = new Map();
 
     spending.forEach(transaction => {
@@ -22,36 +22,36 @@ const getCategoryTotals = () => {
         } else {
             spendingMap.set(transaction.transactionCat, Math.abs(parseFloat(transaction.transactionAmount)));
         }
-    })
+    }) // if there is already that category in the map, sums the values of all the transactions of that category, if not creates a new entry in the map for that category and the value of the transaction
 
-    const spendingArr = Array.from(spendingMap)
-        .map(([key, value], index) => ({label: key, value, color: CHART_PALETTE[index % CHART_PALETTE.length]}))
-        .sort((a,b) => b.value - a.value);
+    const spendingArr = Array.from(spendingMap) // turns the map into a array
+        .map(([key, value], index) => ({label: key, value, color: CHART_PALETTE[index % CHART_PALETTE.length]})) // turns the array back into a map but with a new value for each entry (the color)
+        .sort((a,b) => b.value - a.value); // sorts the map by most value to least
     return spendingArr;
 }
 
 const getTypeTotals = () => {
     const transactions = getTransactions();
-    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + parseFloat(b.transactionAmount), 0);
-    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + parseFloat(b.transactionAmount), 0);
-    const transactionsArr = [{label: 'Spending', value: Math.abs(spending), color: 'var(--negative-color)'}, {label: 'Receiving', value: Math.abs(receiving), color: 'var(--positive-color)'}];
+    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + parseFloat(b.transactionAmount), 0); // gets the total value spent
+    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + parseFloat(b.transactionAmount), 0); // gets the total value received
+    const transactionsArr = [{label: 'Spending', value: Math.abs(spending), color: 'var(--negative-color)'}, {label: 'Receiving', value: Math.abs(receiving), color: 'var(--positive-color)'}]; // makes an array with both the spending totals and receiving totals
     return transactionsArr;
 }
 
 const getChartData = () => {
-    const type = document.querySelector('input[name="chart-mode"]:checked').value;
+    const type = document.querySelector('input[name="chart-mode"]:checked').value; // checks if the chart should show by category or spending vs receiving
     return type === 'category' ? getCategoryTotals() : getTypeTotals();
 }
 
 const renderSegments = (items) => {
-    const total = items.reduce((sum, item) => sum + item.value, 0);
+    const total = items.reduce((sum, item) => sum + item.value, 0); // gets the total value from all items
     let cumulative = 0;
     const segmentsHTML = items.map((item, index) => {
-        const fraction = item.value / total;
-        const dash = fraction * CHART_CIRCUMFERENCE;
-        const gap = CHART_CIRCUMFERENCE - dash;
-        const offset = -cumulative * CHART_CIRCUMFERENCE;
-        cumulative += fraction;
+        const fraction = item.value / total; // percentage of the total this category has spent
+        const dash = fraction * CHART_CIRCUMFERENCE; // how long this segment's colored arc is, based on its share of the total
+        const gap = CHART_CIRCUMFERENCE - dash; // the empty space left after the arc, so both add up to a full circle
+        const offset = -cumulative * CHART_CIRCUMFERENCE; // where this segment starts, based on how much space earlier segments already used
+        cumulative += fraction; // add this segment's share to the running total, so the next one starts in the right place
 
         return `
         <circle
@@ -69,7 +69,7 @@ const renderSegments = (items) => {
         `; 
     });
 
-    chartSegmentsG.innerHTML = segmentsHTML.join('');
+    chartSegmentsG.innerHTML = segmentsHTML.join(''); // joins all segments together
 
     const circles = chartSegmentsG.querySelectorAll(".chart-segment");
 
@@ -78,17 +78,17 @@ const renderSegments = (items) => {
             circles.forEach((circle) => {
                 const dash = circle.dataset.dash;
                 const gap = circle.dataset.gap;
-                circle.setAttribute("stroke-dasharray", `${dash} ${gap}`);
+                circle.setAttribute("stroke-dasharray", `${dash} ${gap}`); // creates the graph with a animation
             });
         });
     });
 }
 
 const renderLegend = (items) => {
-    const total = items.reduce((sum, item) => sum + item.value, 0);
+    const total = items.reduce((sum, item) => sum + item.value, 0); // gets the total value
 
     const legend = items.map((item, index) => {
-        const percent = Math.round((item.value / total) * 100);
+        const percent = Math.round((item.value / total) * 100); // gets the percentage that item has to the total value
 
         return `
             <li class="chart-legend-item" data-index="${index}">
@@ -104,7 +104,7 @@ const renderLegend = (items) => {
     chartLegend.innerHTML = legend.join('')
 }
 
-const attachChartInteractions = () => {
+const attachChartInteractions = () => { // if the mouse enters a category, it will be highlighted and the others dimmed
     const segments = chartSegmentsG.querySelectorAll(".chart-segment")
     const legendItems = chartLegend.querySelectorAll(".chart-legend-item")
 
@@ -119,7 +119,7 @@ const attachChartInteractions = () => {
     }
 
     segments.forEach((s) => {
-        s.addEventListener("mouseenter", () => highlight(s.dataset.index));
+        s.addEventListener("mouseenter", () => highlight(s.dataset.index)); 
         s.addEventListener("mouseleave", clearHighlight);
     });
 
@@ -130,14 +130,14 @@ const attachChartInteractions = () => {
 }
 
 const renderChart = () => {
-    const data = getChartData()
-    const total = data.reduce((sum, item) => sum + item.value, 0);
+    const data = getChartData() // gets the data for the chart
+    const total = data.reduce((sum, item) => sum + item.value, 0); // gets the total value
     
     if (!data || !data.length || total === 0) {
-        chartEmpty.classList.remove("hidden");
+        chartEmpty.classList.remove("hidden"); // if there is nothing to show it will show a empty message
         chartContent.classList.add("hidden");
         return;
-    }
+    } // if there is it will show the graph
     chartEmpty.classList.add("hidden");
     chartContent.classList.remove("hidden");
     renderSegments(data)

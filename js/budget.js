@@ -1,4 +1,4 @@
-const getBudgets = () => {
+const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
     try {
         return JSON.parse(localStorage.getItem('budgets')) ?? [];
     } catch {
@@ -7,7 +7,7 @@ const getBudgets = () => {
     }
 }
 
-const getCats = () => {
+const getCats = () => { //gets the localStorage item budgets and turns it into a map for each category
     const budgets = getBudgets();
     const cats = budgets.map(budget => budget.budgetCat)
     return cats;
@@ -16,7 +16,7 @@ const getCats = () => {
 const addBudget = (e) => {
     e.preventDefault();
 
-    if(parseFloat(budgetLimitInput.value) === 0) {
+    if(parseFloat(budgetLimitInput.value) === 0) { // doesn't let the amount be 0
         budgetLimitInput.closest('.budget-slider-wrap').classList.add('input-invalid');
         budgetLimitError.classList.remove('hidden');
         budgetLimitInput.focus();
@@ -25,13 +25,13 @@ const addBudget = (e) => {
 
     const budgets = getBudgets();
 
-    const budget = {
+    const budget = { //creates the budget object
         budgetCat: budgetCategory.value,
         budgetLimit : parseFloat(budgetLimitInput.value)
     };
     
-    budgets.unshift(budget);
-    saveBudgets(budgets)
+    budgets.unshift(budget); // puts it at the top of the budgets (LIFO)
+    saveBudgets(budgets) // saves the budgets in localStorage
     
     budgetForm.reset();
     toggleBudgetModal();
@@ -39,11 +39,12 @@ const addBudget = (e) => {
 }
 
 const saveBudgets = (budgets) => {
-    localStorage.setItem('budgets', JSON.stringify(budgets));
+    localStorage.setItem('budgets', JSON.stringify(budgets)); // sets the budgets in localStorage
 }
 
 const getSpentByCat = (cat) => {
-    const transactions = getTransactions();
-    const catTransactions = transactions.filter(transaction => transaction.transactionCat === cat && transaction.transactionType === 'spending').reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0);
-    return parseFloat(catTransactions.toFixed(2));
+    const transactions = getTransactions(); // gets all the transactions
+    const catTransactions = transactions.filter(transaction => transaction.transactionCat === cat && transaction.transactionType === 'spending')
+                                        .reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0); // filters to see only the spending of said category and gets the total money spent
+    return parseFloat(catTransactions.toFixed(2)); // returns the total as a string with 2 decimals
 }

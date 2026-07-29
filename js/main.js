@@ -50,7 +50,7 @@ const CATEGORIES_RECEIVING = [
 
 const toggleTransactionModal = () => { //opens and closes the modal and gets the default date for the date input
     const isOpen = transactionModal.classList.toggle('open');
-    if (isOpen) {
+    if (isOpen) { // if its open, the date will be defaulted to the real date and the categories will be built from the available categories
         transactionModalCatSpending.innerHTML = "";
         transactionModalCatReceiving.innerHTML = "";
         document.getElementById('transaction-date').value = getTodayISO();
@@ -67,9 +67,9 @@ const toggleTransactionModal = () => { //opens and closes the modal and gets the
     }
 };
 
-const toggleBudgetModal = () => {
+const toggleBudgetModal = () => { // opens and closes the modal
     const isOpen = budgetModal.classList.toggle("open");
-    if (isOpen) {
+    if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
         budgetCategory.innerHTML = "";
         const usedCats = getCats()
         for (const cat of CATEGORIES_SPENDING) {
@@ -96,19 +96,19 @@ closeBudgetModalBtn.addEventListener("click", toggleBudgetModal);
 cancelBudgetModalBtn.addEventListener("click", toggleBudgetModal);
 budgetForm.addEventListener('submit', addBudget);
 
-budgetLimitValue.addEventListener("click", () => {
+budgetLimitValue.addEventListener("click", () => { // if clicked, the value of the budget will turn into a input
     budgetLimitValue.classList.add("hidden");
     budgetLimitInput.classList.remove("hidden");
     budgetLimitInput.focus();
 })
 
-budgetLimitInput.addEventListener('blur', () => {
+budgetLimitInput.addEventListener('blur', () => { // if the input is not hovered or written on, the slider will become the number that the user has wrote and the value too
     let value = parseFloat(budgetLimitInput.value);
-    if (isNaN(value) || value < 0) {
+    if (isNaN(value) || value < 0) { // if the value is not a number or below 0, it defaults to 0
         value = 0;
     }
     const sliderMax = parseFloat(budgetLimit.max);
-    const sliderValue = Math.min(value, sliderMax);
+    const sliderValue = Math.min(value, sliderMax); // if the number is above the max of the slider, the slider will default to the max number but the value will remain the one the user chose
     value = value.toFixed(2);
     budgetLimitValue.textContent = `${value}€`;
     budgetLimit.value = sliderValue;
@@ -118,16 +118,16 @@ budgetLimitInput.addEventListener('blur', () => {
 });
 
 budgetLimit.addEventListener("input", (e) => {
-    if (parseFloat(e.target.value) > 0) {
+    if (parseFloat(e.target.value) > 0) { // if the number is no longer 0 it will remove the error
         budgetLimitError.classList.add('hidden');
         e.target.closest('.budget-slider-wrap').classList.remove('input-invalid');
     }
     budgetLimitInput.value = e.target.value;
-    budgetLimitValue.textContent = e.target.value + "€";
+    budgetLimitValue.textContent = e.target.value + "€"; // turns the value into the number the user has chosen
 })
 
 document.getElementById('transaction-amount').addEventListener('input', (e) => {
-    if (parseFloat(e.target.value) > 0) {
+    if (parseFloat(e.target.value) > 0) { // if the number is no longer 0 it will remove the error
         document.getElementById('amount-error').classList.add('hidden');
         e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
     }

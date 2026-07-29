@@ -45,19 +45,19 @@ const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transac
 
 const renderSpendingReceiving = () => {
     const transactions = getTransactions();
-    const spending = transactions.filter(transaction => transaction.transactionType === "spending").slice(0, 3);
-    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").slice(0, 3);
+    const spending = transactions.filter(transaction => transaction.transactionType === "spending").slice(0, 3); // gets last 3 spending transactions (LIFO)
+    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").slice(0, 3); // gets last 3 receiving transactions (LIFO)
     
-    document.getElementById('no-spending').classList.toggle('hidden', spending.length > 0);
+    document.getElementById('no-spending').classList.toggle('hidden', spending.length > 0); // if spending has more than 0 transactions, it will show them
     document.getElementById('spending-list').innerHTML = spending.map(buildSpendingReceivingRow).join('');
 
-    document.getElementById('no-receiving').classList.toggle('hidden', receiving.length > 0);
+    document.getElementById('no-receiving').classList.toggle('hidden', receiving.length > 0); // if receiving has more than 0 transactions, it will show them
     document.getElementById('receiving-list').innerHTML = receiving.map(buildSpendingReceivingRow).join('');
 }
 
 const renderBalance = () => {
     const balance = calcBalance();
-    balanceDiv.classList.toggle('negative', balance < 0);
+    balanceDiv.classList.toggle('negative', balance < 0); // if the balance is below 0, it will get the negative class
     animateBalance(balance);
 };
 
@@ -94,11 +94,11 @@ const animateBalance = (targetValue, duration = 800) => {
 };
 
 const buildBudgetRow = ({budgetCat, budgetLimit}) => {
-    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots';
-    const totalSpent = getSpentByCat(budgetCat);
-    const perc = ((totalSpent / budgetLimit) * 100)
+    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // gets the icon
+    const totalSpent = getSpentByCat(budgetCat); // gets the total spent for the category
+    const perc = ((totalSpent / budgetLimit) * 100) // calculates the percentage of the limit spent
 
-    const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : '';
+    const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
 
     return `
         <li class="budget-row">
@@ -117,14 +117,14 @@ const buildBudgetRow = ({budgetCat, budgetLimit}) => {
 }
 
 const renderBudgets = () => {
-    const budgets = getBudgets();
-    if (budgets.length === 0) { 
+    const budgets = getBudgets(); // gets all the budgets
+    if (budgets.length === 0) { // if there aren't any budgets, show the empty message
         budgetEmpty.classList.remove('hidden');
         budgetList.classList.add("hidden");
     } else {
         budgetEmpty.classList.add('hidden');
         budgetList.classList.remove("hidden");
     }
-    budgets.sort((a,b) => (getSpentByCat(b.budgetCat) / b.budgetLimit) - (getSpentByCat(a.budgetCat) / a.budgetLimit));
+    budgets.sort((a,b) => (getSpentByCat(b.budgetCat) / b.budgetLimit) - (getSpentByCat(a.budgetCat) / a.budgetLimit)); // sort the budgets from the most completed to the less completed
     budgetList.innerHTML = budgets.slice(0,3).map(buildBudgetRow).join('');
 }
