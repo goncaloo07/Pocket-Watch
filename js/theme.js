@@ -42,7 +42,9 @@ const applyTheme = (theme) => {
     favicon32.href = `/assets/icons/${themePath}/favicon-32x32.png`;
     appleTouchIcon.href = `/assets/icons/${themePath}/apple-touch-icon.png`;
     manifestLink.href = `/assets/icons/${themePath}/site.webmanifest`;
-    logoImg.src = `/assets/icons/${themePath}/logo.png`;
+    document.querySelectorAll('.brand-logo').forEach(img => {
+        img.src = `/assets/icons/${themePath}/logo.png`;
+    });     
 };
  
 const setTheme = (theme) => {

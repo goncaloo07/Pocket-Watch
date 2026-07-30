@@ -85,6 +85,7 @@ const toggleBudgetModal = () => { // opens and closes the modal
 // Initializing functions
 document.addEventListener('header:loaded', initHeader);
 document.addEventListener('menu:loaded', initMenu);
+document.addEventListener("footer:loaded", initFooter);
 
 addTransactionBtn.addEventListener('click', toggleTransactionModal);
 closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
