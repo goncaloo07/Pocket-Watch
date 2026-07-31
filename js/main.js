@@ -24,6 +24,10 @@ const budgetForm = document.getElementById("budget-form");
 const budgetLimitError = document.getElementById("budget-limit-error");
 const budgetEmpty = document.getElementById("budget-empty");
 const budgetList = document.getElementById("budget-list");
+const budgetPeriodInputs = document.querySelectorAll('[name="budget-period"]');
+const budgetRecurringUnit = document.getElementById("budget-recurring-unit");
+const budgetEndDateInput = document.getElementById("budget-end-date");
+const budgetEndDateError = document.getElementById("budget-end-date-error");
 
 const CATEGORIES_SPENDING = [
     "Other",
@@ -79,6 +83,9 @@ const toggleBudgetModal = () => { // opens and closes the modal
                 `;
             }
         }
+        document.getElementById("budget-period-recurring").checked = true;
+        budgetRecurringUnit.value = 'monthly';
+        budgetEndDateInput.value = getTodayISO();
     }
 }
 
@@ -125,7 +132,12 @@ budgetLimit.addEventListener("input", (e) => {
     }
     budgetLimitInput.value = e.target.value;
     budgetLimitValue.textContent = e.target.value + "€"; // turns the value into the number the user has chosen
-})
+});
+
+budgetEndDateInput.addEventListener('input', () => { // removes the error as soon as the date is changed
+    budgetEndDateError.classList.add('hidden');
+    budgetEndDateInput.classList.remove('input-invalid');
+});
 
 document.getElementById('transaction-amount').addEventListener('input', (e) => {
     if (parseFloat(e.target.value) > 0) { // if the number is no longer 0 it will remove the error

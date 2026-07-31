@@ -1477,6 +1477,34 @@ input.input-invalid {
     outline-offset: 3px;
 }
 
+.budget-end-date-group {
+    display: none;
+}
+
+.modal-form:has(#budget-period-date:checked) .budget-end-date-group {
+    display: flex;
+}
+
+.budget-recurring-group,
+.budget-end-date-group {
+    display: none;
+}
+
+.modal-form:has(#budget-period-recurring:checked) .budget-recurring-group {
+    display: flex;
+}
+
+.modal-form:has(#budget-period-date:checked) .budget-end-date-group {
+    display: flex;
+}
+
+#budget-period-recurring:checked + .budget-period-recurring,
+#budget-period-date:checked + .budget-period-date {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background-color: color-mix(in srgb, var(--accent-color) 12%, var(--navcolor));
+}
+
 /* Footer */
 
 .footer {

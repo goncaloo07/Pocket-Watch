@@ -172,6 +172,36 @@
                         <span id="budget-limit-error" class="input-error hidden">Limit must be greater than 0€</span>
                     </div>
 
+                    <div class="form-group">
+                        <label>Renews</label>
+                        <div class="type-toggle">
+                            <input type="radio" id="budget-period-recurring" name="budget-period" value="recurring" checked>
+                            <label for="budget-period-recurring" class="type-option budget-period-recurring">
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Every So Often
+                            </label>
+
+                            <input type="radio" id="budget-period-date" name="budget-period" value="date">
+                            <label for="budget-period-date" class="type-option budget-period-date">
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> Until Date
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group budget-recurring-group">
+                        <label for="budget-recurring-unit">Frequency</label>
+                        <select id="budget-recurring-unit" name="budget-recurring-unit">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly" selected>Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group budget-end-date-group">
+                        <label for="budget-end-date">End Date</label>
+                        <input type="date" id="budget-end-date" name="budget-end-date">
+                        <span id="budget-end-date-error" class="input-error hidden">End date must be after today</span>
+                    </div>
+
                     <div class="modal-actions">
                         <button type="button" id="cancel-budget-btn" class="btn btn-secondary">Cancel</button>
                         <button type="submit" id="save-budget-btn" class="btn btn-primary">Save</button>
@@ -255,6 +285,7 @@
     <script src="js/theme.js"></script>
     <script src="js/header.js"></script>
     <script src="js/menu.js"></script>
+    <script src="js/footer.js"></script>
     <script src="js/transactions.js"></script>
     <script src="js/balance.js"></script>
     <script src="js/render.js"></script>

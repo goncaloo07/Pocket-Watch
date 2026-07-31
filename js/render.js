@@ -93,9 +93,10 @@ const animateBalance = (targetValue, duration = 800) => {
     requestAnimationFrame(step);
 };
 
-const buildBudgetRow = ({budgetCat, budgetLimit}) => {
+const buildBudgetRow = (budget) => {
+    const { budgetCat, budgetLimit } = budget;
     const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // gets the icon
-    const totalSpent = getSpentByCat(budgetCat); // gets the total spent for the category
+    const totalSpent = getSpentByCat(budget); // gets the total spent for the category
     const perc = ((totalSpent / budgetLimit) * 100) // calculates the percentage of the limit spent
 
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
@@ -125,6 +126,6 @@ const renderBudgets = () => {
         budgetEmpty.classList.add('hidden');
         budgetList.classList.remove("hidden");
     }
-    budgets.sort((a,b) => (getSpentByCat(b.budgetCat) / b.budgetLimit) - (getSpentByCat(a.budgetCat) / a.budgetLimit)); // sort the budgets from the most completed to the less completed
+    budgets.sort((a,b) => (getSpentByCat(b) / b.budgetLimit) - (getSpentByCat(a) / a.budgetLimit)); // sort the budgets from the most completed to the less completed
     budgetList.innerHTML = budgets.slice(0,3).map(buildBudgetRow).join('');
 }
