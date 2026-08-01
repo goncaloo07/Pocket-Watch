@@ -15,6 +15,7 @@ const CATEGORY_ICONS = new Map([
     ["Loan", "bi-cash-coin"],
     ["Refund", "bi-arrow-counterclockwise"],
     ["Freelance", "bi-laptop"],
+    ["__general__", "bi-wallet2"]
 ]) //icon for each category
 
 const formatDateISO = (date) => { // formats the date

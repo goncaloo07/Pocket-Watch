@@ -95,18 +95,25 @@ const animateBalance = (targetValue, duration = 800) => {
 
 const buildBudgetRow = (budget) => {
     const { budgetCat, budgetLimit } = budget;
-    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // gets the icon
+    const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
+    const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots'; // gets the icon
     const totalSpent = getSpentByCat(budget); // gets the total spent for the category
     const perc = ((totalSpent / budgetLimit) * 100) // calculates the percentage of the limit spent
 
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
+
+    const { start, end } = getPeriodRange(budget);
+    const dateLabel = budget.budgetPeriod === "date" ? `Until ${formatDateShort(end)}` : `${formatDateShort(start)} - ${formatDateShort(end)}`; // get the start and end to the budget
 
     return `
         <li class="budget-row">
             <div class="budget-row-top">
                 <div class="transaction-left">
                     <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
-                    <span class="transaction-name">${budgetCat}</span>
+                    <div class="transaction-info">
+                        <span class="transaction-name">${displayName}</span>
+                        <span class="transaction-meta">${dateLabel}</span>
+                    </div>
                 </div>
                 <span class="budget-amounts ${barClass}">${totalSpent.toFixed(2)}€ <span class="budget-amounts-sep">/</span> ${budgetLimit.toFixed(2)}€</span>
             </div>
@@ -119,13 +126,17 @@ const buildBudgetRow = (budget) => {
 
 const renderBudgets = () => {
     const budgets = getBudgets(); // gets all the budgets
-    if (budgets.length === 0) { // if there aren't any budgets, show the empty message
+    if (budgets.length === 0) { // if th    ere aren't any budgets, show the empty message
         budgetEmpty.classList.remove('hidden');
         budgetList.classList.add("hidden");
     } else {
         budgetEmpty.classList.add('hidden');
         budgetList.classList.remove("hidden");
     }
-    budgets.sort((a,b) => (getSpentByCat(b) / b.budgetLimit) - (getSpentByCat(a) / a.budgetLimit)); // sort the budgets from the most completed to the less completed
+    budgets.sort((a, b) => {
+        if (a.budgetCat === GENERAL_BUDGET_CAT) return -1;
+        if (b.budgetCat === GENERAL_BUDGET_CAT) return 1;
+        return (getSpentByCat(b) / b.budgetLimit) - (getSpentByCat(a) / a.budgetLimit);
+    }); // sort the budgets from the most completed to the less completed (general always first)
     budgetList.innerHTML = budgets.slice(0,3).map(buildBudgetRow).join('');
 }

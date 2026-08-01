@@ -76,6 +76,9 @@ const toggleBudgetModal = () => { // opens and closes the modal
     if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
         budgetCategory.innerHTML = "";
         const usedCats = getCats()
+        if (!usedCats.includes(GENERAL_BUDGET_CAT)) {
+            budgetCategory.innerHTML += `<option value="${GENERAL_BUDGET_CAT}">General</option>`;
+        }
         for (const cat of CATEGORIES_SPENDING) {
             if (!usedCats.includes(cat)) {
                 budgetCategory.innerHTML += `

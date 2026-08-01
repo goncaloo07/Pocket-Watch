@@ -1,3 +1,5 @@
+const GENERAL_BUDGET_CAT = "__general__";
+
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
     try {
         const budgets = JSON.parse(localStorage.getItem('budgets')) ?? [];
@@ -67,36 +69,53 @@ const saveBudgets = (budgets) => {
 
 const getSpentByCat = (budget) => {
     const cat = budget.budgetCat;
-    const {start, end} = getPeriodRange(budget);
+    const {start, end} = getSpendPeriodRange(budget);
     const transactions = getTransactions(); // gets all the transactions
-    const catTransactions = transactions.filter(transaction => transaction.transactionCat === cat 
-                                                && transaction.transactionType === 'spending'
-                                                && transaction.transactionDate >= start
-                                                && transaction.transactionDate <= end)
-                                        .reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0); // filters to see only the spending of said category and gets the total money spent
+    const catTransactions = transactions.filter(transaction => 
+        transaction.transactionType === 'spending'
+        && (cat === GENERAL_BUDGET_CAT || transaction.transactionCat === cat)
+        && transaction.transactionDate >= start
+        && transaction.transactionDate <= end)
+    .reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0); // filters to see only the spending of said category and gets the total money spent
     return parseFloat(catTransactions.toFixed(2)); // returns the total as a string with 2 decimals
 }
 
-const getPeriodRange = (budget) => { // gets the start and end of the budget
+const getPeriodRange = (budget) => { // gets the full start and end of the budget's period
     if (budget.budgetPeriod === "date") {
-        return { start: budget.budgetCreatedAt, end: budget.budgetEndDate };
+        return { start: new Date(budget.budgetCreatedAt), end: new Date(budget.budgetEndDate) };
     }
 
     const today = new Date(); // todays date
-    let start; // start of them budget
+    let start, end; // start and end of the budget period
 
     if (budget.budgetUnit === "monthly") {
-        start = new Date(today.getFullYear(), today.getMonth(), 1)
+        start = new Date(today.getFullYear(), today.getMonth(), 1);
+        end = new Date(today.getFullYear(), today.getMonth() + 1, 0); // day 0 = last day of previous month
     } else if (budget.budgetUnit === "weekly") {
         const day = today.getDay();
         const diff = (day === 0 ? 6 : day - 1); // days since most recent Monday
         start = new Date(today);
         start.setDate(today.getDate() - diff);
+        end = new Date(start);
+        end.setDate(start.getDate() + 6);
     } else if (budget.budgetUnit === "yearly") {
-        start = new Date(today.getFullYear(), 0, 1)
+        start = new Date(today.getFullYear(), 0, 1);
+        end = new Date(today.getFullYear(), 11, 31);
     }
 
-    return { start: formatDateISO(start), end: getTodayISO() };
+    return { start, end };
+};
+
+// spend-calculation range: clamps end at today so future transactions aren't counted, returns ISO strings
+const getSpendPeriodRange = (budget) => {
+    const { start, end } = getPeriodRange(budget);
+    const today = new Date();
+    const clampedEnd = end > today ? today : end;
+    return { start: formatDateISO(start), end: formatDateISO(clampedEnd) };
+};
+
+const formatDateShort = (date) => { // returns the date like 
+    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 };
 
 const isBudgetExpired = (budget) => { // check if the budget is expired
