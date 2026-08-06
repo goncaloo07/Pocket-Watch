@@ -48,11 +48,11 @@ const renderSpendingReceiving = () => {
     const spending = transactions.filter(transaction => transaction.transactionType === "spending").slice(0, 3); // gets last 3 spending transactions (LIFO)
     const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").slice(0, 3); // gets last 3 receiving transactions (LIFO)
     
-    document.getElementById('no-spending').classList.toggle('hidden', spending.length > 0); // if spending has more than 0 transactions, it will show them
-    document.getElementById('spending-list').innerHTML = spending.map(buildSpendingReceivingRow).join('');
+    noSpendingDiv.classList.toggle('hidden', spending.length > 0); // if spending has more than 0 transactions, it will show them
+    spendingListEl.innerHTML = spending.map(buildSpendingReceivingRow).join('');
 
-    document.getElementById('no-receiving').classList.toggle('hidden', receiving.length > 0); // if receiving has more than 0 transactions, it will show them
-    document.getElementById('receiving-list').innerHTML = receiving.map(buildSpendingReceivingRow).join('');
+    noReceivingDiv.classList.toggle('hidden', receiving.length > 0); // if receiving has more than 0 transactions, it will show them
+    receivingListEl.innerHTML = receiving.map(buildSpendingReceivingRow).join('');
 }
 
 const renderBalance = () => {
@@ -93,11 +93,10 @@ const animateBalance = (targetValue, duration = 800) => {
     requestAnimationFrame(step);
 };
 
-const buildBudgetRow = (budget) => {
+const buildBudgetRow = (budget, totalSpent) => {
     const { budgetCat, budgetLimit } = budget;
     const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
     const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots'; // gets the icon
-    const totalSpent = getSpentByCat(budget); // gets the total spent for the category
     const perc = ((totalSpent / budgetLimit) * 100) // calculates the percentage of the limit spent
 
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
@@ -133,10 +132,13 @@ const renderBudgets = () => {
         budgetEmpty.classList.add('hidden');
         budgetList.classList.remove("hidden");
     }
+
+    const spentMap = new Map(budgets.map(b => [b, getSpentByCat(b)])); // calcula o gasto de cada budget uma única vez
+
     budgets.sort((a, b) => {
         if (a.budgetCat === GENERAL_BUDGET_CAT) return -1;
         if (b.budgetCat === GENERAL_BUDGET_CAT) return 1;
-        return (getSpentByCat(b) / b.budgetLimit) - (getSpentByCat(a) / a.budgetLimit);
+        return (spentMap.get(b) / b.budgetLimit) - (spentMap.get(a) / a.budgetLimit);
     }); // sort the budgets from the most completed to the less completed (general always first)
-    budgetList.innerHTML = budgets.slice(0,3).map(buildBudgetRow).join('');
+    budgetList.innerHTML = budgets.slice(0,3).map(budget => buildBudgetRow(budget, spentMap.get(budget))).join('');
 }
