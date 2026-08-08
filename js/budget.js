@@ -3,7 +3,7 @@ const GENERAL_BUDGET_CAT = "__general__";
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
     try {
         const budgets = JSON.parse(localStorage.getItem('budgets')) ?? [];
-        const activeBudgets = budgets.filter(budget => !isBudgetExpired(budget));
+        const activeBudgets = budgets.filter(budget => !isBudgetExpired(budget)); // it also removes the expired budgets from the localStorage, so it only returns the active ones
         if (activeBudgets.length !== budgets.length) {
             saveBudgets(activeBudgets);
         }
@@ -82,7 +82,7 @@ const getSpentByCat = (budget) => {
 
 const getPeriodRange = (budget) => { // gets the full start and end of the budget's period
     if (budget.budgetPeriod === "date") {
-        return { start: new Date(budget.budgetCreatedAt), end: new Date(budget.budgetEndDate) };
+        return { start: parseDateISO(budget.budgetCreatedAt), end: parseDateISO(budget.budgetEndDate) };
     }
 
     const today = new Date(); // todays date

@@ -25,6 +25,11 @@ const formatDateISO = (date) => { // formats the date
     return `${yyyy}-${mm}-${dd}`;
 };
 
+const parseDateISO = (dateStr) => { // parses a "YYYY-MM-DD" string as a local date, avoiding the UTC-midnight shift of new Date(str)
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+};
+
 const getTodayISO = () => formatDateISO(new Date()); // gets todays date, formatted
 
 const addTransaction = (e) => {

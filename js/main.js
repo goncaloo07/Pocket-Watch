@@ -72,6 +72,10 @@ const toggleTransactionModal = () => { //opens and closes the modal and gets the
                 <option value="${category}">${category}</option>
             `;
         })
+    } else {
+        transactionForm.reset();
+        document.getElementById('transaction-amount').closest('.amount-input-wrap').classList.remove('input-invalid');
+        document.getElementById('amount-error').classList.add('hidden');
     }
 };
 
@@ -93,6 +97,14 @@ const toggleBudgetModal = () => { // opens and closes the modal
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
         budgetEndDateInput.value = getTodayISO();
+    } else {
+        budgetForm.reset();
+        budgetLimitValue.textContent = `${budgetLimit.value}€`;
+        budgetLimitInput.value = budgetLimit.value;
+        budgetLimitInput.closest('.budget-slider-wrap').classList.remove('input-invalid');
+        budgetLimitError.classList.add('hidden');
+        budgetEndDateInput.classList.remove('input-invalid');
+        budgetEndDateError.classList.add('hidden');
     }
 }
 
