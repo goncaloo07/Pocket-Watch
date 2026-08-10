@@ -43,107 +43,7 @@
     <div id="header-placeholder"></div>
     <div id="menu-placeholder"></div>
     <main id="main-content" class="main-content">
-        <div id="priority-content" class="priority-content">
-            <div id="balance-column" class="balance-column">
-                <div id="balance-div" class="container balance-div">
-                    <svg class="balance-dial" style="bottom: -45px; left: -25px;" width="150" height="150" viewBox="0 0 150 150">
-                        <circle cx="75" cy="75" r="66" fill="none" stroke="var(--border-color)" stroke-width="2"/>
-                        <circle cx="75" cy="75" r="46" fill="none" stroke="var(--border-color)" stroke-width="1.5"/>
-                        <g class="dial-crack">
-                            <path class="crack-main" d="M 108 18 L 101 30 L 106 36 L 93 50 L 98 56 L 87 70" fill="none" stroke="var(--negative-color)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path class="crack-branch" d="M 106 36 L 117 40 L 124 36" fill="none" stroke="var(--negative-color)" stroke-width="0.6" stroke-linecap="round"/>
-                            <path class="crack-branch" d="M 98 56 L 89 54 L 83 60" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
-                            <path class="crack-branch" d="M 101 30 L 93 22" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
-                        </g>
-                        <line class="dial-needle dial-needle-v" x1="75" y1="75" x2="75" y2="34" stroke="var(--accent-color)" stroke-width="3"/>
-                        <line class="dial-needle dial-needle-h" x1="75" y1="75" x2="103" y2="75" stroke="var(--accent-color)" stroke-width="3"/>
-                    </svg>
-                    <h1 id="balance-label" class="container-title">Current Balance</h1>
-                    <h1 id="balance-value" class="balance-value"></h1>
-                </div>
-
-                <div id="sr-div" class="sr-div">
-                    <div id="spending-div" class="container sr-item">
-                        <h1 class="container-title">Spending</h1>
-                        <div id="no-spending" class="sr-empty">
-                            <i class="bi bi-arrow-down-circle sr-empty-icon" aria-hidden="true"></i>
-                            <p class="sr-empty-title">No spending yet</p>
-                            <p class="sr-empty-subtitle">Expenses you add will show up here.</p>
-                        </div>
-                        <ul id="spending-list" class="sr-list">
-                        </ul>
-                    </div>
-
-                    <div id="receiving-div" class="container sr-item">
-                        <h1 class="container-title">Receiving</h1>
-                        <div id="no-receiving" class="sr-empty">
-                            <i class="bi bi-arrow-up-circle sr-empty-icon" aria-hidden="true"></i>
-                            <p class="sr-empty-title">No receiving yet</p>
-                            <p class="sr-empty-subtitle">Income you add will show up here.</p>
-                        </div>
-                        <ul id="receiving-list" class="sr-list">
-                        </ul>
-                    </div>
-                </div>
-
-                <div id="budget-div" class="container budget-div">
-                    <h1 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h1>
-                    <div id="budget-empty" class="budget-empty">
-                        <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">No budgets yet</p>
-                        <p class="transactions-empty-subtitle">Set a limit for a category to start tracking it.</p>
-                    </div>
-                    <ul id="budget-list" class="budget-list hidden">
-                    </ul>
-                </div>
-            </div>
-
-            <div id="transactions-column" class="transactions-column">
-                <div id="transactions-div" class="container transactions-div">
-                    <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
-                    <div id="transactions-empty" class="transactions-empty hidden">
-                        <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">No transactions yet</p>
-                        <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
-                    </div>
-                    <ul id="transactions-list" class="transactions-list">
-                    </ul>
-                </div>
-
-                <div id="chart-div" class="container chart-div">
-                    <div class="chart-header">
-                        <h1 class="container-title">Breakdown</h1>
-                        <div class="chart-toggle">
-                            <input type="radio" id="chart-mode-category" name="chart-mode" value="category" checked>
-                            <label for="chart-mode-category" class="chart-toggle-option">By Category</label>
-
-                            <input type="radio" id="chart-mode-type" name="chart-mode" value="type">
-                            <label for="chart-mode-type" class="chart-toggle-option">Spending vs Receiving</label>
-                        </div>
-                    </div>
-
-                    <div id="chart-empty" class="chart-empty hidden">
-                        <i class="bi bi-pie-chart chart-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">Nothing to show yet</p>
-                        <p class="transactions-empty-subtitle">Add a transaction to see your breakdown.</p>
-                    </div>
-
-                    <div id="chart-content" class="chart-content">
-                        <div class="chart-svg-wrap">
-                            <svg id="chart-svg" viewBox="0 0 200 200" class="chart-svg" aria-hidden="true">
-                                <g id="chart-segments"></g>
-                            </svg>
-                            <div class="chart-center">
-                                <span id="chart-center-value" class="chart-center-value"></span>
-                                <span id="chart-center-label" class="chart-center-label"></span>
-                            </div>
-                            <div id="chart-tooltip" class="chart-tooltip hidden"></div>
-                        </div>
-                        <ul id="chart-legend" class="chart-legend"></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="page-content"></div>
 
         <div id="budget-modal-overlay" class="modal-overlay">
             <div id="budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
@@ -282,6 +182,7 @@
     <script src="js/include-menu.js"></script>
     <script src="js/include-header.js"></script>
     <script src="js/include-footer.js"></script>
+    <script src="js/router.js"></script>
     <script src="js/theme.js"></script>
     <script src="js/header.js"></script>
     <script src="js/menu.js"></script>

@@ -1,11 +1,22 @@
-const chartSegmentsG = document.getElementById('chart-segments');
-const chartLegend = document.getElementById("chart-legend");
-const chartEmpty = document.getElementById("chart-empty");
-const chartContent = document.getElementById("chart-content");
-const chartCenterValue = document.getElementById("chart-center-value");
-const chartCenterLabel = document.getElementById("chart-center-label");
-const chartToolTip = document.getElementById("chart-tooltip");
-const chartSVGWrap = document.querySelector(".chart-svg-wrap");
+let chartSegmentsG, 
+    chartLegend, 
+    chartEmpty, 
+    chartContent, 
+    chartCenterValue,
+    chartCenterLabel, 
+    chartToolTip, 
+    chartSVGWrap;
+
+const initChart = () => {
+    chartSegmentsG = document.getElementById('chart-segments');
+    chartLegend = document.getElementById("chart-legend");
+    chartEmpty = document.getElementById("chart-empty");
+    chartContent = document.getElementById("chart-content");
+    chartCenterValue = document.getElementById("chart-center-value");
+    chartCenterLabel = document.getElementById("chart-center-label");
+    chartToolTip = document.getElementById("chart-tooltip");
+    chartSVGWrap = document.querySelector(".chart-svg-wrap");
+};
 
 const CHART_RADIUS = 80; // radius of the circle
 const CHART_CIRCUMFERENCE = 2 * Math.PI * CHART_RADIUS;
