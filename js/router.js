@@ -1,5 +1,6 @@
 const ROUTES = {
     '/': 'html/pages/home.html',
+    '/balance': 'html/pages/balance.html',
 };
 
 const pageContent = document.getElementById('page-content');

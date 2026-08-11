@@ -210,4 +210,5 @@ document.addEventListener('menu:loaded', initMenu);
 document.addEventListener("footer:loaded", initFooter);
 document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/') initHomePage();
+    if (e.detail.path === '/balance') initBalancePage();
 });
