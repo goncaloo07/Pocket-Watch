@@ -96,7 +96,10 @@ const toggleBudgetModal = () => { // opens and closes the modal
         }
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
-        budgetEndDateInput.value = getTodayISO();
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        budgetEndDateInput.value = formatDateISO(tomorrow);
+        budgetEndDateInput.min = formatDateISO(tomorrow);
     } else {
         budgetForm.reset();
         budgetLimitValue.textContent = `${budgetLimit.value}€`;
@@ -174,6 +177,12 @@ const initHomePage = () => {
         budgetLimitInput.value = parseFloat(value);
         budgetLimitInput.classList.add("hidden");
         budgetLimitValue.classList.remove("hidden");
+    });
+
+    budgetLimitInput.addEventListener('input', () => {
+        if (budgetLimitInput.value < 0) {
+            budgetLimitInput.value = 0;
+        }
     });
 
     budgetLimit.addEventListener("input", (e) => {

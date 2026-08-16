@@ -264,13 +264,14 @@ body {
 /* Main Content */
 
 .main-content {
-    max-width: calc(100% - 2rem);
+    width: calc(100% - 2rem);
     padding: 1rem;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     transition: margin-left 0.3s ease;
     flex: 1 0 auto;
+    margin: auto;
 }
 
 .priority-content {
@@ -347,6 +348,7 @@ body {
 body.menu-open #main-content {
     margin-left: calc(var(--menu-width) + 1rem);
     margin-right: 1rem;
+    max-width: calc(100% - var(--menu-width) - 2rem);
 }
 
 .balance-column {

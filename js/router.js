@@ -31,6 +31,10 @@ document.addEventListener('click', (e) => {
 
     e.preventDefault();
     navigateTo(href);
+
+    if (menu.classList.contains('open')) {
+        toggleMenu();
+    }
 });
 
 window.addEventListener('popstate', () => {

@@ -5,7 +5,8 @@ let chartSegmentsG,
     chartCenterValue,
     chartCenterLabel, 
     chartToolTip, 
-    chartSVGWrap;
+    chartSVGWrap,
+    CATEGORY_COLORS;
 
 const initChart = () => {
     chartSegmentsG = document.getElementById('chart-segments');
@@ -16,6 +17,10 @@ const initChart = () => {
     chartCenterLabel = document.getElementById("chart-center-label");
     chartToolTip = document.getElementById("chart-tooltip");
     chartSVGWrap = document.querySelector(".chart-svg-wrap");
+
+    CATEGORY_COLORS = new Map(
+        CATEGORIES_SPENDING.map((cat, index) => [cat, CHART_PALETTE[index % CHART_PALETTE.length]])
+    );
 };
 
 const CHART_RADIUS = 80; // radius of the circle
@@ -36,7 +41,7 @@ const getCategoryTotals = () => {
     }) // if there is already that category in the map, sums the values of all the transactions of that category, if not creates a new entry in the map for that category and the value of the transaction
 
     const spendingArr = Array.from(spendingMap) // turns the map into a array
-        .map(([key, value], index) => ({label: key, value, color: CHART_PALETTE[index % CHART_PALETTE.length]})) // turns the array back into a map but with a new value for each entry (the color)
+        .map(([key, value], index) => ({label: key, value, color: CATEGORY_COLORS.get(key) || '#999999'})) // turns the array back into a map but with a new value for each entry (the color)
         .sort((a,b) => b.value - a.value); // sorts the map by most value to least
     return spendingArr;
 }

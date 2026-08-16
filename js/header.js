@@ -16,7 +16,9 @@ const initHeader = () => {
     menuBtn.addEventListener('click', toggleMenu);
  
     updateHeaderHeightVar();
-    window.addEventListener('resize', updateHeaderHeightVar);
+    
+    const headerResizeObserver = new ResizeObserver(updateHeaderHeightVar);
+    headerResizeObserver.observe(header);
 };
  
 const toggleMenu = () => {
@@ -35,6 +37,6 @@ const sendToHomePage = (e) => { // makes it so that when users that are on the m
     if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-        window.location.href = '/';
+        navigateTo('/');
     }
 }

@@ -125,7 +125,7 @@ const buildBudgetRow = (budget, totalSpent) => {
 
 const renderBudgets = () => {
     const budgets = getBudgets(); // gets all the budgets
-    if (budgets.length === 0) { // if th    ere aren't any budgets, show the empty message
+    if (budgets.length === 0) { // if there aren't any budgets, show the empty message
         budgetEmpty.classList.remove('hidden');
         budgetList.classList.add("hidden");
     } else {
@@ -135,10 +135,10 @@ const renderBudgets = () => {
 
     const spentMap = new Map(budgets.map(b => [b, getSpentByCat(b)])); // calcula o gasto de cada budget uma única vez
 
-    budgets.sort((a, b) => {
+    const sortedBudgets = [...budgets].sort((a, b) => {
         if (a.budgetCat === GENERAL_BUDGET_CAT) return -1;
         if (b.budgetCat === GENERAL_BUDGET_CAT) return 1;
         return (spentMap.get(b) / b.budgetLimit) - (spentMap.get(a) / a.budgetLimit);
     }); // sort the budgets from the most completed to the less completed (general always first)
-    budgetList.innerHTML = budgets.slice(0,3).map(budget => buildBudgetRow(budget, spentMap.get(budget))).join('');
+    budgetList.innerHTML = sortedBudgets.slice(0,3).map(budget => buildBudgetRow(budget, spentMap.get(budget))).join('');
 }
