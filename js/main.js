@@ -31,7 +31,11 @@ let addTransactionBtn,
     budgetPeriodInputs,
     budgetRecurringUnit,
     budgetEndDateInput,
-    budgetEndDateError;
+    budgetEndDateError,
+    balanceChartDiv,
+    balanceSummaryDiv,
+    balancePeriodInputs,
+    balancePoints;
 
 const CATEGORIES_SPENDING = [
     "Other",

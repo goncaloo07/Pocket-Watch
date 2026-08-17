@@ -25,7 +25,7 @@ const initChart = () => {
 
 const CHART_RADIUS = 80; // radius of the circle
 const CHART_CIRCUMFERENCE = 2 * Math.PI * CHART_RADIUS;
-const CHART_PALETTE = ['#3a8c63', '#5b9bd5', '#e0a72e', '#c1666b', '#7d5ba6', '#4fb0a5']; // colors for the categories
+const CHART_PALETTE = ['#3a8c63', '#5b9bd5', '#e0a72e', '#c1666b', '#7d5ba6', '#4fb0a5', '#d98c4a', '#8fa63a', '#5c6bc0', '#c94f7c']; // colors for the categories
 
 const getCategoryTotals = () => {
     const transactions = getTransactions();

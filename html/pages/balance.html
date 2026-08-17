@@ -16,6 +16,12 @@
                 <label for="balance-period-all" class="balance-period-option">All</label>
             </div>
         </div>
+        <div class="balance-chart-svg-wrap">
+            <svg id="balance-chart-svg" viewBox="0 0 600 200" class="balance-chart-svg" preserveAspectRatio="none">
+                <path id="balance-line" d="" fill="none" stroke="var(--accent-color)" stroke-width="2"/>
+                <g id="balance-points"></g>
+            </svg>
+        </div>
     </div>
 
     <div id="balance-summary-div" class="container balance-summary-div">
