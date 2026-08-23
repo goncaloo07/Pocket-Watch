@@ -1,3 +1,7 @@
+const CHART_WIDTH = 600;
+const CHART_HEIGHT = 200;
+const CHART_PADDING = 20;
+
 const calcBalance = () => {
     const transactions = getTransactions()
     let balance = 0
@@ -21,11 +25,49 @@ const initBalancePage = () => {
 const renderBalanceHistory = () => {
     const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
     const balanceHistory = getBalanceHistory(selectedPeriod);
-    const points = getBalancePoints(balanceHistory, 600, 200, 20);
+    const points = getBalancePoints(balanceHistory, CHART_WIDTH, CHART_HEIGHT, CHART_PADDING);
     const d = buildLinePath(points);
     document.getElementById('balance-line').setAttribute('d', d)
     balancePoints.innerHTML = buildPointCircles(points);
+    const gridLines = getBalanceGridLines(balanceHistory, CHART_HEIGHT, CHART_PADDING);
+    document.getElementById('balance-grid').innerHTML = buildGridLines(gridLines, CHART_WIDTH);
+    document.getElementById('balance-grid-labels').innerHTML = buildGridLabels(gridLines, CHART_HEIGHT);
+    const summary = getBalanceSummary(balanceHistory, selectedPeriod);
+    balanceSummaryDiv.innerHTML = buildBalanceSummary(summary, selectedPeriod);
 }
+
+// Picks `steps + 1` values evenly spread between the data's min and max, and works out the y position for each — same math as getBalancePoints, so a grid line always lines up with the balance it represents.
+// if balances range from 100€ to 400€ and steps=3, this returns 4 lines at 100€, 200€, 300€, 400€.
+const getBalanceGridLines = (data, chartHeight, padding, steps = 3) => {
+    if (data.length === 0) return [];
+
+    const balances = data.map(d => parseFloat(d.balance));
+    const min = Math.min(...balances);
+    const max = Math.max(...balances);
+
+    // flat balance (no change at all) — just show that one value in the middle
+    if (max === min) return [{ value: min, y: chartHeight / 2 }];
+
+    return Array.from({ length: steps + 1 }, (_, i) => {
+        const fraction = i / steps; // 0 = min (bottom), 1 = max (top)
+        const value = min + (max - min) * fraction;
+        const y = chartHeight - (fraction * (chartHeight - 2 * padding) + padding);
+        return { value, y };
+    });
+};
+
+const buildGridLines = (gridLines, plotWidth) => {
+    return gridLines.map(line =>
+        `<line x1="0" y1="${line.y}" x2="${plotWidth}" y2="${line.y}" class="balance-grid-line"/>`
+    ).join('');
+};
+
+const buildGridLabels = (gridLines, chartHeight) => {
+    return gridLines.map(line => {
+        const topPercent = (line.y / chartHeight) * 100;
+        return `<span class="balance-grid-label" style="top: ${topPercent}%">${Math.round(line.value)}€</span>`;
+    }).join('');
+};
 
 const getBalancePoints = (data, chartWidth, chartHeight, padding) => {
     // if there isn't any data, return an empty array to avoid errors
@@ -127,29 +169,29 @@ const buildBalanceSummary = (summary, period) => {
     const { current, maxDay, minDay, change } = summary;
 
     const changeHTML = period === "all" ? '' : `
-        <div class="balance-summary-row">
+        <div class="balance-summary-row balance-summary-change">
             <span class="balance-summary-label">Change</span>
             <span class="balance-summary-value ${change < 0 ? 'negative' : 'positive'}">${change.toFixed(2)}€</span>
         </div>
     `;
 
     return `
-        <div class="balance-summary-row">
+        <div class="balance-summary-row balance-summary-current">
             <span class="balance-summary-label">Current Balance</span>
-            <span class="balance-summary-value">${current.toFixed(2)}€</span>
+            <span class="balance-summary-value ${current < 0 ? 'negative' : ''}">${current.toFixed(2)}€</span>
         </div>
-        <div class="balance-summary-row">
+        <div class="balance-summary-row balance-summary-max">
             <span class="balance-summary-label">Max Balance</span>
-            <span class="balance-summary-value">
+            <span class="balance-summary-value ${maxDay.balance < 0 ? 'negative' : ''}">
                 ${maxDay.balance.toFixed(2)}€
-                <span class="balance-summary-date">${maxDay.day}</span>
+                <span class="balance-summary-date">${formatDateDMY(maxDay.day)}</span>
             </span>
         </div>
-        <div class="balance-summary-row">
+        <div class="balance-summary-row balance-summary-min">
             <span class="balance-summary-label">Min Balance</span>
-            <span class="balance-summary-value">
+            <span class="balance-summary-value ${minDay.balance < 0 ? 'negative' : ''}">
                 ${minDay.balance.toFixed(2)}€
-                <span class="balance-summary-date">${minDay.day}</span>
+                <span class="balance-summary-date">${formatDateDMY(minDay.day)}</span>
             </span>
         </div>
         ${changeHTML}

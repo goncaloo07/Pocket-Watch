@@ -32,6 +32,11 @@ const parseDateISO = (dateStr) => { // parses a "YYYY-MM-DD" string as a local d
 
 const getTodayISO = () => formatDateISO(new Date()); // gets todays date, formatted
 
+const formatDateDMY = (dateStr) => { // "2026-08-23" -> "23-08-2026"
+    const [year, month, day] = dateStr.split('-');
+    return `${day}-${month}-${year}`;
+};
+
 const addTransaction = (e) => {
     e.preventDefault();
 

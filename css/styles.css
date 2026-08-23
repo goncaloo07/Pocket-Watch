@@ -1654,11 +1654,6 @@ input.input-invalid {
     min-height: 320px;
 }
 
-.balance-summary-div {
-    width: 100%;
-    min-height: 100px;
-}
-
 .balance-chart-header {
     display: flex;
     align-items: flex-start;
@@ -1711,17 +1706,171 @@ input.input-invalid {
 }
 
 .balance-chart-svg-wrap {
+    display: flex;
+    align-items: stretch;
+    gap: 0.4rem;
     width: 100%;
-    padding: 2rem
+    padding-top: 1rem;
 }
 
 .balance-chart-svg {
-    width: 100%;
-    height: 200px;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 220px;
     display: block;
+    overflow: visible;
 }
 
-.balance-chart-svg path{
+.balance-chart-svg path {
     stroke-linecap: round;
     stroke-linejoin: round;
+}
+
+#balance-line {
+    filter: drop-shadow(0 2px 5px color-mix(in srgb, var(--accent-color) 45%, transparent));
+    transition: d 0.3s ease;
+}
+
+#balance-points circle {
+    stroke: var(--bgcolor);
+    stroke-width: 1.5;
+    transition: r 0.15s ease, fill 0.15s ease;
+}
+
+#balance-points circle:hover {
+    r: 5;
+    fill: var(--positive-color);
+    cursor: pointer;
+}
+
+.balance-grid-line {
+    stroke: var(--border-color);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+}
+
+.balance-grid-label {
+    position: absolute;
+    right: 0; 
+    left: 0;
+    text-align: right;
+    transform: translateY(-50%);
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    white-space: nowrap;
+}
+
+.balance-grid-labels {
+    position: relative;
+    flex-shrink: 0;
+    width: 28px;
+    height: 220px;
+}
+
+
+/* Balance summary */
+
+.balance-summary-div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 0;
+    grid-template-areas:
+        "current max"
+        "change  min";
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+}
+
+.balance-summary-current { grid-area: current; }
+.balance-summary-change  { grid-area: change; }
+.balance-summary-max     { grid-area: max; }
+.balance-summary-min     { grid-area: min; }
+
+.balance-summary-current {
+    background: linear-gradient(135deg, color-mix(in srgb, var(--accent-color) 10%, var(--navcolor)), var(--navcolor));
+}
+
+.balance-summary-current .balance-summary-value {
+    font-size: 2rem;
+    background-image: linear-gradient(var(--textcolor), var(--positive-color));
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.balance-summary-current .balance-summary-value.negative {
+    background-image: linear-gradient(var(--textcolor), var(--negative-color));
+}
+
+.balance-summary-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--navcolor);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.balance-summary-row:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-1px);
+}
+
+.balance-summary-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--secondary-color);
+}
+
+.balance-summary-value {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-family: 'Archivo', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--textcolor);
+}
+
+
+.balance-summary-row:first-child .balance-summary-value {
+    font-size: 2rem;
+}
+
+.balance-summary-value.positive {
+    color: var(--positive-color);
+}
+
+.balance-summary-value.negative {
+    color: var(--negative-color);
+}
+
+.balance-summary-date {
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--secondary-color);
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .balance-summary-div {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "current"
+            "change"
+            "max"
+            "min";
+    }
+
+    .balance-summary-current .balance-summary-value {
+        font-size: 1.7rem;
+    }
 }
