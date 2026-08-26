@@ -16,8 +16,10 @@ const initBalancePage = () => {
     balanceSummaryDiv = document.getElementById('balance-summary-div');
     balancePeriodInputs = document.querySelectorAll('[name="balance-period"]');
     balancePoints = document.getElementById('balance-points');
+    balanceTooltip = document.getElementById('balance-tooltip');
+    balanceHoverPoints = document.getElementById('balance-hover-points');
 
-    balancePeriodInputs.forEach((period => period.addEventListener("change", renderBalanceHistory)));
+    balancePeriodInputs.forEach((period) => period.addEventListener("change", renderBalanceHistory));
 
     renderBalanceHistory()
 };
@@ -34,9 +36,11 @@ const renderBalanceHistory = () => {
     document.getElementById('balance-grid-labels').innerHTML = buildGridLabels(gridLines, CHART_HEIGHT);
     const summary = getBalanceSummary(balanceHistory, selectedPeriod);
     balanceSummaryDiv.innerHTML = buildBalanceSummary(summary, selectedPeriod);
+    balanceHoverPoints.innerHTML = buildHoverPoints(points, balanceHistory);
+    attachBalanceHoverEvents();
 }
 
-// Picks `steps + 1` values evenly spread between the data's min and max, and works out the y position for each — same math as getBalancePoints, so a grid line always lines up with the balance it represents.
+// Picks `steps + 1` values evenly spread between the data's min and max, and works out the y position for each. same math as getBalancePoints, so a grid line always lines up with the balance it represents.
 // if balances range from 100€ to 400€ and steps=3, this returns 4 lines at 100€, 200€, 300€, 400€.
 const getBalanceGridLines = (data, chartHeight, padding, steps = 3) => {
     if (data.length === 0) return [];
@@ -197,3 +201,52 @@ const buildBalanceSummary = (summary, period) => {
         ${changeHTML}
     `;
 };
+
+const buildHoverPoints = (points, data) => {
+    if (points.length === 0) return '';
+    return points.map((point, i) => {
+        const prevX = i === 0 ? 0 : (points[i - 1].x + point.x) / 2;
+        const nextX = i === points.length - 1 ? CHART_WIDTH : (point.x + points[i + 1].x) / 2;
+        const width = nextX - prevX;
+        const date = data[i].date;
+        const balance = data[i].balance;
+        return `
+            <rect
+                x="${prevX}"
+                y="0"
+                width="${width}"
+                height="${CHART_HEIGHT}"
+                fill="transparent"
+                data-date="${date}"
+                data-balance="${balance}"
+                data-cx="${point.x}"
+                data-cy="${point.y}"
+                class="balance-hover-point"
+            />
+        `;
+    }).join('');
+};
+
+const attachBalanceHoverEvents = () => {
+    const hoverPoints = document.querySelectorAll('.balance-hover-point');
+    hoverPoints.forEach(point => {
+        point.addEventListener('mouseenter', (e) => {
+            const date = e.target.getAttribute('data-date');
+            const balance = e.target.getAttribute('data-balance');
+            const cx = e.target.getAttribute('data-cx');
+            const cy = e.target.getAttribute('data-cy');
+            const leftPercent = (cx / CHART_WIDTH) * 100;
+            const topPercent = (cy / CHART_HEIGHT) * 100;
+            balanceTooltip.innerHTML = `
+                <div class="balance-tooltip-date">${formatDateDMY(date)}</div>
+                <div class="balance-tooltip-balance">${parseFloat(balance).toFixed(2)}€</div>
+            `;
+            balanceTooltip.classList.remove('hidden');
+            balanceTooltip.style.left = `${leftPercent}%`;
+            balanceTooltip.style.top = `${topPercent}%`;
+        });
+        point.addEventListener('mouseleave', () => {
+            balanceTooltip.classList.add('hidden');
+        });
+    });
+}

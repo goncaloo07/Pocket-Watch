@@ -35,7 +35,9 @@ let addTransactionBtn,
     balanceChartDiv,
     balanceSummaryDiv,
     balancePeriodInputs,
-    balancePoints;
+    balancePoints,
+    balanceTooltip,
+    balanceHoverPoints;
 
 const CATEGORIES_SPENDING = [
     "Other",
