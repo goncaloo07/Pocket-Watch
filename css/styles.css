@@ -1811,6 +1811,11 @@ input.input-invalid {
         "change  min";
     gap: 0.75rem;
     padding: 0.25rem 0;
+    transition: opacity 0.15s ease;
+}
+
+.balance-summary-div.fade-out {
+    opacity: 0;
 }
 
 .balance-summary-current { grid-area: current; }
@@ -1891,6 +1896,11 @@ input.input-invalid {
     white-space: nowrap;
 }
 
+#balance-points circle.selected {
+    r: 4;
+    fill: var(--positive-color);
+}
+
 @media (max-width: 480px) {
     .balance-summary-div {
         grid-template-columns: 1fr;
@@ -1904,4 +1914,56 @@ input.input-invalid {
     .balance-summary-current .balance-summary-value {
         font-size: 1.7rem;
     }
+}
+
+/* Day transaction details (shown when a chart point is clicked) */
+
+.balance-day-details {
+    grid-column: 1 / -1; /* span both columns of the balance-summary-div grid */
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.balance-day-details-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.balance-day-details-header .balance-summary-date {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--textcolor);
+}
+
+.balance-day-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--navcolor);
+    color: var(--textcolor);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.balance-day-back-btn:hover {
+    background-color: var(--secondary-color);
+    color: var(--bgcolor);
+}
+
+.balance-day-back-btn:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+.balance-day-details .transactions-list {
+    max-height: 220px;
+    overflow-y: auto;
 }

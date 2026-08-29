@@ -20,6 +20,7 @@ const initBalancePage = () => {
     balanceHoverPoints = document.getElementById('balance-hover-points');
 
     balancePeriodInputs.forEach((period) => period.addEventListener("change", renderBalanceHistory));
+    balanceChartDiv.addEventListener('click', resetBalanceSummary);
 
     renderBalanceHistory()
 };
@@ -38,6 +39,7 @@ const renderBalanceHistory = () => {
     balanceSummaryDiv.innerHTML = buildBalanceSummary(summary, selectedPeriod);
     balanceHoverPoints.innerHTML = buildHoverPoints(points, balanceHistory);
     attachBalanceHoverEvents();
+    attachBalancePointClickEvents();
 }
 
 // Picks `steps + 1` values evenly spread between the data's min and max, and works out the y position for each. same math as getBalancePoints, so a grid line always lines up with the balance it represents.
@@ -87,7 +89,7 @@ const getBalancePoints = (data, chartWidth, chartHeight, padding) => {
         const x = data.length === 1 ? chartWidth / 2 : (i / (data.length - 1)) * chartWidth;
         const fraction = max === min ? 0.5 : (parseFloat(point.balance) - min) / (max - min);
         const y = chartHeight - (fraction * (chartHeight - 2 * padding) + padding);
-        return { x, y, hasTransactions: point.hasTransactions };
+        return { x, y, hasTransactions: point.hasTransactions, date: point.date };
     });
 };
 
@@ -98,7 +100,7 @@ const buildLinePath = (points) => {
 
 const buildPointCircles = (points) => {
     return points.filter(point => point.hasTransactions === true).map(point => 
-        `<circle cx="${point.x}" cy="${point.y}" r="2" fill="var(--accent-color)"/>`
+        `<circle cx="${point.x}" cy="${point.y}" r="2" fill="var(--accent-color)" data-date="${point.date}"/>`
     ).join('');
 };
 
@@ -249,4 +251,85 @@ const attachBalanceHoverEvents = () => {
             balanceTooltip.classList.add('hidden');
         });
     });
-}
+};
+
+const getDayTransactionDetails = (date, balanceHistory) => {
+    // find this day's entry in the balance history
+    const dayEntry = balanceHistory.find(day => day.date === date);
+    // get only the transactions that happened on this specific day
+    const dayTransactions = getTransactions().filter(t => t.transactionDate === date);
+    // sum up how much this day's transactions changed the balance
+    const dayChange = dayTransactions.reduce((total, transaction) => total + parseFloat(transaction.transactionAmount), 0);
+    const balanceAfter = parseFloat(dayEntry.balance);
+    const balanceBefore = balanceAfter - dayChange;
+    return { date, balanceBefore, balanceAfter, transactions: dayTransactions };
+};
+
+const buildDayTransactionDetails = (details) => {
+    const { date, balanceBefore, balanceAfter, transactions } = details;
+    // reuse the same row markup used elsewhere for the "before/after" numbers
+    const balanceRowsHTML = `
+        <div class="balance-summary-row">
+            <span class="balance-summary-label">Balance Before</span>
+            <span class="balance-summary-value ${balanceBefore < 0 ? 'negative' : ''}">${balanceBefore.toFixed(2)}€</span>
+        </div>
+        <div class="balance-summary-row">
+            <span class="balance-summary-label">Balance After</span>
+            <span class="balance-summary-value ${balanceAfter < 0 ? 'negative' : ''}">${balanceAfter.toFixed(2)}€</span>
+        </div>
+    `;
+    // one row per transaction that happened this day, reusing buildTransactionRow from render.js
+    const transactionsHTML = transactions.map(buildTransactionRow).join('');
+    return `
+        <div class="balance-day-details">
+            <div class="balance-day-details-header">
+                <span class="balance-summary-date">${formatDateDMY(date)}</span>
+                <button id="balance-day-details-back" class="balance-day-back-btn">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+                </button>
+            </div>
+            ${balanceRowsHTML}
+            <ul class="transactions-list">${transactionsHTML}</ul>
+        </div>
+    `;
+};
+
+const attachBalancePointClickEvents = () => {
+    const circles = balancePoints.querySelectorAll('circle');
+    circles.forEach(circle => {
+        circle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            circles.forEach(c => c.classList.remove('selected')); // clear previous highlight
+            e.target.classList.add('selected'); // highlight the clicked point
+            const date = e.target.getAttribute('data-date');
+            const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
+            const balanceHistory = getBalanceHistory(selectedPeriod);
+            const details = getDayTransactionDetails(date, balanceHistory);
+            updateBalanceSummary(buildDayTransactionDetails(details), () => {
+                document.getElementById('balance-day-details-back').addEventListener('click', (backClick) => {
+                    backClick.stopPropagation(); // don't also trigger the balanceChartDiv reset listener
+                    resetBalanceSummary();
+                });
+            });
+        });
+    });
+};
+
+// Fades balanceSummaryDiv out, swaps its content, fades it back in.
+// onUpdated runs right after the new HTML is in the DOM (useful for attaching listeners to elements inside it).
+const updateBalanceSummary = (html, onUpdated) => {
+    balanceSummaryDiv.classList.add('fade-out');
+    setTimeout(() => {
+        balanceSummaryDiv.innerHTML = html;
+        balanceSummaryDiv.classList.remove('fade-out');
+        if (onUpdated) onUpdated();
+    }, 150); // must match the CSS transition duration on .balance-summary-div
+};
+
+const resetBalanceSummary = () => {
+    const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
+    const balanceHistory = getBalanceHistory(selectedPeriod);
+    const summary = getBalanceSummary(balanceHistory, selectedPeriod);
+    balancePoints.querySelectorAll('circle').forEach(c => c.classList.remove('selected')); // clear point highlight
+    updateBalanceSummary(buildBalanceSummary(summary, selectedPeriod));
+};
