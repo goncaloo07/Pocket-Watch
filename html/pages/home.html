@@ -1,21 +1,23 @@
 <div id="priority-content" class="priority-content">
             <div id="balance-column" class="balance-column">
-                <div id="balance-div" class="container balance-div">
-                    <svg class="balance-dial" style="bottom: -45px; left: -25px;" width="150" height="150" viewBox="0 0 150 150">
-                        <circle cx="75" cy="75" r="66" fill="none" stroke="var(--border-color)" stroke-width="2"/>
-                        <circle cx="75" cy="75" r="46" fill="none" stroke="var(--border-color)" stroke-width="1.5"/>
-                        <g class="dial-crack">
-                            <path class="crack-main" d="M 108 18 L 101 30 L 106 36 L 93 50 L 98 56 L 87 70" fill="none" stroke="var(--negative-color)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path class="crack-branch" d="M 106 36 L 117 40 L 124 36" fill="none" stroke="var(--negative-color)" stroke-width="0.6" stroke-linecap="round"/>
-                            <path class="crack-branch" d="M 98 56 L 89 54 L 83 60" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
-                            <path class="crack-branch" d="M 101 30 L 93 22" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
-                        </g>
-                        <line class="dial-needle dial-needle-v" x1="75" y1="75" x2="75" y2="34" stroke="var(--accent-color)" stroke-width="3"/>
-                        <line class="dial-needle dial-needle-h" x1="75" y1="75" x2="103" y2="75" stroke="var(--accent-color)" stroke-width="3"/>
-                    </svg>
-                    <h1 id="balance-label" class="container-title">Current Balance</h1>
-                    <h1 id="balance-value" class="balance-value"></h1>
-                </div>
+                <a href="/balance" class="balance-link">
+                    <div id="balance-div" class="container balance-div">
+                        <svg class="balance-dial" style="bottom: -45px; left: -25px;" width="150" height="150" viewBox="0 0 150 150">
+                            <circle cx="75" cy="75" r="66" fill="none" stroke="var(--border-color)" stroke-width="2"/>
+                            <circle cx="75" cy="75" r="46" fill="none" stroke="var(--border-color)" stroke-width="1.5"/>
+                            <g class="dial-crack">
+                                <path class="crack-main" d="M 108 18 L 101 30 L 106 36 L 93 50 L 98 56 L 87 70" fill="none" stroke="var(--negative-color)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path class="crack-branch" d="M 106 36 L 117 40 L 124 36" fill="none" stroke="var(--negative-color)" stroke-width="0.6" stroke-linecap="round"/>
+                                <path class="crack-branch" d="M 98 56 L 89 54 L 83 60" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
+                                <path class="crack-branch" d="M 101 30 L 93 22" fill="none" stroke="var(--negative-color)" stroke-width="0.5" stroke-linecap="round"/>
+                            </g>
+                            <line class="dial-needle dial-needle-v" x1="75" y1="75" x2="75" y2="34" stroke="var(--accent-color)" stroke-width="3"/>
+                            <line class="dial-needle dial-needle-h" x1="75" y1="75" x2="103" y2="75" stroke="var(--accent-color)" stroke-width="3"/>
+                        </svg>
+                        <h1 id="balance-label" class="container-title">Current Balance</h1>
+                        <h1 id="balance-value" class="balance-value"></h1>
+                    </div>
+                </a>
 
                 <div id="sr-div" class="sr-div">
                     <div id="spending-div" class="container sr-item">
