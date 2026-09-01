@@ -1,3 +1,4 @@
+// icon for each category, shown next to transactions
 const CATEGORY_ICONS = new Map([
     ["Other", "bi-three-dots"],
     ["Food", "bi-cup-straw"],
@@ -16,36 +17,41 @@ const CATEGORY_ICONS = new Map([
     ["Refund", "bi-arrow-counterclockwise"],
     ["Freelance", "bi-laptop"],
     ["__general__", "bi-wallet2"]
-]) //icon for each category
+])
 
-const formatDateISO = (date) => { // formats the date
+// Date -> "YYYY-MM-DD"
+const formatDateISO = (date) => {
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
 };
 
-const parseDateISO = (dateStr) => { // parses a "YYYY-MM-DD" string as a local date, avoiding the UTC-midnight shift of new Date(str)
+// "YYYY-MM-DD" -> Date, as local time (avoids the UTC-midnight shift of new Date(str))
+const parseDateISO = (dateStr) => {
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day);
 };
 
-const getTodayISO = () => formatDateISO(new Date()); // gets todays date, formatted
+// today's date, formatted
+const getTodayISO = () => formatDateISO(new Date());
 
-const formatDateDMY = (dateStr) => { // "2026-08-23" -> "23-08-2026"
+// "2026-08-23" -> "23-08-2026"
+const formatDateDMY = (dateStr) => {
     const [year, month, day] = dateStr.split('-');
     return `${day}-${month}-${year}`;
 };
 
+// validates and saves a new transaction from the form, then re-renders the whole page
 const addTransaction = (e) => {
     e.preventDefault();
 
-    const isSpending = document.getElementById('type-spending').checked; //checks if its spending or receiving
-    const rawAmount = parseFloat(document.getElementById('transaction-amount').value) || 0; //gets the amount of the transaction
+    const isSpending = document.getElementById('type-spending').checked; // spending or receiving
+    const rawAmount = parseFloat(document.getElementById('transaction-amount').value) || 0;
     const amountInput = document.getElementById('transaction-amount');
     const amountError = document.getElementById('amount-error');
 
-    if (rawAmount === 0) { // doesn't let the amount of a transaction be 0
+    if (rawAmount === 0) { // amount can't be 0
         amountInput.closest('.amount-input-wrap').classList.add('input-invalid');
         amountError.classList.remove('hidden');
         amountInput.focus();
@@ -62,15 +68,16 @@ const addTransaction = (e) => {
         transactionCat: document.getElementById(
             isSpending ? 'transaction-category-spending' : 'transaction-category-receiving'
         ).value,
-        transactionAmount: (isSpending ? -rawAmount : rawAmount).toFixed(2),
+        transactionAmount: (isSpending ? -rawAmount : rawAmount).toFixed(2), // spending is stored as negative
     };
 
     const transactions = getTransactions();
-    transactions.unshift(transaction);
-    saveTransactions(transactions); //adds the transaction to the localStorage
+    transactions.unshift(transaction); // newest first
+    saveTransactions(transactions);
 
     transactionForm.reset();
     toggleTransactionModal();
+    // refresh every part of the UI that depends on transactions
     renderTransactions();
     renderSpendingReceiving();
     renderBalance();
@@ -78,7 +85,8 @@ const addTransaction = (e) => {
     renderBudgets();
 };
 
-const getTransactions = () => { //if there is a transactions in localStorage, it will return it, if not it will create it
+// reads transactions from localStorage, creating an empty list if none exist yet
+const getTransactions = () => {
     try {
         return JSON.parse(localStorage.getItem('transactions')) ?? [];
     } catch {
@@ -87,6 +95,7 @@ const getTransactions = () => { //if there is a transactions in localStorage, it
     }
 };
 
+// saves transactions to localStorage
 const saveTransactions = (transactions) => {
-    localStorage.setItem('transactions', JSON.stringify(transactions)); //sends the transactions to localStorage
+    localStorage.setItem('transactions', JSON.stringify(transactions));
 };

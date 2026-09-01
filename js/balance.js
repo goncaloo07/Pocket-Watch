@@ -1,16 +1,18 @@
+// chart size, in SVG viewBox units
 const CHART_WIDTH = 600;
 const CHART_HEIGHT = 200;
-const CHART_PADDING = 20;
+const CHART_PADDING = 20; // keeps line off top/bottom edge
 
 const calcBalance = () => {
     const transactions = getTransactions()
     let balance = 0
     transactions.forEach(transaction => {
-        balance += parseFloat(transaction.transactionAmount) // gets the total balance, by summing all values together
+        balance += parseFloat(transaction.transactionAmount) // sum all transactions
     })
     return balance
 };
 
+// runs once when the balance page loads
 const initBalancePage = () => {
     balanceChartDiv = document.getElementById('balance-chart-div');
     balanceSummaryDiv = document.getElementById('balance-summary-div');
@@ -19,31 +21,33 @@ const initBalancePage = () => {
     balanceTooltip = document.getElementById('balance-tooltip');
     balanceHoverPoints = document.getElementById('balance-hover-points');
 
-    balancePeriodInputs.forEach((period) => period.addEventListener("change", renderBalanceHistory));
-    balanceChartDiv.addEventListener('click', resetBalanceSummary);
+    balancePeriodInputs.forEach((period) => period.addEventListener("change", renderBalanceHistory)); // redraw on period change
 
     renderBalanceHistory()
 };
 
+// draws the whole balance page: line, grid, summary, hover points
 const renderBalanceHistory = () => {
     const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
     const balanceHistory = getBalanceHistory(selectedPeriod);
+
     const points = getBalancePoints(balanceHistory, CHART_WIDTH, CHART_HEIGHT, CHART_PADDING);
     const d = buildLinePath(points);
     document.getElementById('balance-line').setAttribute('d', d)
     balancePoints.innerHTML = buildPointCircles(points);
+
     const gridLines = getBalanceGridLines(balanceHistory, CHART_HEIGHT, CHART_PADDING);
     document.getElementById('balance-grid').innerHTML = buildGridLines(gridLines, CHART_WIDTH);
     document.getElementById('balance-grid-labels').innerHTML = buildGridLabels(gridLines, CHART_HEIGHT);
+
     const summary = getBalanceSummary(balanceHistory, selectedPeriod);
     balanceSummaryDiv.innerHTML = buildBalanceSummary(summary, selectedPeriod);
+
     balanceHoverPoints.innerHTML = buildHoverPoints(points, balanceHistory);
     attachBalanceHoverEvents();
-    attachBalancePointClickEvents();
 }
 
-// Picks `steps + 1` values evenly spread between the data's min and max, and works out the y position for each. same math as getBalancePoints, so a grid line always lines up with the balance it represents.
-// if balances range from 100€ to 400€ and steps=3, this returns 4 lines at 100€, 200€, 300€, 400€.
+// picks steps+1 evenly spread values between min/max balance, with their y position
 const getBalanceGridLines = (data, chartHeight, padding, steps = 3) => {
     if (data.length === 0) return [];
 
@@ -51,23 +55,24 @@ const getBalanceGridLines = (data, chartHeight, padding, steps = 3) => {
     const min = Math.min(...balances);
     const max = Math.max(...balances);
 
-    // flat balance (no change at all) — just show that one value in the middle
-    if (max === min) return [{ value: min, y: chartHeight / 2 }];
+    if (max === min) return [{ value: min, y: chartHeight / 2 }]; // flat balance, one line
 
     return Array.from({ length: steps + 1 }, (_, i) => {
-        const fraction = i / steps; // 0 = min (bottom), 1 = max (top)
+        const fraction = i / steps;
         const value = min + (max - min) * fraction;
         const y = chartHeight - (fraction * (chartHeight - 2 * padding) + padding);
         return { value, y };
     });
 };
 
+// grid line positions -> SVG <line> elements
 const buildGridLines = (gridLines, plotWidth) => {
     return gridLines.map(line =>
         `<line x1="0" y1="${line.y}" x2="${plotWidth}" y2="${line.y}" class="balance-grid-line"/>`
     ).join('');
 };
 
+// grid line positions -> € labels next to the chart
 const buildGridLabels = (gridLines, chartHeight) => {
     return gridLines.map(line => {
         const topPercent = (line.y / chartHeight) * 100;
@@ -75,35 +80,36 @@ const buildGridLabels = (gridLines, chartHeight) => {
     }).join('');
 };
 
+// converts each day's balance into x/y chart coordinates
 const getBalancePoints = (data, chartWidth, chartHeight, padding) => {
-    // if there isn't any data, return an empty array to avoid errors
     if (data.length === 0) return [];
 
-    // get the min and max of the data
     const balances = data.map(d => parseFloat(d.balance));
     const min = Math.min(...balances);
     const max = Math.max(...balances);
 
-    // get x and y coordinates for each point
     return data.map((point, i) => {
         const x = data.length === 1 ? chartWidth / 2 : (i / (data.length - 1)) * chartWidth;
         const fraction = max === min ? 0.5 : (parseFloat(point.balance) - min) / (max - min);
         const y = chartHeight - (fraction * (chartHeight - 2 * padding) + padding);
-        return { x, y, hasTransactions: point.hasTransactions, date: point.date };
+        return { x, y, hasTransactions: point.hasTransactions };
     });
 };
 
+// points -> SVG path "d" string
 const buildLinePath = (points) => {
     if (points.length === 0) return '';
     return points.map((point, i) => `${i === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
 }
 
+// only draws a dot on days with a transaction
 const buildPointCircles = (points) => {
     return points.filter(point => point.hasTransactions === true).map(point => 
-        `<circle cx="${point.x}" cy="${point.y}" r="3.5" fill="var(--accent-color)" data-date="${point.date}"/>`
+        `<circle cx="${point.x}" cy="${point.y}" r="2" fill="var(--accent-color)"/>`
     ).join('');
 };
 
+// builds one balance entry per day for the selected period
 const getBalanceHistory = (time) => {
     const transactions = getTransactions();
     const end = getTodayISO();
@@ -111,20 +117,21 @@ const getBalanceHistory = (time) => {
     let balance = 0;
     let start;
     let result = [];
+
     switch (time) {
         case "7d": 
             start = new Date(today);
-            start.setDate(today.getDate() - 6); // 7 days including today
+            start.setDate(today.getDate() - 6);
             break;
         case "30d":
             start = new Date(today);
-            start.setDate(today.getDate() - 29); // 30 days including today
+            start.setDate(today.getDate() - 29);
             break;
         case "1y":
             start = new Date(today);
-            start.setFullYear(today.getFullYear() - 1); // 1 year including today
+            start.setFullYear(today.getFullYear() - 1);
             break;
-        default:
+        default: // "all": start the day before the oldest transaction
             if (transactions.length === 0) {
                 start = today;
             } else {
@@ -132,12 +139,14 @@ const getBalanceHistory = (time) => {
                     t.transactionDate < oldest ? t.transactionDate : oldest
                 , transactions[0].transactionDate);
                 start = parseDateISO(oldestDate);
-                start.setDate(start.getDate() - 1); // start from the day before the oldest transaction
+                start.setDate(start.getDate() - 1);
             }
             break;
     }
+
     let startISO = formatDateISO(start);
-    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + parseFloat(transaction.transactionAmount) : total, 0);
+    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + parseFloat(transaction.transactionAmount) : total, 0); // balance before the chart's start day
+
     do {
         const dailyTransactions = transactions.filter(t => t.transactionDate === startISO);
         const hasTransactions = dailyTransactions.length > 0;
@@ -151,8 +160,10 @@ const getBalanceHistory = (time) => {
     return result;
 };
 
+// current/max/min/change numbers for the summary panel
 const getBalanceSummary = (balanceHistory, period) => {
     const current = parseFloat(balanceHistory[balanceHistory.length - 1].balance);
+
     const maxDay = balanceHistory.reduce((max, day) => {
         if (parseFloat(day.balance) > parseFloat(max.balance)) {
             max.balance = parseFloat(day.balance);
@@ -160,6 +171,7 @@ const getBalanceSummary = (balanceHistory, period) => {
         }
         return max;
     }, { balance: '-Infinity', day: null });
+
     const minDay = balanceHistory.reduce((min, day) => {
         if (parseFloat(day.balance) < parseFloat(min.balance)) {
             min.balance = parseFloat(day.balance);
@@ -167,10 +179,12 @@ const getBalanceSummary = (balanceHistory, period) => {
         }
         return min;
     }, { balance: 'Infinity', day: null });
-    const change = period === "all" ? null : current - parseFloat(balanceHistory[0].balance);
+
+    const change = period === "all" ? null : current - parseFloat(balanceHistory[0].balance); // no fixed start for "all"
     return { current, maxDay, minDay, change };
 };
 
+// summary numbers -> summary panel HTML
 const buildBalanceSummary = (summary, period) => {
     const { current, maxDay, minDay, change } = summary;
 
@@ -204,6 +218,7 @@ const buildBalanceSummary = (summary, period) => {
     `;
 };
 
+// invisible full-height rects, one per day, for easier hover/click targeting
 const buildHoverPoints = (points, data) => {
     if (points.length === 0) return '';
     return points.map((point, i) => {
@@ -229,6 +244,7 @@ const buildHoverPoints = (points, data) => {
     }).join('');
 };
 
+// shows/hides the tooltip on hover, re-run every redraw since rects are rebuilt
 const attachBalanceHoverEvents = () => {
     const hoverPoints = document.querySelectorAll('.balance-hover-point');
     hoverPoints.forEach(point => {
@@ -237,8 +253,10 @@ const attachBalanceHoverEvents = () => {
             const balance = e.target.getAttribute('data-balance');
             const cx = e.target.getAttribute('data-cx');
             const cy = e.target.getAttribute('data-cy');
+
             const leftPercent = (cx / CHART_WIDTH) * 100;
             const topPercent = (cy / CHART_HEIGHT) * 100;
+
             balanceTooltip.innerHTML = `
                 <div class="balance-tooltip-date">${formatDateDMY(date)}</div>
                 <div class="balance-tooltip-balance">${parseFloat(balance).toFixed(2)}€</div>
@@ -251,85 +269,4 @@ const attachBalanceHoverEvents = () => {
             balanceTooltip.classList.add('hidden');
         });
     });
-};
-
-const getDayTransactionDetails = (date, balanceHistory) => {
-    // find this day's entry in the balance history
-    const dayEntry = balanceHistory.find(day => day.date === date);
-    // get only the transactions that happened on this specific day
-    const dayTransactions = getTransactions().filter(t => t.transactionDate === date);
-    // sum up how much this day's transactions changed the balance
-    const dayChange = dayTransactions.reduce((total, transaction) => total + parseFloat(transaction.transactionAmount), 0);
-    const balanceAfter = parseFloat(dayEntry.balance);
-    const balanceBefore = balanceAfter - dayChange;
-    return { date, balanceBefore, balanceAfter, transactions: dayTransactions };
-};
-
-const buildDayTransactionDetails = (details) => {
-    const { date, balanceBefore, balanceAfter, transactions } = details;
-    // reuse the same row markup used elsewhere for the "before/after" numbers
-    const balanceRowsHTML = `
-        <div class="balance-summary-row">
-            <span class="balance-summary-label">Balance Before</span>
-            <span class="balance-summary-value ${balanceBefore < 0 ? 'negative' : ''}">${balanceBefore.toFixed(2)}€</span>
-        </div>
-        <div class="balance-summary-row">
-            <span class="balance-summary-label">Balance After</span>
-            <span class="balance-summary-value ${balanceAfter < 0 ? 'negative' : ''}">${balanceAfter.toFixed(2)}€</span>
-        </div>
-    `;
-    // one row per transaction that happened this day, reusing buildTransactionRow from render.js
-    const transactionsHTML = transactions.map(buildTransactionRow).join('');
-    return `
-        <div class="balance-day-details">
-            <div class="balance-day-details-header">
-                <span class="balance-summary-date">${formatDateDMY(date)}</span>
-                <button id="balance-day-details-back" class="balance-day-back-btn">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
-                </button>
-            </div>
-            ${balanceRowsHTML}
-            <ul class="transactions-list">${transactionsHTML}</ul>
-        </div>
-    `;
-};
-
-const attachBalancePointClickEvents = () => {
-    const circles = balancePoints.querySelectorAll('circle');
-    circles.forEach(circle => {
-        circle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            circles.forEach(c => c.classList.remove('selected')); // clear previous highlight
-            e.target.classList.add('selected'); // highlight the clicked point
-            const date = e.target.getAttribute('data-date');
-            const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
-            const balanceHistory = getBalanceHistory(selectedPeriod);
-            const details = getDayTransactionDetails(date, balanceHistory);
-            updateBalanceSummary(buildDayTransactionDetails(details), () => {
-                document.getElementById('balance-day-details-back').addEventListener('click', (backClick) => {
-                    backClick.stopPropagation(); // don't also trigger the balanceChartDiv reset listener
-                    resetBalanceSummary();
-                });
-            });
-        });
-    });
-};
-
-// Fades balanceSummaryDiv out, swaps its content, fades it back in.
-// onUpdated runs right after the new HTML is in the DOM (useful for attaching listeners to elements inside it).
-const updateBalanceSummary = (html, onUpdated) => {
-    balanceSummaryDiv.classList.add('fade-out');
-    setTimeout(() => {
-        balanceSummaryDiv.innerHTML = html;
-        balanceSummaryDiv.classList.remove('fade-out');
-        if (onUpdated) onUpdated();
-    }, 150); // must match the CSS transition duration on .balance-summary-div
-};
-
-const resetBalanceSummary = () => {
-    const selectedPeriod = document.querySelector('input[name="balance-period"]:checked').value;
-    const balanceHistory = getBalanceHistory(selectedPeriod);
-    const summary = getBalanceSummary(balanceHistory, selectedPeriod);
-    balancePoints.querySelectorAll('circle').forEach(c => c.classList.remove('selected')); // clear point highlight
-    updateBalanceSummary(buildBalanceSummary(summary, selectedPeriod));
-};
+}

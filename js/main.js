@@ -1,4 +1,5 @@
-// DOM references 
+// DOM references, filled in later inside initHomePage() once the home page's
+// HTML actually exists in the page (can't grab elements that aren't loaded yet)
 let addTransactionBtn,
     transactionModal,
     closeTransactionModalBtn,
@@ -39,6 +40,8 @@ let addTransactionBtn,
     balanceTooltip,
     balanceHoverPoints;
 
+// list of categories shown in the "Category" dropdown when adding a spending transaction
+// (or a budget, since budgets are always tied to a spending category)
 const CATEGORIES_SPENDING = [
     "Other",
     "Food",
@@ -52,6 +55,7 @@ const CATEGORIES_SPENDING = [
     "Education"
 ];
 
+// same idea but for receiving (income) transactions
 const CATEGORIES_RECEIVING = [
     "Other",
     "Salary",
@@ -62,7 +66,9 @@ const CATEGORIES_RECEIVING = [
     "Freelance"
 ];
 
-const toggleTransactionModal = () => { //opens and closes the modal and gets the default date for the date input
+// opens/closes the "Add Transaction" modal. When opening, resets the form to
+// today's date and rebuilds the category dropdowns from scratch
+const toggleTransactionModal = () => {
     const isOpen = transactionModal.classList.toggle('open');
     if (isOpen) { // if its open, the date will be defaulted to the real date and the categories will be built from the available categories
         transactionModalCatSpending.innerHTML = "";
@@ -79,13 +85,16 @@ const toggleTransactionModal = () => { //opens and closes the modal and gets the
             `;
         })
     } else {
+        // closing: reset the form and clear any leftover "amount can't be 0" error
         transactionForm.reset();
         document.getElementById('transaction-amount').closest('.amount-input-wrap').classList.remove('input-invalid');
         document.getElementById('amount-error').classList.add('hidden');
     }
 };
 
-const toggleBudgetModal = () => { // opens and closes the modal
+// opens/closes the "Add Budget" modal. When opening, only shows categories that
+// don't already have a budget (e.g. if "Food" already has a budget, it won't show up again)
+const toggleBudgetModal = () => {
     const isOpen = budgetModal.classList.toggle("open");
     if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
         budgetCategory.innerHTML = "";
@@ -100,13 +109,17 @@ const toggleBudgetModal = () => { // opens and closes the modal
                 `;
             }
         }
+        // reset the "renews" section back to its default: recurring, monthly
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
+
+        // the "until date" option can't be today or earlier, so default it to tomorrow
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         budgetEndDateInput.value = formatDateISO(tomorrow);
         budgetEndDateInput.min = formatDateISO(tomorrow);
     } else {
+        // closing: reset the form and clear any leftover validation errors
         budgetForm.reset();
         budgetLimitValue.textContent = `${budgetLimit.value}€`;
         budgetLimitInput.value = budgetLimit.value;
@@ -117,9 +130,12 @@ const toggleBudgetModal = () => { // opens and closes the modal
     }
 }
 
+// runs once when the home page loads. Grabs all the DOM refs (now that the
+// home page HTML actually exists), wires up every button/input, and does the first render
 const initHomePage = () => {
     initChart();
     
+    // grab every element we'll need to read from or update later
     addTransactionBtn = document.getElementById('add-transaction-btn');
     transactionModal = document.getElementById('transaction-modal-overlay');
     closeTransactionModalBtn = document.getElementById('close-modal-btn');
@@ -154,29 +170,34 @@ const initHomePage = () => {
     budgetEndDateInput = document.getElementById("budget-end-date");
     budgetEndDateError = document.getElementById("budget-end-date-error");
 
+    // wire up the transaction modal's open/close/save buttons
     addTransactionBtn.addEventListener('click', toggleTransactionModal);
     closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     transactionForm.addEventListener('submit', addTransaction);
-    chartMode.forEach((mode => mode.addEventListener("change", renderChart)));
+    chartMode.forEach((mode => mode.addEventListener("change", renderChart))); // switching "By Category" / "Spending vs Receiving" redraws the chart
     addBudgetBtn.addEventListener("click", toggleBudgetModal);
     closeBudgetModalBtn.addEventListener("click", toggleBudgetModal);
     cancelBudgetModalBtn.addEventListener("click", toggleBudgetModal);
     budgetForm.addEventListener('submit', addBudget);
 
+    // clicking the "100€" text swaps it for an editable number input, so the
+    // user can type an exact value instead of only dragging the slider
     budgetLimitValue.addEventListener("click", () => {
         budgetLimitValue.classList.add("hidden");
         budgetLimitInput.classList.remove("hidden");
         budgetLimitInput.focus();
     });
 
+    // when the user finishes typing in that number input (clicks away), validate
+    // it, sync it back to the slider, and swap back to the plain text display
     budgetLimitInput.addEventListener('blur', () => {
         let value = parseFloat(budgetLimitInput.value);
         if (isNaN(value) || value < 0) {
             value = 0;
         }
         const sliderMax = parseFloat(budgetLimit.max);
-        const sliderValue = Math.min(value, sliderMax);
+        const sliderValue = Math.min(value, sliderMax); // slider can't go higher than its own max, e.g. typing 5000€ still caps the slider at 1000€
         value = value.toFixed(2);
         budgetLimitValue.textContent = `${value}€`;
         budgetLimit.value = sliderValue;
@@ -185,12 +206,15 @@ const initHomePage = () => {
         budgetLimitValue.classList.remove("hidden");
     });
 
+    // don't let the number input go negative while typing
     budgetLimitInput.addEventListener('input', () => {
         if (budgetLimitInput.value < 0) {
             budgetLimitInput.value = 0;
         }
     });
 
+    // dragging the slider keeps the number input and its text label in sync,
+    // and clears the "must be greater than 0€" error as soon as it's fixed
     budgetLimit.addEventListener("input", (e) => {
         if (parseFloat(e.target.value) > 0) {
             budgetLimitError.classList.add('hidden');
@@ -200,11 +224,13 @@ const initHomePage = () => {
         budgetLimitValue.textContent = e.target.value + "€";
     });
 
+    // clears the "end date must be after today" error as soon as the user picks a new date
     budgetEndDateInput.addEventListener('input', () => {
         budgetEndDateError.classList.add('hidden');
         budgetEndDateInput.classList.remove('input-invalid');
     });
 
+    // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
     document.getElementById('transaction-amount').addEventListener('input', (e) => {
         if (parseFloat(e.target.value) > 0) {
             document.getElementById('amount-error').classList.add('hidden');
@@ -212,6 +238,7 @@ const initHomePage = () => {
         }
     });
 
+    // first render of the home page, using whatever is already saved in localStorage
     renderTransactions();
     renderSpendingReceiving();
     renderBalance();
@@ -219,10 +246,14 @@ const initHomePage = () => {
     renderBudgets();
 };
 
-// Initializing functions
+// these run once, the very first time each piece of the page finishes loading
+// e.g. as soon as the header's HTML is injected into the DOM, "header:loaded" fires and initHeader() runs
 document.addEventListener('header:loaded', initHeader);
 document.addEventListener('menu:loaded', initMenu);
 document.addEventListener("footer:loaded", initFooter);
+
+// fires every time the router swaps in a new page (including on first load),
+// so this decides which page's init function to run based on the current path
 document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
