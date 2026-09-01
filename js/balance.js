@@ -100,7 +100,7 @@ const buildLinePath = (points) => {
 
 const buildPointCircles = (points) => {
     return points.filter(point => point.hasTransactions === true).map(point => 
-        `<circle cx="${point.x}" cy="${point.y}" r="2" fill="var(--accent-color)" data-date="${point.date}"/>`
+        `<circle cx="${point.x}" cy="${point.y}" r="3.5" fill="var(--accent-color)" data-date="${point.date}"/>`
     ).join('');
 };
 

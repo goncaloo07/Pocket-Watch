@@ -1755,7 +1755,7 @@ input.input-invalid {
 }
 
 #balance-points circle:hover {
-    r: 5;
+    r: 6.5;
     fill: var(--positive-color);
     cursor: pointer;
 }
