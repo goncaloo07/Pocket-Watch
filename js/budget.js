@@ -2,15 +2,19 @@ const GENERAL_BUDGET_CAT = "__general__";
 
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
     try {
-        const budgets = JSON.parse(localStorage.getItem('budgets')) ?? [];
-        const activeBudgets = budgets.filter(budget => !isBudgetExpired(budget)); // it also removes the expired budgets from the localStorage, so it only returns the active ones
-        if (activeBudgets.length !== budgets.length) {
-            saveBudgets(activeBudgets);
-        }
-        return activeBudgets;
+        const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(budget => !isBudgetExpired(budget));
+        return budgets;
     } catch {
-        localStorage.setItem('budgets', '[]');
+        safeSetItem('budgets', '[]');
         return [];
+    }
+}
+
+const removeExpiredBudgets = () => { // removes the expired budgets from localStorage 
+    const budgets = JSON.parse(localStorage.getItem('budgets')) ?? [] // gets the budgets from localStorage
+    const activeBudgets = budgets.filter(budget => !isBudgetExpired(budget)); // gets only the active budgets
+    if (activeBudgets.length !== budgets.length) { // if there are no expired budgets, it does nothing
+        saveBudgets(activeBudgets); // saves the active budgets in localStorage
     }
 }
 

@@ -274,6 +274,7 @@ const safeSetItem = (key, value) => {
 document.addEventListener('header:loaded', initHeader);
 document.addEventListener('menu:loaded', initMenu);
 document.addEventListener("footer:loaded", initFooter);
+removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path
