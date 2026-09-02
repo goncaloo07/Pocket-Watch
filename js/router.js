@@ -8,6 +8,17 @@ const ROUTES = {
 
 const pageContent = document.getElementById('page-content'); // where the page HTML goes
 
+const ERROR_PAGE_HTML = `<div id="crash-page" class="error-page">
+                    <div class="error-content">
+                        <i class="bi bi-exclamation-triangle error-icon" aria-hidden="true"></i>
+                        <p class="error-title">Something went wrong</p>
+                        <p class="error-subtitle">An unexpected error happened. Try reloading the page.</p>
+                        <button id="reload-btn" class="btn btn-primary error-home-btn">
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Reload Page
+                        </button>
+                    </div>
+                </div>`; // error content to show when a page crashes
+
 // fetches and injects the page's HTML, then fires "page:loaded"
 const loadPage = (path) => {
     const page = ROUTES[path] || ROUTES.default;
@@ -26,6 +37,11 @@ const navigateTo = (path) => {
     history.pushState({}, '', path);
     loadPage(path);
 };
+
+const showErrorPage = () => {
+    pageContent.innerHTML = ERROR_PAGE_HTML;
+    document.getElementById('reload-btn').addEventListener('click', () => window.location.reload());
+}
 
 // catches clicks on internal links and routes them
 document.addEventListener('click', (e) => {
@@ -46,6 +62,14 @@ document.addEventListener('click', (e) => {
 // handles browser back/forward buttons
 window.addEventListener('popstate', () => {
     loadPage(window.location.pathname);
+});
+
+window.addEventListener('error', () => { // if there is a error in the page, show the error page
+    showErrorPage();
+});
+
+window.addEventListener('unhandledrejection', () => { // same here
+    showErrorPage();
 });
 
 // load the right page on first load
