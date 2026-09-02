@@ -48,7 +48,7 @@ const applyTheme = (theme) => {
 };
  
 const setTheme = (theme) => {
-    localStorage.setItem('theme', theme); // Store the selected theme in localStorage
+    safeSetItem('theme', theme); // Store the selected theme in localStorage
     applyTheme(theme);
 }
  

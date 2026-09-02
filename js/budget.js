@@ -64,7 +64,7 @@ const addBudget = (e) => {
 }
 
 const saveBudgets = (budgets) => {
-    localStorage.setItem('budgets', JSON.stringify(budgets)); // sets the budgets in localStorage
+    safeSetItem('budgets', JSON.stringify(budgets)); // sets the budgets in localStorage
 }
 
 const getSpentByCat = (budget) => {

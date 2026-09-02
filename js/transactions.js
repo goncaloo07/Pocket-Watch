@@ -97,5 +97,5 @@ const getTransactions = () => {
 
 // saves transactions to localStorage
 const saveTransactions = (transactions) => {
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    safeSetItem('transactions', JSON.stringify(transactions));
 };

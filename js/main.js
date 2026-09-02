@@ -40,6 +40,9 @@ let addTransactionBtn,
     balanceTooltip,
     balanceHoverPoints;
 
+let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
+let toastTimeout;
+
 // list of categories shown in the "Category" dropdown when adding a spending transaction
 // (or a budget, since budgets are always tied to a spending category)
 const CATEGORIES_SPENDING = [
@@ -245,6 +248,26 @@ const initHomePage = () => {
     renderChart();
     renderBudgets();
 };
+
+const showToast = (message, duration = 4000) => {
+    toastEl.textContent = message;
+    toastEl.classList.remove("hidden");
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        toastEl.classList.add("hidden");
+    }, duration);
+};
+
+const safeSetItem = (key, value) => {
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch (e) {
+        showToast("Error saving data. Your changes may not be saved.", 6000);
+        console.error("Error saving to localStorage:", e);
+        return false;
+    }
+}
 
 // these run once, the very first time each piece of the page finishes loading
 // e.g. as soon as the header's HTML is injected into the DOM, "header:loaded" fires and initHeader() runs
