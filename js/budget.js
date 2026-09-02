@@ -1,8 +1,17 @@
 const GENERAL_BUDGET_CAT = "__general__";
 
+const isValidBudget = (b) => { // checks if the budget object is valid, returns true or false
+    return b
+        && typeof b.budgetCat === 'string'
+        && !isNaN(parseFloat(b.budgetLimit))
+        && (b.budgetPeriod === 'recurring' || b.budgetPeriod === 'date')
+        && typeof b.budgetCreatedAt === 'string'
+        && ((b.budgetPeriod === 'recurring' && ['weekly', 'monthly', 'yearly'].includes(b.budgetUnit)) || (b.budgetPeriod === 'date' && typeof b.budgetEndDate === 'string'));
+}
+
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
     try {
-        const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(budget => !isBudgetExpired(budget));
+        const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget).filter(budget => !isBudgetExpired(budget));
         return budgets;
     } catch {
         safeSetItem('budgets', '[]');
@@ -11,7 +20,7 @@ const getBudgets = () => { //if there is a localStorage item of budgets, it retu
 }
 
 const removeExpiredBudgets = () => { // removes the expired budgets from localStorage 
-    const budgets = JSON.parse(localStorage.getItem('budgets')) ?? [] // gets the budgets from localStorage
+    const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget); // gets the budgets from localStorage
     const activeBudgets = budgets.filter(budget => !isBudgetExpired(budget)); // gets only the active budgets
     if (activeBudgets.length !== budgets.length) { // if there are no expired budgets, it does nothing
         saveBudgets(activeBudgets); // saves the active budgets in localStorage

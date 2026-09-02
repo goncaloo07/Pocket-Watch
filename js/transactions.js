@@ -19,6 +19,15 @@ const CATEGORY_ICONS = new Map([
     ["__general__", "bi-wallet2"]
 ])
 
+const isValidTransaction = (t) => { // checks if the transaction object is valid, returns true or false
+    return t
+        && typeof t.transactionName === 'string'
+        && typeof t.transactionDate === 'string'
+        && (t.transactionType === 'spending' || t.transactionType === 'receiving')
+        && typeof t.transactionCat === 'string'
+        && !isNaN(parseFloat(t.transactionAmount));
+};
+
 // Date -> "YYYY-MM-DD"
 const formatDateISO = (date) => {
     const yyyy = date.getFullYear();
@@ -88,9 +97,10 @@ const addTransaction = (e) => {
 // reads transactions from localStorage, creating an empty list if none exist yet
 const getTransactions = () => {
     try {
-        return JSON.parse(localStorage.getItem('transactions')) ?? [];
+        const parsed = JSON.parse(localStorage.getItem('transactions'));
+        return (Array.isArray(parsed) ? parsed : []).filter(isValidTransaction);
     } catch {
-        localStorage.setItem('transactions', '[]');
+        safeSetItem('transactions', '[]');
         return [];
     }
 };
