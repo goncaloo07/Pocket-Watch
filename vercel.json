@@ -1,11 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/balance",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]

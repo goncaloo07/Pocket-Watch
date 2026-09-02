@@ -1978,3 +1978,60 @@ input.input-invalid {
     max-height: 220px;
     overflow-y: auto;
 }
+
+/* Error / 404 page */
+
+.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    padding: 2rem 1rem;
+}
+
+.error-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    max-width: 360px;
+}
+
+.error-icon {
+    font-size: 3rem;
+    color: var(--accent-color);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+}
+
+.error-code {
+    font-family: 'Archivo', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
+    margin: 0;
+    background-image: linear-gradient(var(--textcolor), var(--accent-color));
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.error-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--textcolor);
+}
+
+.error-subtitle {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    margin: 0 0 0.5rem;
+}
+
+.error-home-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}

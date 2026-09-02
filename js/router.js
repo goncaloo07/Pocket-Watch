@@ -2,13 +2,15 @@
 const ROUTES = {
     '/': 'html/pages/home.html',
     '/balance': 'html/pages/balance.html',
+    '/comingSoon': 'html/pages/comingSoon.html',
+    default: 'html/pages/404.html'
 };
 
 const pageContent = document.getElementById('page-content'); // where the page HTML goes
 
 // fetches and injects the page's HTML, then fires "page:loaded"
 const loadPage = (path) => {
-    const page = ROUTES[path] || ROUTES['/'];
+    const page = ROUTES[path] || ROUTES.default;
     fetch(page)
         .then(response => response.text())
         .then(html => {
