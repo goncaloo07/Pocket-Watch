@@ -1,4 +1,8 @@
 .env
+.env.local
+.vercel
 .DS_Store
-.vscode/git add .
+Thumbs.db
+.vscode/
+node_modules
 ideas.txt
