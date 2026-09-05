@@ -44,6 +44,7 @@ const loadPage = (path) => {
             pageContent.innerHTML = html;
             document.title = PAGE_TITLES[path] || PAGE_TITLES.default; // updates the browser tab title for this page
             document.querySelector('meta[name="description"]').setAttribute('content', PAGE_DESCRIPTIONS[path] || PAGE_DESCRIPTIONS.default); // updates the meta description for this page
+            document.getElementById('canonical-link').setAttribute('href', `https://pocket-watch-murex.vercel.app${path}`); // updates the canonical URL for this page
             document.dispatchEvent(new CustomEvent('page:loaded', { detail: { path } }));
         })
         .catch(error => console.error('Erro ao carregar a página:', error));
