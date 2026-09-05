@@ -36,6 +36,7 @@ const applyTheme = (theme) => {
     document.documentElement.dataset.theme = themePath;
     themeToggleIcon.classList.toggle('bi-sun', themePath === 'light');
     themeToggleIcon.classList.toggle('bi-moon', themePath === 'dark');
+    themeToggleBtn.setAttribute('aria-pressed', themePath === 'dark'); // tells screen readers if dark mode is currently on
  
     shortcutIcon.href = `/assets/icons/${themePath}/favicon.ico`;
     favicon16.href = `/assets/icons/${themePath}/favicon-16x16.png`;
