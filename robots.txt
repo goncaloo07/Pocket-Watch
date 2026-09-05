@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pocket-watch-murex.vercel.app/sitemap.xml
