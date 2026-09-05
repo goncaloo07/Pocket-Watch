@@ -3,6 +3,15 @@
     "outputDirectory": ".",
     "routes": [
         { "handle": "filesystem" },
+        {
+            "src": "/(.*)",
+            "headers": {
+                "X-Content-Type-Options": "nosniff",
+                "X-Frame-Options": "DENY",
+                "Referrer-Policy": "strict-origin-when-cross-origin"
+            },
+            "continue": true
+        },
         { "src": "/", "dest": "/index.html" },
         { "src": "/balance", "dest": "/index.html" },
         { "src": "/comingSoon", "dest": "/index.html" },
