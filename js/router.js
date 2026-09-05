@@ -6,6 +6,14 @@ const ROUTES = {
     default: 'html/pages/404.html'
 };
 
+// title shown in the browser tab for each route
+const PAGE_TITLES = {
+    '/': 'Pocket Watch',
+    '/balance': 'Balance History',
+    '/comingSoon': 'Coming Soon',
+    default: 'Page Not Found'
+};
+
 const pageContent = document.getElementById('page-content'); // where the page HTML goes
 
 const ERROR_PAGE_HTML = `<div id="crash-page" class="error-page">
@@ -26,6 +34,7 @@ const loadPage = (path) => {
         .then(response => response.text())
         .then(html => {
             pageContent.innerHTML = html;
+            document.title = PAGE_TITLES[path] || PAGE_TITLES.default; // updates the browser tab title for this page
             document.dispatchEvent(new CustomEvent('page:loaded', { detail: { path } }));
         })
         .catch(error => console.error('Erro ao carregar a página:', error));
