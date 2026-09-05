@@ -14,6 +14,14 @@ const PAGE_TITLES = {
     default: 'Page Not Found'
 };
 
+// meta description shown in Google search results for each route
+const PAGE_DESCRIPTIONS = {
+    '/': 'A personal finance app where you can see your balance, add transactions and set budgets. Everything stays saved in your own browser.',
+    '/balance': 'Check your balance history and see how your transactions affect your finances over time.',
+    '/comingSoon': 'This part of the app is still being worked on.',
+    default: 'This page does not exist or was moved.'
+};
+
 const pageContent = document.getElementById('page-content'); // where the page HTML goes
 
 const ERROR_PAGE_HTML = `<div id="crash-page" class="error-page">
@@ -35,6 +43,7 @@ const loadPage = (path) => {
         .then(html => {
             pageContent.innerHTML = html;
             document.title = PAGE_TITLES[path] || PAGE_TITLES.default; // updates the browser tab title for this page
+            document.querySelector('meta[name="description"]').setAttribute('content', PAGE_DESCRIPTIONS[path] || PAGE_DESCRIPTIONS.default); // updates the meta description for this page
             document.dispatchEvent(new CustomEvent('page:loaded', { detail: { path } }));
         })
         .catch(error => console.error('Erro ao carregar a página:', error));
