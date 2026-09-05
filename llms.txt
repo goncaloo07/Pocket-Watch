@@ -1,0 +1,15 @@
+# Pocket Watch
+
+> A personal finance web app that helps you track your spending, income, and budgets. Runs entirely in the browser, with no backend or server involved.
+
+Pocket Watch is built with vanilla HTML, CSS, and JavaScript (no frameworks). All financial data is stored locally in the user's browser via localStorage and is never sent to any server.
+
+## Pages
+
+- [Home](https://pocket-watch-murex.vercel.app/): Current balance, recent transactions, spending/receiving overview, budget tracking, and a spending breakdown chart.
+- [Balance History](https://pocket-watch-murex.vercel.app/balance): Interactive line chart of balance over time, with daily transaction details.
+
+## Notes
+
+- No user accounts, no server, no data collection. Everything is local to the browser.
+- Source code: https://github.com/goncaloo07/Pocket-Watch
