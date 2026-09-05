@@ -1,10 +1,11 @@
 {
-  "buildCommand": "node scripts/generate-sitemap.js",
-  "outputDirectory": ".",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+    "buildCommand": "node scripts/generate-sitemap.js",
+    "outputDirectory": ".",
+    "routes": [
+        { "handle": "filesystem" },
+        { "src": "/", "dest": "/index.html" },
+        { "src": "/balance", "dest": "/index.html" },
+        { "src": "/comingSoon", "dest": "/index.html" },
+        { "src": "/(.*)", "status": 404, "dest": "/index.html" }
+    ]
 }
