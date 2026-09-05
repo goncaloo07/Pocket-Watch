@@ -1,3 +1,4 @@
+<h1 class="sr-only">Pocket Watch Dashboard</h1>
 <div id="priority-content" class="priority-content">
             <div id="balance-column" class="balance-column">
                 <a href="/balance" class="balance-link">
@@ -14,14 +15,14 @@
                             <line class="dial-needle dial-needle-v" x1="75" y1="75" x2="75" y2="34" stroke="var(--accent-color)" stroke-width="3"/>
                             <line class="dial-needle dial-needle-h" x1="75" y1="75" x2="103" y2="75" stroke="var(--accent-color)" stroke-width="3"/>
                         </svg>
-                        <h1 id="balance-label" class="container-title">Current Balance</h1>
-                        <h1 id="balance-value" class="balance-value"></h1>
+                        <h2 id="balance-label" class="container-title">Current Balance</h2>
+                        <h2 id="balance-value" class="balance-value"></h2>
                     </div>
                 </a>
 
                 <div id="sr-div" class="sr-div">
                     <div id="spending-div" class="container sr-item">
-                        <h1 class="container-title">Spending</h1>
+                        <h2 class="container-title">Spending</h2>
                         <div id="no-spending" class="sr-empty">
                             <i class="bi bi-arrow-down-circle sr-empty-icon" aria-hidden="true"></i>
                             <p class="sr-empty-title">No spending yet</p>
@@ -32,7 +33,7 @@
                     </div>
 
                     <div id="receiving-div" class="container sr-item">
-                        <h1 class="container-title">Receiving</h1>
+                        <h2 class="container-title">Receiving</h2>
                         <div id="no-receiving" class="sr-empty">
                             <i class="bi bi-arrow-up-circle sr-empty-icon" aria-hidden="true"></i>
                             <p class="sr-empty-title">No receiving yet</p>
@@ -44,7 +45,7 @@
                 </div>
 
                 <div id="budget-div" class="container budget-div">
-                    <h1 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h1>
+                    <h2 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h2>
                     <div id="budget-empty" class="budget-empty">
                         <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
                         <p class="transactions-empty-title">No budgets yet</p>
@@ -57,7 +58,7 @@
 
             <div id="transactions-column" class="transactions-column">
                 <div id="transactions-div" class="container transactions-div">
-                    <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
+                    <h2 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h2>
                     <div id="transactions-empty" class="transactions-empty hidden">
                         <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
                         <p class="transactions-empty-title">No transactions yet</p>
@@ -69,7 +70,7 @@
 
                 <div id="chart-div" class="container chart-div">
                     <div class="chart-header">
-                        <h1 class="container-title">Breakdown</h1>
+                        <h2 class="container-title">Breakdown</h2>
                         <div class="chart-toggle">
                             <input type="radio" id="chart-mode-category" name="chart-mode" value="category" checked>
                             <label for="chart-mode-category" class="chart-toggle-option">By Category</label>
