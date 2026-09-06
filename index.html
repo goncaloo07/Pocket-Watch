@@ -39,12 +39,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://api.fontshare.com">    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Archivo:ital,wght@0,100..900;1,100..900&family=Manrope:wght@400;500;600;700;800&display=swap">
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Archivo:ital,wght@0,100..900;1,100..900&family=Manrope:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap" media="print" onload="this.media='all'">
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"> <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" media="print" onload="this.media='all'"> <!-- Bootstrap Icons -->
+    <noscript>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800&family=Archivo:ital,wght@0,100..900;1,100..900&family=Manrope:wght@400;500;600;700;800&display=swap">
+        <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800,900&display=swap">
+    </noscript>
     <title>Pocket Watch</title>
 
     <!-- Scripts -->
@@ -212,19 +217,19 @@
     
     <div id="footer-placeholder"></div>
     
-    <script src="js/include-menu.js"></script>
-    <script src="js/include-header.js"></script>
-    <script src="js/include-footer.js"></script>
-    <script src="js/router.js"></script>
-    <script src="js/theme.js"></script>
-    <script src="js/header.js"></script>
-    <script src="js/menu.js"></script>
-    <script src="js/footer.js"></script>
-    <script src="js/transactions.js"></script>
-    <script src="js/balance.js"></script>
-    <script src="js/render.js"></script>
-    <script src="js/chart.js"></script>
-    <script src="js/budget.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/include-menu.js" defer></script>
+    <script src="js/include-header.js" defer></script>
+    <script src="js/include-footer.js" defer></script>
+    <script src="js/router.js" defer></script>
+    <script src="js/theme.js" defer></script>
+    <script src="js/header.js" defer></script>
+    <script src="js/menu.js" defer></script>
+    <script src="js/footer.js" defer></script>
+    <script src="js/transactions.js" defer></script>
+    <script src="js/balance.js" defer></script>
+    <script src="js/render.js" defer></script>
+    <script src="js/chart.js" defer></script>
+    <script src="js/budget.js" defer></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>
