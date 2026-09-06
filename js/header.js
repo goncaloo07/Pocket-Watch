@@ -40,3 +40,5 @@ const sendToHomePage = (e) => { // makes it so that when users that are on the m
         navigateTo('/');
     }
 }
+
+document.addEventListener('header:loaded', initHeader);

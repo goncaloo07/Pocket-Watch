@@ -269,11 +269,6 @@ const safeSetItem = (key, value) => {
     }
 }
 
-// these run once, the very first time each piece of the page finishes loading
-// e.g. as soon as the header's HTML is injected into the DOM, "header:loaded" fires and initHeader() runs
-document.addEventListener('header:loaded', initHeader);
-document.addEventListener('menu:loaded', initMenu);
-document.addEventListener("footer:loaded", initFooter);
 removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
 
 // fires every time the router swaps in a new page (including on first load),

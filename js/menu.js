@@ -11,3 +11,5 @@ const initMenu = () => {
         toggleMenu();
     });
 };
+
+document.addEventListener('menu:loaded', initMenu);
