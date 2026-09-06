@@ -44,7 +44,7 @@ const applyTheme = (theme) => {
     appleTouchIcon.href = `/assets/icons/${themePath}/apple-touch-icon.png`;
     manifestLink.href = `/assets/icons/${themePath}/site.webmanifest`;
     document.querySelectorAll('.brand-logo').forEach(img => {
-        img.src = `/assets/icons/${themePath}/logo.png`;
+        img.src = `/assets/icons/${themePath}/logo.webp`;
     });     
 };
  

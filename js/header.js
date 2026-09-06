@@ -15,9 +15,11 @@ const initHeader = () => {
     logoLink.addEventListener('click', sendToHomePage);
     menuBtn.addEventListener('click', toggleMenu);
  
-    updateHeaderHeightVar();
+    requestAnimationFrame(updateHeaderHeightVar);
     
-    const headerResizeObserver = new ResizeObserver(updateHeaderHeightVar);
+    const headerResizeObserver = new ResizeObserver((entries) => {
+        document.documentElement.style.setProperty('--header-height', `${entries[0].contentRect.height}px`);
+    });
     headerResizeObserver.observe(header);
 };
  
