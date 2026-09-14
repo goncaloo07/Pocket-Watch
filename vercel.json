@@ -15,6 +15,7 @@
         { "src": "/", "dest": "/index.html" },
         { "src": "/balance", "dest": "/index.html" },
         { "src": "/comingSoon", "dest": "/index.html" },
+        { "src": "/transactions", "dest": "/index.html" },
         { "src": "/(.*)", "status": 404, "dest": "/index.html" }
     ]
 }
