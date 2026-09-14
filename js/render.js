@@ -1,13 +1,14 @@
 const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat }) => {
     const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots'; //gets the icon for the transaction
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative'; //checks if its positive or negative
+    const safeName = escapeHTML(transactionName); // prevents XSS if the name contains HTML or a script
 
     return `
         <li class="transaction-row">
             <div class="transaction-left">
                 <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                 <div class="transaction-info">
-                    <span class="transaction-name">${transactionName}</span>
+                    <span class="transaction-name">${safeName}</span>
                     <span class="transaction-meta">${transactionCat} | <span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
@@ -29,12 +30,13 @@ const renderTransactions = () => {
 
 const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transactionDate, transactionCat }) => {
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative'; //checks if its positive or negative
+    const safeName = escapeHTML(transactionName);
 
     return `
         <li class="transaction-row">
             <div class="transaction-left">
                 <div class="transaction-info">
-                    <span class="transaction-name">${transactionName}</span>
+                    <span class="transaction-name">${safeName}</span>
                     <span class="transaction-meta"><span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
@@ -141,4 +143,11 @@ const renderBudgets = () => {
         return (spentMap.get(b) / b.budgetLimit) - (spentMap.get(a) / a.budgetLimit);
     }); // sort the budgets from the most completed to the less completed (general always first)
     budgetList.innerHTML = sortedBudgets.slice(0,3).map(budget => buildBudgetRow(budget, spentMap.get(budget))).join('');
-}
+};
+
+// Escapes HTML so user text can't run as code. Example: turns "<b>" into visible text, not bold.
+const escapeHTML = (str) => {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+};
