@@ -73,7 +73,7 @@ document.addEventListener('click', (e) => {
     e.preventDefault();
     navigateTo(href);
 
-    if (menu.classList.contains('open')) {
+    if (menu && menu.classList.contains('open')) {
         toggleMenu(); // close mobile menu after navigating
     }
 });

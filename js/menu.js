@@ -1,3 +1,5 @@
+let menu;
+
 const initMenu = () => {
     menu = document.getElementById('menu');
 
