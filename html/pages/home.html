@@ -57,16 +57,18 @@
             </div>
 
             <div id="transactions-column" class="transactions-column">
-                <div id="transactions-div" class="container transactions-div">
-                    <h2 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h2>
-                    <div id="transactions-empty" class="transactions-empty hidden">
-                        <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">No transactions yet</p>
-                        <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+                <a href="/transactions" class="transactions-link">
+                    <div id="transactions-div" class="container transactions-div">
+                        <h2 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h2>
+                        <div id="transactions-empty" class="transactions-empty hidden">
+                            <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
+                            <p class="transactions-empty-title">No transactions yet</p>
+                            <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+                        </div>
+                        <ul id="transactions-list" class="transactions-list">
+                        </ul>
                     </div>
-                    <ul id="transactions-list" class="transactions-list">
-                    </ul>
-                </div>
+                </a>
 
                 <div id="chart-div" class="container chart-div">
                     <div class="chart-header">

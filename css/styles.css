@@ -521,6 +521,7 @@ body.menu-open #main-content {
     text-align: center;
     padding: 1rem;
     gap: 0.35rem;
+    margin: auto;
 }
 
 .transactions-empty-icon {
@@ -542,6 +543,13 @@ body.menu-open #main-content {
     font-size: 0.85rem;
     color: var(--secondary-color);
     max-width: 26ch;
+}
+
+.transactions-empty-btn {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .transaction-amount.positive { color: var(--positive-color); }
@@ -2086,4 +2094,57 @@ input.input-invalid {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+
+/* Transactions Page */
+
+.transactions-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 60vh;
+}
+
+.transactions-link {
+    text-decoration: none;
+    color: var(--textcolor);
+}
+
+.transactions-date-group {
+    margin-bottom: 1.25rem;
+}
+
+.transactions-date-group:last-child {
+    margin-bottom: 0;
+}
+
+.transactions-date-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.4rem 0.25rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.2rem;
+}
+
+.transactions-date-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--secondary-color);
+}
+
+.transactions-date-total {
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.transactions-date-total.positive { color: var(--positive-color); }
+.transactions-date-total.negative { color: var(--negative-color); }
+
+.transactions-date-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }

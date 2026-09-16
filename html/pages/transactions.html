@@ -1,12 +1,14 @@
 <div id="transactions-page" class="transactions-page">
     <div id="transactions-list-div" class="container transactions-list-div">
-        <h1 class="container-title">Transactions</h1>
+        <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
         <ul id="transactions-list" class="transactions-list"></ul>
     </div>
     <div id="transactions-empty" class="transactions-empty hidden">
         <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
         <p class="transactions-empty-title">No transactions yet</p>
         <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
-        <button id="add-transaction-btn" class="add-btn">Add Transaction</button>
+        <button id="add-transaction-btn" class="btn btn-primary transactions-empty-btn">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Transaction
+        </button>
     </div>
 </div>

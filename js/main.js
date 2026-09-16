@@ -178,7 +178,11 @@ const initHomePage = () => {
     budgetEndDateError = document.getElementById("budget-end-date-error");
 
     // wire up the transaction modal's open/close/save buttons
-    addTransactionBtn.addEventListener('click', toggleTransactionModal);
+    addTransactionBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // stops the <a href="/transactions"> from navigating
+        e.stopPropagation(); // stops the click from bubbling up to the link around the whole card
+        toggleTransactionModal();
+    });
     closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     transactionForm.addEventListener('submit', addTransaction);

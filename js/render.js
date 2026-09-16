@@ -1,7 +1,7 @@
 const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat }) => {
-    const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots'; //gets the icon for the transaction
-    const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative'; //checks if its positive or negative
-    const safeName = escapeHTML(transactionName); // prevents XSS if the name contains HTML or a script
+    const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots';
+    const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative';
+    const safeName = escapeHTML(transactionName);
 
     return `
         <li class="transaction-row">
@@ -152,15 +152,65 @@ const escapeHTML = (str) => {
     return div.innerHTML;
 };
 
+// "Today" / "Yesterday" for recent dates, otherwise the normal DD-MM-YYYY format
+const getRelativeDateLabel = (dateStr) => {
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    if (dateStr === formatDateISO(today)) return "Today";
+    if (dateStr === formatDateISO(yesterday)) return "Yesterday";
+    return formatDateDMY(dateStr);
+};
+
+// builds one day's block: a small header (date + day total) followed by that day's rows
+const buildDateGroup = (dateStr, dayTransactions, balanceAfter) => {
+    const totalClass = balanceAfter >= 0 ? 'positive' : 'negative';
+
+    return `
+        <li class="transactions-date-group">
+            <div class="transactions-date-header">
+                <span class="transactions-date-label">${getRelativeDateLabel(dateStr)}</span>
+                <span class="transactions-date-total ${totalClass}">${balanceAfter.toFixed(2)}€</span>
+            </div>
+            <ul class="transactions-date-rows">
+                ${dayTransactions.map(buildTransactionRow).join('')}
+            </ul>
+        </li>
+    `;
+};
+
 const renderAllTransactions = () => {
     const transactions = getTransactions();
 
-    if (transactions.length === 0) { //if there aren't any transactions, the empty message will show
+    if (transactions.length === 0) {
         transactionsPageEmptyDiv.classList.remove('hidden');
         transactionsPageListDiv.classList.add('hidden');
-    } else {
-        transactionsPageEmptyDiv.classList.add('hidden');
-        transactionsPageListDiv.classList.remove('hidden');
+        return;
     }
-    transactionsPageListEl.innerHTML = transactions.map(buildTransactionRow).join(''); //sends all rows to a map, then joins it to build the code
+    transactionsPageEmptyDiv.classList.add('hidden');
+    transactionsPageListDiv.classList.remove('hidden');
+
+    // newest date first for display; same-day transactions keep their existing order
+    const sorted = [...transactions].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
+
+    // splits the sorted list into { "2026-09-15": [...], "2026-09-14": [...] } buckets
+    const groups = new Map();
+    sorted.forEach(t => {
+        if (!groups.has(t.transactionDate)) groups.set(t.transactionDate, []);
+        groups.get(t.transactionDate).push(t);
+    });
+
+    // walk the days oldest to newest, accumulating the balance up to (and including) each day
+    const dayEntries = Array.from(groups.entries());
+    const balanceByDate = new Map();
+    let runningBalance = 0;
+    for (let i = dayEntries.length - 1; i >= 0; i--) {
+        const [date, dayTransactions] = dayEntries[i];
+        const dayTotal = dayTransactions.reduce((sum, t) => sum + parseFloat(t.transactionAmount), 0);
+        runningBalance += dayTotal;
+        balanceByDate.set(date, runningBalance);
+    }
+
+    transactionsPageListEl.innerHTML = Array.from(groups, ([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('');
 };

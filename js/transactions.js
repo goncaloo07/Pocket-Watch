@@ -86,12 +86,16 @@ const addTransaction = (e) => {
 
     transactionForm.reset();
     toggleTransactionModal();
-    // refresh every part of the UI that depends on transactions
-    renderTransactions();
-    renderSpendingReceiving();
-    renderBalance();
-    renderChart();
-    renderBudgets();
+    // only refresh what's actually visible
+    if (window.location.pathname === '/transactions') {
+        renderAllTransactions(); // this one updates the full list on the transactions page
+    } else {
+        renderTransactions();
+        renderSpendingReceiving();
+        renderBalance();
+        renderChart();
+        renderBudgets();
+    }
 };
 
 // reads transactions from localStorage, creating an empty list if none exist yet
