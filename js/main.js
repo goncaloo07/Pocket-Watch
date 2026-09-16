@@ -38,7 +38,11 @@ let addTransactionBtn,
     balancePeriodInputs,
     balancePoints,
     balanceTooltip,
-    balanceHoverPoints;
+    balanceHoverPoints,
+    transactionsPageListDiv,
+    transactionsPageListEl,
+    transactionsPageEmptyDiv,
+    transactionsPageAddTransactionBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -276,4 +280,5 @@ removeExpiredBudgets(); // removes expired budgets from localStorage on first lo
 document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
+    if (e.detail.path === '/transactions') initTransactionsPage();
 });

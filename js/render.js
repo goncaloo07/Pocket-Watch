@@ -151,3 +151,16 @@ const escapeHTML = (str) => {
     div.textContent = str;
     return div.innerHTML;
 };
+
+const renderAllTransactions = () => {
+    const transactions = getTransactions();
+
+    if (transactions.length === 0) { //if there aren't any transactions, the empty message will show
+        transactionsPageEmptyDiv.classList.remove('hidden');
+        transactionsPageListDiv.classList.add('hidden');
+    } else {
+        transactionsPageEmptyDiv.classList.add('hidden');
+        transactionsPageListDiv.classList.remove('hidden');
+    }
+    transactionsPageListEl.innerHTML = transactions.map(buildTransactionRow).join(''); //sends all rows to a map, then joins it to build the code
+};

@@ -109,3 +109,16 @@ const getTransactions = () => {
 const saveTransactions = (transactions) => {
     safeSetItem('transactions', JSON.stringify(transactions));
 };
+
+const initTransactionsPage = () => {
+    transactionsPageListEl = document.getElementById('transactions-list');
+    transactionsPageEmptyDiv = document.getElementById('transactions-empty');
+    transactionsPageListDiv = document.getElementById('transactions-list-div');
+    transactionsPageAddTransactionBtn = document.getElementById('add-transaction-btn');
+
+    transactionsPageAddTransactionBtn.addEventListener('click', () => {
+        toggleTransactionModal();
+    });
+
+    renderAllTransactions();
+};
