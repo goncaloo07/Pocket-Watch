@@ -42,10 +42,23 @@ let addTransactionBtn,
     transactionsPageListDiv,
     transactionsPageListEl,
     transactionsPageEmptyDiv,
-    transactionsPageAddTransactionBtn;
+    transactionsPageAddTransactionBtn,
+    editTransactionModal,
+    editTransactionForm,
+    editNameInput,
+    editTypeLabel,
+    editAmountInput,
+    editAmountError,
+    editDateInput,
+    editCategorySelect,
+    deleteTransactionBtn,
+    editModeBtn,
+    cancelEditBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
+
+let editingIndex = null; // position of the transaction currently open in the modal
 
 // list of categories shown in the "Category" dropdown when adding a spending transaction
 // (or a budget, since budgets are always tied to a spending category)

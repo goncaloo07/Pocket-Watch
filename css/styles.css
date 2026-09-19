@@ -2148,3 +2148,45 @@ input.input-invalid {
     margin: 0;
     padding: 0;
 }
+
+/* Edit transaction modal */
+
+.btn-danger {
+    background-color: var(--negative-color);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    opacity: 0.85;
+}
+
+#delete-transaction-btn {
+    margin-right: auto;
+}
+
+.edit-type-badge {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.edit-type-badge.spending { color: var(--negative-color); }
+.edit-type-badge.receiving { color: var(--positive-color); }
+
+.transactions-date-rows .transaction-row {
+    cursor: pointer;
+}
+
+#edit-transaction-form:not(.editing) #cancel-edit-btn,
+#edit-transaction-form:not(.editing) #save-edit-btn {
+    display: none;
+}
+
+#edit-transaction-form.editing #edit-mode-btn,
+#edit-transaction-form.editing #delete-transaction-btn {
+    display: none;
+}
+
+#edit-transaction-form select:disabled {
+    opacity: 1;
+    color: var(--textcolor);
+}

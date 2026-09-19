@@ -213,6 +213,55 @@
                 </form>
             </div>
         </div>
+
+        <div id="edit-transaction-modal-overlay" class="modal-overlay">
+            <div id="edit-transaction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-transaction-modal-title">
+                <div class="modal-header">
+                    <h1 id="edit-transaction-modal-title" class="container-title">Transaction Details</h1>
+                    <button id="close-edit-modal-btn" class="close-btn" aria-label="Close">
+                        <i class="bi bi-x" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <form id="edit-transaction-form" class="modal-form">
+                    <div class="form-group">
+                        <label for="edit-transaction-name">Name</label>
+                        <input type="text" id="edit-transaction-name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Type</label>
+                        <span id="edit-transaction-type" class="edit-type-badge"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-transaction-amount">Amount</label>
+                        <div class="amount-input-wrap">
+                            <span class="amount-currency">€</span>
+                            <input type="number" id="edit-transaction-amount" step="0.01" min="0" inputmode="decimal" required>
+                        </div>
+                        <span id="edit-amount-error" class="input-error hidden">Amount must be greater than 0€</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-transaction-date">Date</label>
+                        <input type="date" id="edit-transaction-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-transaction-category">Category</label>
+                        <select id="edit-transaction-category"></select>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" id="delete-transaction-btn" class="btn btn-danger">Delete</button>
+                        <button type="button" id="edit-mode-btn" class="btn btn-secondary">Edit</button>
+                        <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="save-edit-btn" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <div id="toast" class="toast hidden" role="alert"></div>

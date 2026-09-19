@@ -126,3 +126,36 @@ const initTransactionsPage = () => {
 
     renderAllTransactions();
 };
+
+const initEditTransactionModal = () => {
+    editTransactionModal = document.getElementById('edit-transaction-modal-overlay');
+    editTransactionForm = document.getElementById('edit-transaction-form');
+    editNameInput = document.getElementById('edit-transaction-name');
+    editTypeLabel = document.getElementById('edit-transaction-type');
+    editAmountInput = document.getElementById('edit-transaction-amount');
+    editAmountError = document.getElementById('edit-amount-error');
+    editDateInput = document.getElementById('edit-transaction-date');
+    editCategorySelect = document.getElementById('edit-transaction-category');
+    deleteTransactionBtn = document.getElementById('delete-transaction-btn');
+    editModeBtn = document.getElementById('edit-mode-btn');
+    cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+    document.getElementById('close-edit-modal-btn').addEventListener('click', closeEditTransactionModal);
+    editModeBtn.addEventListener('click', setEditMode);
+    cancelEditBtn.addEventListener('click', cancelEditMode);
+    editTransactionForm.addEventListener('submit', saveEditedTransaction);
+    deleteTransactionBtn.addEventListener('click', deleteTransaction);
+};
+
+// switches between view mode (fields locked) and edit mode (fields free)
+const setEditMode = (isEditing) => {
+    editTransactionForm.classList.toggle('editing', isEditing); // CSS uses this class to swap the buttons
+    editTransactionForm.querySelectorAll('input, select').forEach(field => {
+        field.disabled = !isEditing; // locked in view mode
+    });
+};
+
+// goes back to view mode and puts the original values back in the fields
+const cancelEdit = () => {
+    openEditTransactionModal(editingIndex);
+};

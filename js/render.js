@@ -1,10 +1,11 @@
-const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat }) => {
+const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, originalIndex }) => {
     const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots';
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative';
     const safeName = escapeHTML(transactionName);
+    const indexAttr = originalIndex !== undefined ? `data-index="${originalIndex}"` : '';
 
     return `
-        <li class="transaction-row">
+        <li class="transaction-row" ${indexAttr}>
             <div class="transaction-left">
                 <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                 <div class="transaction-info">
@@ -191,8 +192,11 @@ const renderAllTransactions = () => {
     transactionsPageEmptyDiv.classList.add('hidden');
     transactionsPageListDiv.classList.remove('hidden');
 
+    // remember each transaction's position before sorting
+    const indexed = transactions.map((t, i) => ({ ...t, originalIndex: i }));
+
     // newest date first for display; same-day transactions keep their existing order
-    const sorted = [...transactions].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
+    const sorted = [...indexed].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
 
     // splits the sorted list into { "2026-09-15": [...], "2026-09-14": [...] } buckets
     const groups = new Map();
