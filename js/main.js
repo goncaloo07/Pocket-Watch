@@ -157,14 +157,8 @@ const initHomePage = () => {
     
     // grab every element we'll need to read from or update later
     addTransactionBtn = document.getElementById('add-transaction-btn');
-    transactionModal = document.getElementById('transaction-modal-overlay');
-    closeTransactionModalBtn = document.getElementById('close-modal-btn');
-    cancelTransactionModalBtn = document.getElementById('cancel-transaction-btn');
-    transactionForm = document.getElementById('transaction-form');
     transactionsEmptyDiv = document.getElementById('transactions-empty');
     transactionsListEl = document.getElementById('transactions-list');
-    transactionModalCatSpending = document.getElementById("transaction-category-spending");
-    transactionModalCatReceiving = document.getElementById("transaction-category-receiving");
     balanceValue = document.getElementById("balance-value");
     balanceDiv = document.getElementById("balance-div");
     balanceEl = document.getElementById('balance-value');
@@ -196,9 +190,6 @@ const initHomePage = () => {
         e.stopPropagation(); // stops the click from bubbling up to the link around the whole card
         toggleTransactionModal();
     });
-    closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
-    cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
-    transactionForm.addEventListener('submit', addTransaction);
     chartMode.forEach((mode => mode.addEventListener("change", renderChart))); // switching "By Category" / "Spending vs Receiving" redraws the chart
     addBudgetBtn.addEventListener("click", toggleBudgetModal);
     closeBudgetModalBtn.addEventListener("click", toggleBudgetModal);
@@ -254,14 +245,6 @@ const initHomePage = () => {
         budgetEndDateInput.classList.remove('input-invalid');
     });
 
-    // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
-    document.getElementById('transaction-amount').addEventListener('input', (e) => {
-        if (parseFloat(e.target.value) > 0) {
-            document.getElementById('amount-error').classList.add('hidden');
-            e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
-        }
-    });
-
     // first render of the home page, using whatever is already saved in localStorage
     renderTransactions();
     renderSpendingReceiving();
@@ -269,6 +252,25 @@ const initHomePage = () => {
     renderChart();
     renderBudgets();
 };
+
+const initTransactionModal = () => {
+    transactionModal = document.getElementById('transaction-modal-overlay');
+    closeTransactionModalBtn = document.getElementById('close-modal-btn');
+    cancelTransactionModalBtn = document.getElementById('cancel-transaction-btn');
+    transactionModalCatSpending = document.getElementById("transaction-category-spending");
+    transactionModalCatReceiving = document.getElementById("transaction-category-receiving");
+    transactionForm = document.getElementById('transaction-form');
+    closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
+    cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
+    transactionForm.addEventListener('submit', addTransaction);
+    // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
+    document.getElementById('transaction-amount').addEventListener('input', (e) => {
+        if (parseFloat(e.target.value) > 0) {
+            document.getElementById('amount-error').classList.add('hidden');
+            e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
+        }
+    });
+}
 
 const showToast = (message, duration = 4000) => {
     toastEl.textContent = message;
@@ -291,6 +293,7 @@ const safeSetItem = (key, value) => {
 }
 
 removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
+initTransactionModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path

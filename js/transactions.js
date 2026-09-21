@@ -119,9 +119,20 @@ const initTransactionsPage = () => {
     transactionsPageEmptyDiv = document.getElementById('transactions-empty');
     transactionsPageListDiv = document.getElementById('transactions-list-div');
     transactionsPageAddTransactionBtn = document.getElementById('add-transaction-btn');
+    transactionsPageAddTransactionBtnEmpty = document.getElementById('add-transaction-btn-empty');
 
     transactionsPageAddTransactionBtn.addEventListener('click', () => {
         toggleTransactionModal();
+    });
+
+    transactionsPageAddTransactionBtnEmpty.addEventListener('click', () => {
+        toggleTransactionModal();
+     });
+
+    transactionsPageListEl.addEventListener('click', (e) => {
+        const row = e.target.closest('.transaction-row'); // finds the row that was clicked
+        if (!row) return; // clicked outside a row
+        openEditTransactionModal(Number(row.dataset.index)); // dataset is always text, so convert
     });
 
     renderAllTransactions();
@@ -141,8 +152,8 @@ const initEditTransactionModal = () => {
     cancelEditBtn = document.getElementById('cancel-edit-btn');
 
     document.getElementById('close-edit-modal-btn').addEventListener('click', closeEditTransactionModal);
-    editModeBtn.addEventListener('click', setEditMode);
-    cancelEditBtn.addEventListener('click', cancelEditMode);
+    editModeBtn.addEventListener('click', () => setEditMode(true));
+    cancelEditBtn.addEventListener('click', cancelEdit);
     editTransactionForm.addEventListener('submit', saveEditedTransaction);
     deleteTransactionBtn.addEventListener('click', deleteTransaction);
 };
@@ -158,4 +169,18 @@ const setEditMode = (isEditing) => {
 // goes back to view mode and puts the original values back in the fields
 const cancelEdit = () => {
     openEditTransactionModal(editingIndex);
+};
+
+const openEditTransactionModal = (index) => {
+    editingIndex = index; // remembers which transaction is open
+    const t = getTransactions()[index]; // the transaction itself
+    editNameInput.value = t.transactionName;
+    editTypeLabel.textContent = t.transactionType === 'spending' ? 'Spending' : 'Receiving';
+    editAmountInput.value = Math.abs(t.transactionAmount);
+    editDateInput.value = t.transactionDate;
+    // spending and receiving have different category lists
+    const cats = t.transactionType === 'spending' ? CATEGORIES_SPENDING : CATEGORIES_RECEIVING;
+    editCategorySelect.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    setEditMode(false); // fields start locked, only Edit unlocks them
+    editTransactionModal.classList.add('open'); // shows the modal
 };
