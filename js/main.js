@@ -53,7 +53,9 @@ let addTransactionBtn,
     editCategorySelect,
     deleteTransactionBtn,
     editModeBtn,
-    cancelEditBtn;
+    cancelEditBtn,
+    filterPanel,
+    filterToggleBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;

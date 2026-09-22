@@ -120,21 +120,21 @@ const initTransactionsPage = () => {
     transactionsPageListDiv = document.getElementById('transactions-list-div');
     transactionsPageAddTransactionBtn = document.getElementById('add-transaction-btn');
     transactionsPageAddTransactionBtnEmpty = document.getElementById('add-transaction-btn-empty');
+    filterPanel = document.getElementById('filter-panel')
+    filterToggleBtn = document.getElementById('filter-toggle-btn');
 
+    filterToggleBtn.addEventListener('click', toggleFilterPanel);
     transactionsPageAddTransactionBtn.addEventListener('click', () => {
         toggleTransactionModal();
     });
-
     transactionsPageAddTransactionBtnEmpty.addEventListener('click', () => {
         toggleTransactionModal();
      });
-
     transactionsPageListEl.addEventListener('click', (e) => {
         const row = e.target.closest('.transaction-row'); // finds the row that was clicked
         if (!row) return; // clicked outside a row
         openEditTransactionModal(Number(row.dataset.index)); // dataset is always text, so convert
     });
-
     renderAllTransactions();
 };
 
@@ -223,4 +223,8 @@ const deleteTransaction = async () => {
     saveTransactions(transactions);
     closeEditTransactionModal();
     renderAllTransactions(); // refreshes the list on the transactions page
+}
+
+const toggleFilterPanel = () => {
+    filterPanel.classList.toggle('hidden');
 }

@@ -1,6 +1,66 @@
 <div id="transactions-page" class="transactions-page">
     <div id="transactions-list-div" class="container transactions-list-div">
-        <h1 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h1>
+        <h1 class="container-title"> Transactions
+            <div class="transactions-title-actions">
+                <button id="filter-toggle-btn" class="add-btn" aria-label="Toggle filters">
+                    <i class="bi bi-funnel" aria-hidden="true"></i>
+                </button>
+                <button id="add-transaction-btn" class="add-btn">+</button>
+            </div>
+        </h1>
+        <div id="filter-panel" class="filter-panel hidden">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label>Type</label>
+                    <div class="type-toggle filter-type-toggle">
+                        <input type="radio" id="filter-type-all" name="filter-type" value="all" checked>
+                        <label for="filter-type-all" class="type-option">All</label>
+
+                        <input type="radio" id="filter-type-spending" name="filter-type" value="spending">
+                        <label for="filter-type-spending" class="type-option">Spending</label>
+
+                        <input type="radio" id="filter-type-receiving" name="filter-type" value="receiving">
+                        <label for="filter-type-receiving" class="type-option">Receiving</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-category">Category</label>
+                    <select id="filter-category">
+                        <option value="all">All categories</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-row">
+                <div class="form-group">
+                    <label>Date range</label>
+                    <div class="filter-date-range">
+                        <input type="date" id="filter-date-from">
+                        <span class="filter-amount-sep">-</span>
+                        <input type="date" id="filter-date-to">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Amount range</label>
+                    <div class="filter-amount-slider-wrap">
+                        <div class="filter-amount-values">
+                            <span id="filter-amount-min-value">0€</span>
+                            <span class="filter-amount-sep">-</span>
+                            <span id="filter-amount-max-value">1000€</span>
+                        </div>
+                        <div class="filter-range-track">
+                            <div id="filter-range-fill" class="filter-range-fill"></div>
+                            <input type="range" id="filter-amount-min" min="0" max="1000" step="5" value="0">
+                            <input type="range" id="filter-amount-max" min="0" max="1000" step="5" value="1000">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="filter-clear-btn" class="btn btn-secondary">Clear Filters</button>
+        </div>
         <ul id="transactions-list" class="transactions-list"></ul>
     </div>
     <div id="transactions-empty" class="transactions-empty hidden">
