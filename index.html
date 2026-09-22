@@ -262,6 +262,21 @@
                 </form>
             </div>
         </div>
+
+        <div id="confirm-modal-overlay" class="modal-overlay">
+            <div id="confirm-modal" class="modal" role="dialog" aria-modal="true">
+                <div class="modal-header">
+                    <h1 id="confirm-modal-title" class="container-title">Confirm</h1>
+                </div>
+                <div class="confirm-modal-form">
+                    <p id="confirm-modal-message"></p>
+                    <div class="modal-actions">
+                        <button type="button" id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="button" id="confirm-ok-btn" class="btn btn-danger">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <div id="toast" class="toast hidden" role="alert"></div>
@@ -281,6 +296,7 @@
     <script src="js/render.js" defer></script>
     <script src="js/chart.js" defer></script>
     <script src="js/budget.js" defer></script>
+    <script src="js/confirm.js" defer></script>x
     <script src="js/main.js" defer></script>
 </body>
 </html>

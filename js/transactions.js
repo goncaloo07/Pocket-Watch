@@ -168,7 +168,7 @@ const setEditMode = (isEditing) => {
 
 // goes back to view mode and puts the original values back in the fields
 const cancelEdit = () => {
-    openEditTransactionModal(editingIndex);
+    openEditTransactionModal(editingIndex); // fills the fields with the original values and locks them again
 };
 
 const openEditTransactionModal = (index) => {
@@ -178,9 +178,49 @@ const openEditTransactionModal = (index) => {
     editTypeLabel.textContent = t.transactionType === 'spending' ? 'Spending' : 'Receiving';
     editAmountInput.value = Math.abs(t.transactionAmount);
     editDateInput.value = t.transactionDate;
+    editDateInput.max = getTodayISO(); // can't edit to a future date
     // spending and receiving have different category lists
     const cats = t.transactionType === 'spending' ? CATEGORIES_SPENDING : CATEGORIES_RECEIVING;
     editCategorySelect.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
     setEditMode(false); // fields start locked, only Edit unlocks them
     editTransactionModal.classList.add('open'); // shows the modal
 };
+
+const closeEditTransactionModal = () => {
+    editTransactionModal.classList.remove('open');
+    editingIndex = null; // no transaction open anymore
+};
+
+const saveEditedTransaction = (e) => {
+    e.preventDefault();
+    const transactions = getTransactions();
+    const original = transactions[editingIndex]; // to know if it's spending or receiving
+    const rawAmount = parseFloat(editAmountInput.value) || 0;
+    if (rawAmount === 0) { // amount can't be 0
+        editAmountInput.closest('.amount-input-wrap').classList.add('input-invalid');
+        editAmountError.classList.remove('hidden');
+        editAmountInput.focus();
+        return;
+    }
+    const editedTransaction = {
+        transactionName: editNameInput.value,
+        transactionDate: editDateInput.value,
+        transactionType: original.transactionType, // can't change type in edit mode
+        transactionCat: editCategorySelect.value,
+        transactionAmount: (original.transactionType === 'spending' ? -rawAmount : rawAmount).toFixed(2),
+    };
+    transactions[editingIndex] = editedTransaction;
+    saveTransactions(transactions);
+    closeEditTransactionModal();
+    renderAllTransactions(); // refreshes the list on the transactions page
+}
+
+const deleteTransaction = async () => {
+    const ok = await showConfirm("Are you sure you want to delete this transaction? (This is irreversible)");
+    if (!ok) return;
+    const transactions = getTransactions();
+    transactions.splice(editingIndex, 1); // removes the transaction at the editing index
+    saveTransactions(transactions);
+    closeEditTransactionModal();
+    renderAllTransactions(); // refreshes the list on the transactions page
+}

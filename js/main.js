@@ -94,6 +94,7 @@ const toggleTransactionModal = () => {
         transactionModalCatSpending.innerHTML = "";
         transactionModalCatReceiving.innerHTML = "";
         document.getElementById('transaction-date').value = getTodayISO();
+        document.getElementById('transaction-date').max = getTodayISO();
         CATEGORIES_SPENDING.forEach(category => {
             transactionModalCatSpending.innerHTML += `
                 <option value="${category}">${category}</option>
@@ -294,6 +295,7 @@ const safeSetItem = (key, value) => {
 
 removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
 initTransactionModal();
+initEditTransactionModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path

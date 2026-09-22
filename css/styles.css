@@ -2190,3 +2190,10 @@ input.input-invalid {
     opacity: 1;
     color: var(--textcolor);
 }
+
+/* Confirm modal */
+.confirm-modal-form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1.25rem 1rem 1.25rem;
+}
