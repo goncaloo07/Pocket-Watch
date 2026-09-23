@@ -183,17 +183,35 @@ const buildDateGroup = (dateStr, dayTransactions, balanceAfter) => {
 
 const renderAllTransactions = () => {
     const transactions = getTransactions();
+    const selectedType = document.querySelector('input[name="filter-type"]:checked').value
+    const selectedCat = transactionFilterCat.value;
+    fillFilterCats(selectedCat)
+    const dateFrom = transactionFilterDateMin.value;
+    const dateTo = transactionFilterDateMax.value;
+    getDefaultFilterDate(dateFrom, dateTo);
+    setupAmountFilter(parseFloat(filterMinAmount.value), parseFloat(filterMaxAmount.value));
+    const amountMin = parseFloat(filterMinAmount.value);
+    const amountMax = parseFloat(filterMaxAmount.value);
 
     if (transactions.length === 0) {
         transactionsPageEmptyDiv.classList.remove('hidden');
         transactionsPageListDiv.classList.add('hidden');
         return;
     }
+    const filtered = transactions.filter(t => selectedType === 'all' || t.transactionType === selectedType).filter(t => selectedCat === 'all' || t.transactionCat === selectedCat).filter(t => (dateFrom === '' || t.transactionDate >= dateFrom) && (dateTo === '' || t.transactionDate <= dateTo)).filter(t => Math.abs(parseFloat(t.transactionAmount)) >= amountMin && Math.abs(parseFloat(t.transactionAmount)) <= amountMax);
     transactionsPageEmptyDiv.classList.add('hidden');
+    transactionsNoResultsPage.classList.add("hidden");
     transactionsPageListDiv.classList.remove('hidden');
+    if (filtered.length === 0) {
+        transactionsPageEmptyDiv.classList.add('hidden');
+        transactionsNoResultsPage.classList.remove("hidden");
+        transactionsPageListEl.classList.add('hidden');
+        return;
+    }
+    transactionsPageListEl.classList.remove("hidden");
 
     // remember each transaction's position before sorting
-    const indexed = transactions.map((t, i) => ({ ...t, originalIndex: i }));
+    const indexed = filtered.map((t, i) => ({ ...t, originalIndex: i }));
 
     // newest date first for display; same-day transactions keep their existing order
     const sorted = [...indexed].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));

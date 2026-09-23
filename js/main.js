@@ -59,7 +59,12 @@ let addTransactionBtn,
     filterMaxAmountNum,
     filterMinAmountNum,
     filterMaxAmount,
-    filterMinAmount;
+    filterMinAmount,
+    transactionsNoResults,
+    transactionFilterType,
+    transactionFilterCat,
+    transactionFilterDateMax,
+    transactionFilterDateMin;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;

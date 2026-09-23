@@ -127,6 +127,14 @@ const initTransactionsPage = () => {
     filterMinAmountNum = document.getElementById("filter-amount-min-value");
     filterMaxAmount = document.getElementById("filter-amount-max");
     filterMinAmount = document.getElementById("filter-amount-min");
+    transactionsNoResultsPage = document.getElementById("transactions-no-results");
+    transactionFilterType = document.querySelectorAll("[name='filter-type'");
+    transactionFilterCat = document.getElementById("filter-category");
+    transactionFilterDateMin = document.getElementById("filter-date-from");
+    transactionFilterDateMax = document.getElementById("filter-date-to");
+
+    transactionFilterDateMax.max = getTodayISO()
+    transactionFilterDateMin.max = getTodayISO()
 
     filterToggleBtn.addEventListener('click', toggleFilterPanel);
     transactionsPageAddTransactionBtn.addEventListener('click', () => {
@@ -156,8 +164,16 @@ const initTransactionsPage = () => {
             filterMaxAmountNum.textContent = `${filterMaxAmount.value}€`;
         }
     });
+    transactionFilterCat.addEventListener("change", renderAllTransactions);
+    transactionFilterType.forEach((t) => t.addEventListener("change", renderAllTransactions));
+    transactionFilterDateMin.addEventListener("change", renderAllTransactions);
+    transactionFilterDateMax.addEventListener("change", renderAllTransactions);
+    filterMaxAmount.addEventListener("input", renderAllTransactions);
+    filterMinAmount.addEventListener("input", renderAllTransactions);
     renderAllTransactions();
     setupAmountFilter();
+    fillFilterCats();
+    getDefaultFilterDate();
 };
 
 const initEditTransactionModal = () => {
@@ -262,15 +278,45 @@ const getMaxTransactionAmount = () => {
     }, 0);
 };
 
-const setupAmountFilter = () => {
+const setupAmountFilter = (curMin, curMax) => {
+    const previousMax = parseFloat(filterMaxAmount.max) || 0; // the slider's max before this recalculation
     const maxAmount = getMaxTransactionAmount();
     const step = maxAmount < 50 ? 1 : 5;
     filterMaxAmount.step = step;
     filterMinAmount.step = step;
-    filterMaxAmountNum.textContent = `${maxAmount}€`;
-    filterMinAmountNum.textContent = "0€";
     filterMaxAmount.max = maxAmount;
     filterMinAmount.max = maxAmount;
-    filterMaxAmount.value = maxAmount;
-    filterMinAmount.value = Math.min(parseFloat(filterMinAmount.value), maxAmount);
+    // if the slider was already at full range, keep following the new max automatically
+    const newMax = (curMax === undefined || curMax >= previousMax) ? maxAmount : curMax;
+    const newMin = curMin === undefined ? 0 : Math.min(curMin, newMax);
+    filterMaxAmount.value = newMax;
+    filterMinAmount.value = newMin;
+    filterMaxAmountNum.textContent = `${newMax}€`;
+    filterMinAmountNum.textContent = `${newMin}€`;
+};
+
+const fillFilterCats = (curCat = "all") => {
+    const transactions = getTransactions();
+    transactionFilterCat.innerHTML = '<option value="all">All categories</option>';
+    const uniqueCats = new Set(transactions.map(t => t.transactionCat));
+    uniqueCats.forEach(cat => {
+        transactionFilterCat.innerHTML += `<option value="${cat}">${cat}</option>`
+    });
+    const option = transactionFilterCat.querySelector(`[value="${curCat}"]`);
+    if (option) option.selected = true;
+}
+
+const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
+    const transactions = getTransactions();
+    if (minDate === 0 && maxDate === 0) {
+        transactionFilterDateMax.value = getTodayISO();
+        if (transactions.length > 0) { // avoid crashing when there are no transactions yet
+            transactionFilterDateMin.value = transactions.reduce((oldest, t) => 
+                t.transactionDate < oldest ? t.transactionDate : oldest
+            , transactions[0].transactionDate);
+        }
+    } else {
+        transactionFilterDateMax.value = maxDate
+        transactionFilterDateMin.value = minDate;
+    }
 }
