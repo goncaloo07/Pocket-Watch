@@ -89,6 +89,7 @@ const addTransaction = (e) => {
     // only refresh what's actually visible
     if (window.location.pathname === '/transactions') {
         renderAllTransactions(); // this one updates the full list on the transactions page
+        setupAmountFilter();
     } else {
         renderTransactions();
         renderSpendingReceiving();
@@ -122,6 +123,10 @@ const initTransactionsPage = () => {
     transactionsPageAddTransactionBtnEmpty = document.getElementById('add-transaction-btn-empty');
     filterPanel = document.getElementById('filter-panel')
     filterToggleBtn = document.getElementById('filter-toggle-btn');
+    filterMaxAmountNum = document.getElementById("filter-amount-max-value");
+    filterMinAmountNum = document.getElementById("filter-amount-min-value");
+    filterMaxAmount = document.getElementById("filter-amount-max");
+    filterMinAmount = document.getElementById("filter-amount-min");
 
     filterToggleBtn.addEventListener('click', toggleFilterPanel);
     transactionsPageAddTransactionBtn.addEventListener('click', () => {
@@ -135,7 +140,24 @@ const initTransactionsPage = () => {
         if (!row) return; // clicked outside a row
         openEditTransactionModal(Number(row.dataset.index)); // dataset is always text, so convert
     });
+    filterMinAmount.addEventListener("input", () => {
+        if (parseFloat(filterMinAmount.value) > parseFloat(filterMaxAmount.value)) {
+            filterMinAmount.value = filterMaxAmount.value;
+            filterMinAmountNum.textContent = filterMaxAmountNum.textContent;
+        } else {
+            filterMinAmountNum.textContent = `${filterMinAmount.value}€`;
+        }
+    });
+    filterMaxAmount.addEventListener("input", () => {
+        if (parseFloat(filterMaxAmount.value) < parseFloat(filterMinAmount.value)) {
+            filterMaxAmount.value = filterMinAmount.value;
+            filterMaxAmountNum.textContent = filterMinAmountNum.textContent;
+        } else {
+            filterMaxAmountNum.textContent = `${filterMaxAmount.value}€`;
+        }
+    });
     renderAllTransactions();
+    setupAmountFilter();
 };
 
 const initEditTransactionModal = () => {
@@ -213,6 +235,7 @@ const saveEditedTransaction = (e) => {
     saveTransactions(transactions);
     closeEditTransactionModal();
     renderAllTransactions(); // refreshes the list on the transactions page
+    setupAmountFilter();
 }
 
 const deleteTransaction = async () => {
@@ -223,8 +246,31 @@ const deleteTransaction = async () => {
     saveTransactions(transactions);
     closeEditTransactionModal();
     renderAllTransactions(); // refreshes the list on the transactions page
+    setupAmountFilter();
 }
 
 const toggleFilterPanel = () => {
     filterPanel.classList.toggle('hidden');
+}
+
+const getMaxTransactionAmount = () => {
+    const transactions = getTransactions();
+    if (transactions.length === 0) return 1000;
+    return transactions.reduce((max, t) => {
+        const amount = Math.abs(parseFloat(t.transactionAmount));
+        return amount > max ? amount : max;
+    }, 0);
+};
+
+const setupAmountFilter = () => {
+    const maxAmount = getMaxTransactionAmount();
+    const step = maxAmount < 50 ? 1 : 5;
+    filterMaxAmount.step = step;
+    filterMinAmount.step = step;
+    filterMaxAmountNum.textContent = `${maxAmount}€`;
+    filterMinAmountNum.textContent = "0€";
+    filterMaxAmount.max = maxAmount;
+    filterMinAmount.max = maxAmount;
+    filterMaxAmount.value = maxAmount;
+    filterMinAmount.value = Math.min(parseFloat(filterMinAmount.value), maxAmount);
 }

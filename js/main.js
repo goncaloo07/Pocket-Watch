@@ -55,7 +55,11 @@ let addTransactionBtn,
     editModeBtn,
     cancelEditBtn,
     filterPanel,
-    filterToggleBtn;
+    filterToggleBtn,
+    filterMaxAmountNum,
+    filterMinAmountNum,
+    filterMaxAmount,
+    filterMinAmount;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
