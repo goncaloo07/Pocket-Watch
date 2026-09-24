@@ -280,8 +280,9 @@ const getMaxTransactionAmount = () => {
 
 const setupAmountFilter = (curMin, curMax) => {
     const previousMax = parseFloat(filterMaxAmount.max) || 0; // the slider's max before this recalculation
-    const maxAmount = getMaxTransactionAmount();
+    let maxAmount = getMaxTransactionAmount();
     const step = maxAmount < 50 ? 1 : 5;
+    maxAmount = Math.ceil(maxAmount / step) * step;
     filterMaxAmount.step = step;
     filterMinAmount.step = step;
     filterMaxAmount.max = maxAmount;
