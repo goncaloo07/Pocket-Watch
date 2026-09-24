@@ -19,6 +19,17 @@ const CATEGORY_ICONS = new Map([
     ["__general__", "bi-wallet2"]
 ])
 
+let defaultDateFrom = ''; // the "oldest transaction" date last put in the "from" filter
+
+// oldest transaction date or '' if there are no transactions
+const getOldestTransactionDate = () => {
+    const transactions = getTransactions();
+    if (transactions.length === 0) return '';
+    return transactions.reduce((oldest, t) =>
+        t.transactionDate < oldest ? t.transactionDate : oldest
+    , transactions[0].transactionDate);
+};
+
 const isValidTransaction = (t) => { // checks if the transaction object is valid, returns true or false
     return t
         && typeof t.transactionName === 'string'
@@ -132,6 +143,8 @@ const initTransactionsPage = () => {
     transactionFilterCat = document.getElementById("filter-category");
     transactionFilterDateMin = document.getElementById("filter-date-from");
     transactionFilterDateMax = document.getElementById("filter-date-to");
+    searchInput = document.getElementById("search-input");
+    filterClearBtn = document.getElementById("filter-clear-btn");
 
     transactionFilterDateMax.max = getTodayISO()
     transactionFilterDateMin.max = getTodayISO()
@@ -170,6 +183,8 @@ const initTransactionsPage = () => {
     transactionFilterDateMax.addEventListener("change", renderAllTransactions);
     filterMaxAmount.addEventListener("input", renderAllTransactions);
     filterMinAmount.addEventListener("input", renderAllTransactions);
+    searchInput.addEventListener("input", renderAllTransactions)
+    filterClearBtn.addEventListener("click", clearFilters)
     renderAllTransactions();
     setupAmountFilter();
     fillFilterCats();
@@ -305,7 +320,7 @@ const fillFilterCats = (curCat = "all") => {
     });
     const option = transactionFilterCat.querySelector(`[value="${curCat}"]`);
     if (option) option.selected = true;
-}
+};
 
 const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
     const transactions = getTransactions();
@@ -320,4 +335,13 @@ const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
         transactionFilterDateMax.value = maxDate
         transactionFilterDateMin.value = minDate;
     }
-}
+};
+
+const clearFilters = () => {
+    searchInput.value = "";
+    document.getElementById("filter-type-all").checked = true;
+    transactionFilterCat.value = "all";
+    getDefaultFilterDate();
+    setupAmountFilter();
+    renderAllTransactions();
+};

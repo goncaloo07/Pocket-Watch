@@ -186,7 +186,9 @@ const renderAllTransactions = () => {
     const selectedType = document.querySelector('input[name="filter-type"]:checked').value
     const selectedCat = transactionFilterCat.value;
     fillFilterCats(selectedCat)
-    const dateFrom = transactionFilterDateMin.value;
+    const oldestDate = getOldestTransactionDate();
+    const dateFrom = transactionFilterDateMin.value === defaultDateFrom ? oldestDate : transactionFilterDateMin.value;
+    defaultDateFrom = oldestDate; // remember the default for the next render
     const dateTo = transactionFilterDateMax.value;
     getDefaultFilterDate(dateFrom, dateTo);
     setupAmountFilter(parseFloat(filterMinAmount.value), parseFloat(filterMaxAmount.value));
@@ -198,7 +200,13 @@ const renderAllTransactions = () => {
         transactionsPageListDiv.classList.add('hidden');
         return;
     }
-    const filtered = transactions.filter(t => selectedType === 'all' || t.transactionType === selectedType).filter(t => selectedCat === 'all' || t.transactionCat === selectedCat).filter(t => (dateFrom === '' || t.transactionDate >= dateFrom) && (dateTo === '' || t.transactionDate <= dateTo)).filter(t => Math.abs(parseFloat(t.transactionAmount)) >= amountMin && Math.abs(parseFloat(t.transactionAmount)) <= amountMax);
+    // remember each transaction's position before sorting
+    const indexed = transactions.map((t, i) => ({ ...t, originalIndex: i }));
+    const filtered = indexed.filter(t => selectedType === 'all' || t.transactionType === selectedType)
+                                .filter(t => selectedCat === 'all' || t.transactionCat === selectedCat)
+                                .filter(t => (dateFrom === '' || t.transactionDate >= dateFrom) && (dateTo === '' || t.transactionDate <= dateTo))
+                                .filter(t => Math.abs(parseFloat(t.transactionAmount)) >= amountMin && Math.abs(parseFloat(t.transactionAmount)) <= amountMax)
+                                .filter(matchesSearch);
     transactionsPageEmptyDiv.classList.add('hidden');
     transactionsNoResultsPage.classList.add("hidden");
     transactionsPageListDiv.classList.remove('hidden');
@@ -210,11 +218,8 @@ const renderAllTransactions = () => {
     }
     transactionsPageListEl.classList.remove("hidden");
 
-    // remember each transaction's position before sorting
-    const indexed = filtered.map((t, i) => ({ ...t, originalIndex: i }));
-
     // newest date first for display; same-day transactions keep their existing order
-    const sorted = [...indexed].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
+    const sorted = [...filtered].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
 
     // splits the sorted list into { "2026-09-15": [...], "2026-09-14": [...] } buckets
     const groups = new Map();
@@ -235,4 +240,9 @@ const renderAllTransactions = () => {
     }
 
     transactionsPageListEl.innerHTML = Array.from(groups, ([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('');
+};
+
+const matchesSearch = (t) => {
+    const query = searchInput.value.trim().toLowerCase();
+    return t.transactionName.toLowerCase().includes(query);
 };

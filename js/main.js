@@ -64,7 +64,9 @@ let addTransactionBtn,
     transactionFilterType,
     transactionFilterCat,
     transactionFilterDateMax,
-    transactionFilterDateMin;
+    transactionFilterDateMin,
+    searchInput,
+    filterClearBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
