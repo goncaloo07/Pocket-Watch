@@ -21,27 +21,31 @@
                 </a>
 
                 <div id="sr-div" class="sr-div">
-                    <div id="spending-div" class="container sr-item">
-                        <h2 class="container-title">Spending</h2>
-                        <div id="no-spending" class="sr-empty">
-                            <i class="bi bi-arrow-down-circle sr-empty-icon" aria-hidden="true"></i>
-                            <p class="sr-empty-title">No spending yet</p>
-                            <p class="sr-empty-subtitle">Expenses you add will show up here.</p>
+                    <a href="/transactions?type=spending" class="sr-link">
+                        <div id="spending-div" class="container sr-item">
+                            <h2 class="container-title">Spending</h2>
+                            <div id="no-spending" class="sr-empty">
+                                <i class="bi bi-arrow-down-circle sr-empty-icon" aria-hidden="true"></i>
+                                <p class="sr-empty-title">No spending yet</p>
+                                <p class="sr-empty-subtitle">Expenses you add will show up here.</p>
+                            </div>
+                            <ul id="spending-list" class="sr-list">
+                            </ul>
                         </div>
-                        <ul id="spending-list" class="sr-list">
-                        </ul>
-                    </div>
+                    </a>
 
-                    <div id="receiving-div" class="container sr-item">
-                        <h2 class="container-title">Receiving</h2>
-                        <div id="no-receiving" class="sr-empty">
-                            <i class="bi bi-arrow-up-circle sr-empty-icon" aria-hidden="true"></i>
-                            <p class="sr-empty-title">No receiving yet</p>
-                            <p class="sr-empty-subtitle">Income you add will show up here.</p>
+                    <a href="/transactions?type=receiving" class="sr-link">
+                        <div id="receiving-div" class="container sr-item">
+                            <h2 class="container-title">Receiving</h2>
+                            <div id="no-receiving" class="sr-empty">
+                                <i class="bi bi-arrow-up-circle sr-empty-icon" aria-hidden="true"></i>
+                                <p class="sr-empty-title">No receiving yet</p>
+                                <p class="sr-empty-subtitle">Income you add will show up here.</p>
+                            </div>
+                            <ul id="receiving-list" class="sr-list">
+                            </ul>
                         </div>
-                        <ul id="receiving-list" class="sr-list">
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div id="budget-div" class="container budget-div">

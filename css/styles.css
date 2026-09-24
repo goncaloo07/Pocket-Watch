@@ -611,6 +611,14 @@ body.menu-open #main-content {
     padding: 0;
 }
 
+.sr-link {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    text-decoration: none;
+    color: var(--textcolor);
+}
+
 @media (max-width: 600px) {
     :root {
         --menu-width: min(85%, 400px);

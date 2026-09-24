@@ -55,9 +55,9 @@ const loadPage = (path) => {
 
 // updates the URL and loads the new page, no full reload
 const navigateTo = (path) => {
-    if (path === window.location.pathname) return; // already here
+    if (path === window.location.pathname + window.location.search) return; // already here
     history.pushState({}, '', path);
-    loadPage(path);
+    loadPage(path.split('?')[0]);
 };
 
 const showErrorPage = () => {
@@ -71,7 +71,9 @@ document.addEventListener('click', (e) => {
     if (!link) return;
 
     const href = link.getAttribute('href');
-    if (!href || !href.startsWith('/') || !ROUTES.hasOwnProperty(href)) return; // not one of our routes
+    const path = href.split('?')[0];
+    if (!href || !href.startsWith('/')) return; // not one of our routes
+    if (!ROUTES.hasOwnProperty(path)) return;
 
     e.preventDefault();
     navigateTo(href);
