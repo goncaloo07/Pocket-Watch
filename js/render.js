@@ -183,6 +183,7 @@ const buildDateGroup = (dateStr, dayTransactions, balanceAfter) => {
 
 const renderAllTransactions = () => {
     const transactions = getTransactions();
+    totalGroups = 0;
     const selectedType = document.querySelector('input[name="filter-type"]:checked').value
     const selectedCat = transactionFilterCat.value;
     fillFilterCats(selectedCat)
@@ -230,6 +231,7 @@ const renderAllTransactions = () => {
 
     // walk the days oldest to newest, accumulating the balance up to (and including) each day
     const dayEntries = Array.from(groups.entries());
+    totalGroups = dayEntries.length;
     const balanceByDate = new Map();
     let runningBalance = 0;
     for (let i = dayEntries.length - 1; i >= 0; i--) {
@@ -239,7 +241,8 @@ const renderAllTransactions = () => {
         balanceByDate.set(date, runningBalance);
     }
 
-    transactionsPageListEl.innerHTML = Array.from(groups, ([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('');
+    transactionsPageListEl.innerHTML = dayEntries.slice(0, visibleGroups).map(([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('')
+    //transactionsPageListEl.innerHTML = Array.from(groups, ([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('');
 };
 
 const matchesSearch = (t) => {

@@ -21,6 +21,10 @@ const CATEGORY_ICONS = new Map([
 
 let defaultDateFrom = ''; // the "oldest transaction" date last put in the "from" filter
 
+const GROUPS_PER_BATCH = 5; // how many days are loaded each time
+let visibleGroups = GROUPS_PER_BATCH; // how many days are on screen right now
+let totalGroups = 0; // how many days exist after filters
+
 // oldest transaction date or '' if there are no transactions
 const getOldestTransactionDate = () => {
     const transactions = getTransactions();
@@ -145,6 +149,18 @@ const initTransactionsPage = () => {
     transactionFilterDateMax = document.getElementById("filter-date-to");
     searchInput = document.getElementById("search-input");
     filterClearBtn = document.getElementById("filter-clear-btn");
+    const sentinel = document.getElementById('transactions-sentinel');
+    visibleGroups = GROUPS_PER_BATCH;
+
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && visibleGroups < totalGroups) {
+            visibleGroups += GROUPS_PER_BATCH;
+            renderAllTransactions();
+            observer.unobserve(sentinel);
+            observer.observe(sentinel);
+        }
+    });
+    observer.observe(sentinel);
 
     transactionFilterDateMax.max = getTodayISO()
     transactionFilterDateMin.max = getTodayISO()
