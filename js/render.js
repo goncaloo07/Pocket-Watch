@@ -242,10 +242,61 @@ const renderAllTransactions = () => {
     }
 
     transactionsPageListEl.innerHTML = dayEntries.slice(0, visibleGroups).map(([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('')
-    //transactionsPageListEl.innerHTML = Array.from(groups, ([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('');
+    renderActiveFilters();
 };
 
 const matchesSearch = (t) => {
     const query = searchInput.value.trim().toLowerCase();
     return t.transactionName.toLowerCase().includes(query);
+};
+
+// checks each filter against its default value and returns only the active ones
+const getActiveFilters = () => {
+    const active = [];
+    const selectedType = document.querySelector('input[name="filter-type"]:checked').value;
+    if (selectedType !== 'all') {
+        active.push({ key: 'type', label: selectedType === 'spending' ? 'Spending' : 'Receiving' });
+    }
+    const selectedCat = transactionFilterCat.value;
+    if (selectedCat !== 'all') {
+        active.push({ key: 'category', label: selectedCat})
+    }
+    const selectedDateStart = transactionFilterDateMin.value;
+    const selectedDateEnd = transactionFilterDateMax.value;
+    let date1 = "", date2 = "";
+    if(selectedDateStart !== getOldestTransactionDate()) {
+        date1 = `From ${selectedDateStart}`;
+    };
+    if (selectedDateEnd !== getTodayISO()) {
+        date2 = `Until ${selectedDateEnd}`;
+    };
+    if (date1 || date2) {
+        const selectedDate = [date1, date2].filter(Boolean).join(' ');
+        active.push({ key: 'date', label: selectedDate});
+    }
+    const minValue = parseFloat(filterMinAmount.value);
+    const maxValue = parseFloat(filterMaxAmount.value);
+    let value1 = "", value2 = "";
+    if (minValue > 0) value1 = `>${minValue}€`;
+    if (maxValue < parseFloat(filterMaxAmount.max)) value2 = `<${maxValue}€`;
+    if (value1 || value2) {
+        const selectedValues = [value1, value2].filter(Boolean).join(' ');
+        active.push({ key: 'value', label: selectedValues});
+    }
+    return active;
+};
+
+// builds the chip HTML and shows/hides the active-filters bar
+const renderActiveFilters = () => {
+    const active = getActiveFilters();
+    // only show when there are active filters AND the panel is closed
+    const shouldShow = active.length > 0 && filterPanel.classList.contains('hidden');
+    if (!shouldShow) {
+        activeFiltersDiv.classList.add('hidden')
+        return;
+    }
+    activeFiltersDiv.classList.remove('hidden');
+    activeFiltersDiv.innerHTML = active.map(a => `
+        <span class="active-filter-chip" data-key="${a.key}"><i class="bi bi-x"></i>${a.label}</span>
+    `).join('');
 };

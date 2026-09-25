@@ -143,7 +143,7 @@ const initTransactionsPage = () => {
     filterMaxAmount = document.getElementById("filter-amount-max");
     filterMinAmount = document.getElementById("filter-amount-min");
     transactionsNoResultsPage = document.getElementById("transactions-no-results");
-    transactionFilterType = document.querySelectorAll("[name='filter-type'");
+    transactionFilterType = document.querySelectorAll("[name='filter-type']");
     transactionFilterCat = document.getElementById("filter-category");
     transactionFilterDateMin = document.getElementById("filter-date-from");
     transactionFilterDateMax = document.getElementById("filter-date-to");
@@ -153,6 +153,7 @@ const initTransactionsPage = () => {
     visibleGroups = GROUPS_PER_BATCH;
     const params = new URLSearchParams(window.location.search); 
     const typeFromUrl = params.get('type');
+    activeFiltersDiv = document.getElementById('active-filters');
 
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && visibleGroups < totalGroups) {
@@ -204,8 +205,25 @@ const initTransactionsPage = () => {
         updateUrlType(t.value); // "all", "spending" ou "receiving"
         renderAllTransactions();
     }));
-    transactionFilterDateMin.addEventListener("change", renderAllTransactions);
-    transactionFilterDateMax.addEventListener("change", renderAllTransactions);
+    // one listener on the container catches clicks on any chip
+    activeFiltersDiv.addEventListener('click', (e) => {
+        const chip = e.target.closest('.active-filter-chip');
+        if (!chip) return; // clicked outside a chip
+        const key = chip.dataset.key;
+        if (e.target.closest('i')) {
+            clearSingleFilter(key);
+        } else {
+            focusFilterField(key);
+        }
+    });
+    transactionFilterDateMin.addEventListener("change", () => {
+        transactionFilterDateMax.min = transactionFilterDateMin.value;
+        renderAllTransactions();
+    });
+    transactionFilterDateMax.addEventListener("change", () => {
+        transactionFilterDateMin.max = transactionFilterDateMax.value;
+        renderAllTransactions();
+    });
     filterMaxAmount.addEventListener("input", renderAllTransactions);
     filterMinAmount.addEventListener("input", renderAllTransactions);
     searchInput.addEventListener("input", renderAllTransactions)
@@ -214,6 +232,7 @@ const initTransactionsPage = () => {
     setupAmountFilter();
     fillFilterCats();
     getDefaultFilterDate();
+    renderActiveFilters();
 };
 
 const initEditTransactionModal = () => {
@@ -307,6 +326,7 @@ const deleteTransaction = async () => {
 
 const toggleFilterPanel = () => {
     filterPanel.classList.toggle('hidden');
+    renderActiveFilters();
 }
 
 const getMaxTransactionAmount = () => {
@@ -360,6 +380,8 @@ const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
         transactionFilterDateMax.value = maxDate
         transactionFilterDateMin.value = minDate;
     }
+    transactionFilterDateMax.min = transactionFilterDateMin.value;
+    transactionFilterDateMin.max = transactionFilterDateMax.value;
 };
 
 const clearFilters = () => {
@@ -375,4 +397,49 @@ const clearFilters = () => {
 const updateUrlType = (type) => {
     const url = type === 'all' ? '/transactions' : `/transactions?type=${type}`;
     history.replaceState({}, '', url);
+};
+
+const clearSingleFilter = (key) => {
+    switch (key) {
+        case 'type':
+            document.getElementById('filter-type-all').checked = true;
+            break;
+        case 'category':
+            transactionFilterCat.value = 'all';
+            break;
+        case 'date':
+            getDefaultFilterDate();
+            break;
+        case 'value':
+            setupAmountFilter();
+            break;
+    }
+    renderAllTransactions();
+};
+
+const openFilterPanel = () => {
+    filterPanel.classList.remove('hidden');
+    renderActiveFilters();
+};
+
+const focusFilterField = (key) => {
+    openFilterPanel();
+    switch (key) {
+        case 'type':
+            document.getElementById(`filter-type-${document.querySelector('input[name="filter-type"]:checked').value}`).focus();
+            break;
+        case 'category':
+            transactionFilterCat.focus();
+            break;
+        case 'date':
+            if (transactionFilterDateMin.value !== getOldestTransactionDate()) {
+                transactionFilterDateMin.focus()
+            } else transactionFilterDateMax.focus()
+            break;
+        case 'value':
+            if (parseFloat(filterMinAmount.value) !== 0) {
+                filterMinAmount.focus()
+            } else filterMaxAmount.focus();
+            break;
+    }
 };
