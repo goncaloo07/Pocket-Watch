@@ -151,6 +151,8 @@ const initTransactionsPage = () => {
     filterClearBtn = document.getElementById("filter-clear-btn");
     const sentinel = document.getElementById('transactions-sentinel');
     visibleGroups = GROUPS_PER_BATCH;
+    const params = new URLSearchParams(window.location.search); 
+    const typeFromUrl = params.get('type');
 
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && visibleGroups < totalGroups) {
@@ -164,6 +166,10 @@ const initTransactionsPage = () => {
 
     transactionFilterDateMax.max = getTodayISO()
     transactionFilterDateMin.max = getTodayISO()
+
+    if (typeFromUrl === 'spending' || typeFromUrl === 'receiving') {
+        document.getElementById(`filter-type-${typeFromUrl}`).checked = true;
+    }
 
     filterToggleBtn.addEventListener('click', toggleFilterPanel);
     transactionsPageAddTransactionBtn.addEventListener('click', () => {
@@ -194,7 +200,10 @@ const initTransactionsPage = () => {
         }
     });
     transactionFilterCat.addEventListener("change", renderAllTransactions);
-    transactionFilterType.forEach((t) => t.addEventListener("change", renderAllTransactions));
+    transactionFilterType.forEach((t) => t.addEventListener("change", () => {
+        updateUrlType(t.value); // "all", "spending" ou "receiving"
+        renderAllTransactions();
+    }));
     transactionFilterDateMin.addEventListener("change", renderAllTransactions);
     transactionFilterDateMax.addEventListener("change", renderAllTransactions);
     filterMaxAmount.addEventListener("input", renderAllTransactions);
@@ -358,6 +367,12 @@ const clearFilters = () => {
     document.getElementById("filter-type-all").checked = true;
     transactionFilterCat.value = "all";
     getDefaultFilterDate();
+    updateUrlType('all');
     setupAmountFilter();
     renderAllTransactions();
+};
+
+const updateUrlType = (type) => {
+    const url = type === 'all' ? '/transactions' : `/transactions?type=${type}`;
+    history.replaceState({}, '', url);
 };
