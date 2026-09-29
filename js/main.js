@@ -318,3 +318,8 @@ document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/balance') initBalancePage();
     if (e.detail.path === '/transactions') initTransactionsPage();
 });
+
+window.addEventListener('storage', () => {
+    transactionsCache = null;
+    budgetsCache = null;
+});

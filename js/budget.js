@@ -1,5 +1,8 @@
 const GENERAL_BUDGET_CAT = "__general__";
 
+let budgetsCache = null;
+let budgetsCacheDate = null; // the day the cache was built (YYYY-MM-DD)
+
 const isValidBudget = (b) => { // checks if the budget object is valid, returns true or false
     return b
         && typeof b.budgetCat === 'string'
@@ -10,14 +13,16 @@ const isValidBudget = (b) => { // checks if the budget object is valid, returns 
 }
 
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
+    if (budgetsCache !== null && budgetsCacheDate === getTodayISO()) return budgetsCache;
     try {
-        const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget).filter(budget => !isBudgetExpired(budget));
-        return budgets;
+        budgetsCache = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget).filter(budget => !isBudgetExpired(budget));
+        budgetsCacheDate = getTodayISO();
+        return budgetsCache;
     } catch {
         safeSetItem('budgets', '[]');
         return [];
     }
-}
+};
 
 const removeExpiredBudgets = () => { // removes the expired budgets from localStorage 
     const budgets = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget); // gets the budgets from localStorage
@@ -25,13 +30,13 @@ const removeExpiredBudgets = () => { // removes the expired budgets from localSt
     if (activeBudgets.length !== budgets.length) { // if there are no expired budgets, it does nothing
         saveBudgets(activeBudgets); // saves the active budgets in localStorage
     }
-}
+};
 
 const getCats = () => { //gets the localStorage item budgets and turns it into a map for each category
     const budgets = getBudgets();
     const cats = budgets.map(budget => budget.budgetCat)
     return cats;
-}
+};
 
 const addBudget = (e) => {
     e.preventDefault();
@@ -74,11 +79,12 @@ const addBudget = (e) => {
     budgetForm.reset();
     toggleBudgetModal();
     renderBudgets();
-}
+};
 
 const saveBudgets = (budgets) => {
+    budgetsCache = null;
     safeSetItem('budgets', JSON.stringify(budgets)); // sets the budgets in localStorage
-}
+};
 
 const getSpentByCat = (budget) => {
     const cat = budget.budgetCat;
@@ -91,7 +97,7 @@ const getSpentByCat = (budget) => {
         && transaction.transactionDate <= end)
     .reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0); // filters to see only the spending of said category and gets the total money spent
     return parseFloat(catTransactions.toFixed(2)); // returns the total as a string with 2 decimals
-}
+};
 
 const getPeriodRange = (budget) => { // gets the full start and end of the budget's period
     if (budget.budgetPeriod === "date") {

@@ -20,6 +20,7 @@ const CATEGORY_ICONS = new Map([
 ])
 
 let defaultDateFrom = ''; // the "oldest transaction" date last put in the "from" filter
+let transactionsCache = null; // null means "nothing cached yet"
 
 const GROUPS_PER_BATCH = 5; // how many days are loaded each time
 let visibleGroups = GROUPS_PER_BATCH; // how many days are on screen right now
@@ -116,9 +117,11 @@ const addTransaction = (e) => {
 
 // reads transactions from localStorage, creating an empty list if none exist yet
 const getTransactions = () => {
+    if (transactionsCache !== null) return transactionsCache; // already parsed, reuse it
     try {
         const parsed = JSON.parse(localStorage.getItem('transactions'));
-        return (Array.isArray(parsed) ? parsed : []).filter(isValidTransaction);
+        transactionsCache = (Array.isArray(parsed) ? parsed : []).filter(isValidTransaction);
+        return transactionsCache;
     } catch {
         safeSetItem('transactions', '[]');
         return [];
@@ -127,6 +130,7 @@ const getTransactions = () => {
 
 // saves transactions to localStorage
 const saveTransactions = (transactions) => {
+    transactionsCache = null; // data changed, force a fresh read next time
     safeSetItem('transactions', JSON.stringify(transactions));
 };
 
