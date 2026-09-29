@@ -145,10 +145,15 @@ const getBalanceHistory = (time) => {
     }
 
     let startISO = formatDateISO(start);
+    const byDate = new Map();
+    transactions.forEach(t => {
+        if (!byDate.has(t.transactionDate)) byDate.set(t.transactionDate, []);
+        byDate.get(t.transactionDate).push(t);
+    });
     balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + parseFloat(transaction.transactionAmount) : total, 0); // balance before the chart's start day
 
     do {
-        const dailyTransactions = transactions.filter(t => t.transactionDate === startISO);
+        const dailyTransactions = byDate.get(startISO) ?? []; // days with nothing give an empty list
         const hasTransactions = dailyTransactions.length > 0;
         dailyTransactions.forEach(transaction => {
             balance += parseFloat(transaction.transactionAmount);
