@@ -71,8 +71,8 @@ document.addEventListener('click', (e) => {
     if (!link) return;
 
     const href = link.getAttribute('href');
-    const path = href.split('?')[0];
     if (!href || !href.startsWith('/')) return; // not one of our routes
+    const path = href.split('?')[0];
     if (!ROUTES.hasOwnProperty(path)) return;
 
     e.preventDefault();

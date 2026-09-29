@@ -6,6 +6,7 @@ const SITE_URL = "https://pocket-watch-murex.vercel.app";
 const PAGES = [
     { path: "/", file: "html/pages/home.html", priority: "1.0", changefreq: "weekly" },
     { path: "/balance", file: "html/pages/balance.html", priority: "0.8", changefreq: "weekly" },
+    { path: "/transactions", file: "html/pages/transactions.html", priority: "0.8", changefreq: "weekly" },
 ];
 
 // asks the GitHub API for the last commit date that touched a given file
