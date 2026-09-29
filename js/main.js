@@ -100,6 +100,10 @@ const CATEGORIES_RECEIVING = [
     "Freelance"
 ];
 
+const buildCategoryOptions = (categories) => {
+    return categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+};
+
 // opens/closes the "Add Transaction" modal. When opening, resets the form to
 // today's date and rebuilds the category dropdowns from scratch
 const toggleTransactionModal = () => {
@@ -109,16 +113,8 @@ const toggleTransactionModal = () => {
         transactionModalCatReceiving.innerHTML = "";
         document.getElementById('transaction-date').value = getTodayISO();
         document.getElementById('transaction-date').max = getTodayISO();
-        CATEGORIES_SPENDING.forEach(category => {
-            transactionModalCatSpending.innerHTML += `
-                <option value="${category}">${category}</option>
-            `;
-        })
-        CATEGORIES_RECEIVING.forEach(category => {
-            transactionModalCatReceiving.innerHTML += `
-                <option value="${category}">${category}</option>
-            `;
-        })
+        transactionModalCatSpending.innerHTML = buildCategoryOptions(CATEGORIES_SPENDING);
+        transactionModalCatReceiving.innerHTML = buildCategoryOptions(CATEGORIES_RECEIVING);
     } else {
         // closing: reset the form and clear any leftover "amount can't be 0" error
         transactionForm.reset();
@@ -132,18 +128,10 @@ const toggleTransactionModal = () => {
 const toggleBudgetModal = () => {
     const isOpen = budgetModal.classList.toggle("open");
     if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
-        budgetCategory.innerHTML = "";
-        const usedCats = getCats()
-        if (!usedCats.includes(GENERAL_BUDGET_CAT)) {
-            budgetCategory.innerHTML += `<option value="${GENERAL_BUDGET_CAT}">General</option>`;
-        }
-        for (const cat of CATEGORIES_SPENDING) {
-            if (!usedCats.includes(cat)) {
-                budgetCategory.innerHTML += `
-                    <option value="${cat}">${cat}</option>
-                `;
-            }
-        }
+        const usedCats = getCats();
+        const availableCats = CATEGORIES_SPENDING.filter(cat => !usedCats.includes(cat)); // only categories without a budget
+        const generalOption = usedCats.includes(GENERAL_BUDGET_CAT) ? '' : `<option value="${GENERAL_BUDGET_CAT}">General</option>`;
+        budgetCategory.innerHTML = generalOption + buildCategoryOptions(availableCats);
         // reset the "renews" section back to its default: recurring, monthly
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
