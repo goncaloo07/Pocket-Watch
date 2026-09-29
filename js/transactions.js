@@ -364,7 +364,7 @@ const setupAmountFilter = (curMin, curMax) => {
 const fillFilterCats = (curCat = "all") => {
     const transactions = getTransactions();
     const uniqueCats = new Set(transactions.map(t => t.transactionCat));
-    transactionFilterCat.innerHTML = `<option value="all">All categories</option>${buildCategoryOptions(uniqueCats)}`;
+    transactionFilterCat.innerHTML = `<option value="all">All categories</option>${buildCategoryOptions([...uniqueCats])}`;
     const option = transactionFilterCat.querySelector(`[value="${curCat}"]`);
     if (option) option.selected = true;
 };
