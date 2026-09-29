@@ -252,10 +252,6 @@ body {
     transition: color 0.15s ease;
 }  
 
-.menu ul li:hover{
-    background-color: var(--secondary-color);
-}
-
 /* Main Content */
 
 .main-content {
@@ -1503,14 +1499,6 @@ input.input-invalid {
     outline-offset: 3px;
 }
 
-.budget-end-date-group {
-    display: none;
-}
-
-.modal-form:has(#budget-period-date:checked) .budget-end-date-group {
-    display: flex;
-}
-
 .budget-recurring-group,
 .budget-end-date-group {
     display: none;
@@ -1636,12 +1624,6 @@ input.input-invalid {
 }
 
 @media (max-width: 660px) {
-    .footer-top {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 2rem 1rem 1.5rem;
-    }
-
     .footer-brand {
         max-width: none;
     }
@@ -1898,11 +1880,6 @@ input.input-invalid {
     font-size: 1.35rem;
     font-weight: 700;
     color: var(--textcolor);
-}
-
-
-.balance-summary-row:first-child .balance-summary-value {
-    font-size: 2rem;
 }
 
 .balance-summary-value.positive {
