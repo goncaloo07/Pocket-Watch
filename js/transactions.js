@@ -21,6 +21,7 @@ const CATEGORY_ICONS = new Map([
 
 let defaultDateFrom = ''; // the "oldest transaction" date last put in the "from" filter
 let transactionsCache = null; // null means "nothing cached yet"
+let renderQueued = false; // true while a render is already waiting
 
 const GROUPS_PER_BATCH = 5; // how many days are loaded each time
 let visibleGroups = GROUPS_PER_BATCH; // how many days are on screen right now
@@ -169,8 +170,8 @@ const initTransactionsPage = () => {
     });
     observer.observe(sentinel);
 
-    transactionFilterDateMax.max = getTodayISO()
-    transactionFilterDateMin.max = getTodayISO()
+    transactionFilterDateMax.max = getTodayISO();
+    transactionFilterDateMin.max = getTodayISO();
 
     if (typeFromUrl === 'spending' || typeFromUrl === 'receiving') {
         document.getElementById(`filter-type-${typeFromUrl}`).checked = true;
@@ -195,6 +196,7 @@ const initTransactionsPage = () => {
         } else {
             filterMinAmountNum.textContent = `${filterMinAmount.value}€`;
         }
+        scheduleRender();
     });
     filterMaxAmount.addEventListener("input", () => {
         if (parseFloat(filterMaxAmount.value) < parseFloat(filterMinAmount.value)) {
@@ -203,6 +205,7 @@ const initTransactionsPage = () => {
         } else {
             filterMaxAmountNum.textContent = `${filterMaxAmount.value}€`;
         }
+        scheduleRender();
     });
     transactionFilterCat.addEventListener("change", renderAllTransactions);
     transactionFilterType.forEach((t) => t.addEventListener("change", () => {
@@ -228,10 +231,8 @@ const initTransactionsPage = () => {
         transactionFilterDateMin.max = transactionFilterDateMax.value;
         renderAllTransactions();
     });
-    filterMaxAmount.addEventListener("input", renderAllTransactions);
-    filterMinAmount.addEventListener("input", renderAllTransactions);
-    searchInput.addEventListener("input", renderAllTransactions)
-    filterClearBtn.addEventListener("click", clearFilters)
+    searchInput.addEventListener("input", scheduleRender);
+    filterClearBtn.addEventListener("click", clearFilters);
     renderAllTransactions();
     setupAmountFilter();
     fillFilterCats();
@@ -446,4 +447,14 @@ const focusFilterField = (key) => {
             } else filterMaxAmount.focus();
             break;
     }
+};
+
+// groups many calls in the same frame into a single render
+const scheduleRender = () => {
+    if (renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(() => {
+        renderQueued = false;
+        renderAllTransactions();
+    });
 };
