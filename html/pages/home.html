@@ -48,16 +48,18 @@
                     </a>
                 </div>
 
-                <div id="budget-div" class="container budget-div">
-                    <h2 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h2>
-                    <div id="budget-empty" class="budget-empty">
-                        <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">No budgets yet</p>
-                        <p class="transactions-empty-subtitle">Set a limit for a category to start tracking it.</p>
+                <a href="/budgets" class="budget-link">
+                    <div id="budget-div" class="container budget-div">
+                        <h2 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h2>
+                        <div id="budget-empty" class="budget-empty">
+                            <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
+                            <p class="transactions-empty-title">No budgets yet</p>
+                            <p class="transactions-empty-subtitle">Set a limit for a category to start tracking it.</p>
+                        </div>
+                        <ul id="budget-list" class="budget-list hidden">
+                        </ul>
                     </div>
-                    <ul id="budget-list" class="budget-list hidden">
-                    </ul>
-                </div>
+                </a>
             </div>
 
             <div id="transactions-column" class="transactions-column">

@@ -67,7 +67,9 @@ let addTransactionBtn,
     transactionFilterDateMin,
     searchInput,
     filterClearBtn,
-    activeFiltersDiv;
+    activeFiltersDiv,
+    budgetListDiv,
+    addBudgetBtnEmpty;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -125,7 +127,7 @@ const toggleTransactionModal = () => {
 
 // opens/closes the "Add Budget" modal. When opening, only shows categories that
 // don't already have a budget (e.g. if "Food" already has a budget, it won't show up again)
-const toggleBudgetModal = () => {
+const toggleBudgetModal = (e) => {
     const isOpen = budgetModal.classList.toggle("open");
     if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
         const usedCats = getCats();
@@ -171,6 +173,50 @@ const initHomePage = () => {
     noReceivingDiv = document.getElementById('no-receiving');
     receivingListEl = document.getElementById('receiving-list');
     addBudgetBtn = document.getElementById("add-budget-btn");
+    budgetEmpty = document.getElementById("budget-empty");
+    budgetList = document.getElementById("budget-list");
+
+    // wire up the transaction modal's open/close/save buttons
+    addTransactionBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // stops the <a href="/transactions"> from navigating
+        e.stopPropagation(); // stops the click from bubbling up to the link around the whole card
+        toggleTransactionModal();
+    });
+    chartMode.forEach((mode => mode.addEventListener("change", renderChart))); // switching "By Category" / "Spending vs Receiving" redraws the chart
+    addBudgetBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleBudgetModal();
+    });
+
+    // first render of the home page, using whatever is already saved in localStorage
+    renderTransactions();
+    renderSpendingReceiving();
+    renderBalance();
+    renderChart();
+    renderBudgets();
+};
+
+const initTransactionModal = () => {
+    transactionModal = document.getElementById('transaction-modal-overlay');
+    closeTransactionModalBtn = document.getElementById('close-modal-btn');
+    cancelTransactionModalBtn = document.getElementById('cancel-transaction-btn');
+    transactionModalCatSpending = document.getElementById("transaction-category-spending");
+    transactionModalCatReceiving = document.getElementById("transaction-category-receiving");
+    transactionForm = document.getElementById('transaction-form');
+    closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
+    cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
+    transactionForm.addEventListener('submit', addTransaction);
+    // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
+    document.getElementById('transaction-amount').addEventListener('input', (e) => {
+        if (parseFloat(e.target.value) > 0) {
+            document.getElementById('amount-error').classList.add('hidden');
+            e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
+        }
+    });
+}
+
+const initBudgetModal = () => {
     budgetModal = document.getElementById("budget-modal-overlay");
     closeBudgetModalBtn = document.getElementById("close-budget-modal-btn");
     cancelBudgetModalBtn = document.getElementById("cancel-budget-btn");
@@ -180,26 +226,15 @@ const initHomePage = () => {
     budgetLimitValue = document.getElementById("budget-limit-value");
     budgetForm = document.getElementById("budget-form");
     budgetLimitError = document.getElementById("budget-limit-error");
-    budgetEmpty = document.getElementById("budget-empty");
-    budgetList = document.getElementById("budget-list");
     budgetPeriodInputs = document.querySelectorAll('[name="budget-period"]');
     budgetRecurringUnit = document.getElementById("budget-recurring-unit");
     budgetEndDateInput = document.getElementById("budget-end-date");
     budgetEndDateError = document.getElementById("budget-end-date-error");
-
-    // wire up the transaction modal's open/close/save buttons
-    addTransactionBtn.addEventListener('click', (e) => {
-        e.preventDefault(); // stops the <a href="/transactions"> from navigating
-        e.stopPropagation(); // stops the click from bubbling up to the link around the whole card
-        toggleTransactionModal();
-    });
-    chartMode.forEach((mode => mode.addEventListener("change", renderChart))); // switching "By Category" / "Spending vs Receiving" redraws the chart
-    addBudgetBtn.addEventListener("click", toggleBudgetModal);
     closeBudgetModalBtn.addEventListener("click", toggleBudgetModal);
     cancelBudgetModalBtn.addEventListener("click", toggleBudgetModal);
     budgetForm.addEventListener('submit', addBudget);
 
-    // clicking the "100€" text swaps it for an editable number input, so the
+     // clicking the "100€" text swaps it for an editable number input, so the
     // user can type an exact value instead of only dragging the slider
     budgetLimitValue.addEventListener("click", () => {
         budgetLimitValue.classList.add("hidden");
@@ -247,32 +282,6 @@ const initHomePage = () => {
         budgetEndDateError.classList.add('hidden');
         budgetEndDateInput.classList.remove('input-invalid');
     });
-
-    // first render of the home page, using whatever is already saved in localStorage
-    renderTransactions();
-    renderSpendingReceiving();
-    renderBalance();
-    renderChart();
-    renderBudgets();
-};
-
-const initTransactionModal = () => {
-    transactionModal = document.getElementById('transaction-modal-overlay');
-    closeTransactionModalBtn = document.getElementById('close-modal-btn');
-    cancelTransactionModalBtn = document.getElementById('cancel-transaction-btn');
-    transactionModalCatSpending = document.getElementById("transaction-category-spending");
-    transactionModalCatReceiving = document.getElementById("transaction-category-receiving");
-    transactionForm = document.getElementById('transaction-form');
-    closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
-    cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
-    transactionForm.addEventListener('submit', addTransaction);
-    // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
-    document.getElementById('transaction-amount').addEventListener('input', (e) => {
-        if (parseFloat(e.target.value) > 0) {
-            document.getElementById('amount-error').classList.add('hidden');
-            e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
-        }
-    });
 }
 
 const showToast = (message, duration = 4000) => {
@@ -298,6 +307,7 @@ const safeSetItem = (key, value) => {
 removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
 initTransactionModal();
 initEditTransactionModal();
+initBudgetModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path
@@ -305,6 +315,7 @@ document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
     if (e.detail.path === '/transactions') initTransactionsPage();
+    if (e.detail.path === '/budgets') initBudgetsPage();
 });
 
 window.addEventListener('storage', () => {

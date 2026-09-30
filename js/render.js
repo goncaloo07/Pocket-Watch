@@ -128,6 +128,8 @@ const buildBudgetRow = (budget, totalSpent) => {
 
 const renderBudgets = () => {
     const budgets = getBudgets(); // gets all the budgets
+    const isBudgetsPage = window.location.pathname === '/budgets';
+    if (isBudgetsPage) budgetListDiv.classList.toggle('hidden', budgets.length === 0);
     if (budgets.length === 0) { // if there aren't any budgets, show the empty message
         budgetEmpty.classList.remove('hidden');
         budgetList.classList.add("hidden");
@@ -143,7 +145,9 @@ const renderBudgets = () => {
         if (b.budgetCat === GENERAL_BUDGET_CAT) return 1;
         return (spentMap.get(b) / b.budgetLimit) - (spentMap.get(a) / a.budgetLimit);
     }); // sort the budgets from the most completed to the less completed (general always first)
-    budgetList.innerHTML = sortedBudgets.slice(0,3).map(budget => buildBudgetRow(budget, spentMap.get(budget))).join('');
+    const budgetsToShow = isBudgetsPage ? sortedBudgets : sortedBudgets.slice(0, 3);
+    const buildRow = isBudgetsPage ? buildBudgetDetailRow : buildBudgetRow;
+    budgetList.innerHTML = budgetsToShow.map(budget => buildRow(budget, spentMap.get(budget))).join('');
 };
 
 // Escapes HTML so user text can't run as code. Example: turns "<b>" into visible text, not bold.
@@ -299,4 +303,51 @@ const renderActiveFilters = () => {
     activeFiltersDiv.innerHTML = active.map(a => `
         <span class="active-filter-chip" data-key="${a.key}"><i class="bi bi-x"></i>${a.label}</span>
     `).join('');
+};
+
+const buildBudgetDetailRow = (budget, totalSpent) => {
+    const { budgetCat, budgetLimit, budgetPeriod } = budget;
+    const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
+    const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots';
+    const { end } = getPeriodRange(budget);
+
+    const left = budgetLimit - totalSpent; // negative means over the limit
+    const perc = Math.round((totalSpent / budgetLimit) * 100);
+    const daysLeft = getDaysLeft(end);
+    const perDay = left > 0 ? left / daysLeft : 0; // nothing left to spend if over the limit
+    const isOver = left < 0;
+    const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : '';
+
+    // "Monthly", "Weekly", "Yearly" or "Until 31 Oct"
+    const budgetType = budgetPeriod === 'recurring'
+        ? budget.budgetUnit[0].toUpperCase() + budget.budgetUnit.slice(1)
+        : "Until " + formatDateShort(end);
+
+    return `
+        <li class="budget-row">
+            <div class="budget-row-top">
+                <div class="transaction-left">
+                    <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
+                    <div class="transaction-info">
+                        <span class="transaction-name">${displayName}</span>
+                        <span class="transaction-meta">${budgetType}</span>
+                    </div>
+                </div>
+                <span class="budget-amounts ${barClass}">${totalSpent.toFixed(2)}€ <span class="budget-amounts-sep">/</span> ${budgetLimit.toFixed(2)}€</span>
+            </div>
+            <div class="budget-bar-row">
+                <div class="budget-bar-track">
+                    <div class="budget-bar-fill ${barClass}" style="width: ${perc > 100 ? 100 : perc}%;"></div>
+                </div>
+                <span class="budget-perc">${perc}%</span>
+            </div>
+            <div class="budget-detail-footer">
+                <span class="${isOver ? 'over' : ''}">
+                    ${isOver ? `${Math.abs(left).toFixed(2)}€ over` : `${left.toFixed(2)}€ left`}
+                </span>
+                <span>${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left</span>
+                <span>Can spend ${perDay.toFixed(2)}€ per day</span>
+            </div>
+        </li>
+    `;
 };

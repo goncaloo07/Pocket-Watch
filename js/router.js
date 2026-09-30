@@ -2,6 +2,7 @@
 const ROUTES = {
     '/': 'html/pages/home.html',
     '/balance': 'html/pages/balance.html',
+    '/budgets': 'html/pages/budgets.html',
     '/transactions': 'html/pages/transactions.html',
     '/comingSoon': 'html/pages/comingSoon.html',
     default: 'html/pages/404.html'
@@ -11,6 +12,7 @@ const ROUTES = {
 const PAGE_TITLES = {
     '/': 'Pocket Watch',
     '/balance': 'Balance History',
+    '/budgets': 'Budgets',
     '/transactions': 'Transactions',
     '/comingSoon': 'Coming Soon',
     default: 'Page Not Found'
@@ -20,6 +22,7 @@ const PAGE_TITLES = {
 const PAGE_DESCRIPTIONS = {
     '/': 'A personal finance app where you can see your balance, add transactions and set budgets. Everything stays saved in your own browser.',
     '/balance': 'Check your balance history and see how your transactions affect your finances over time.',
+    '/budgets': 'See all your budgets, check how much you have spent in each category and edit or delete them.',
     '/transactions': 'View your transaction history and manage your spending and receiving records.',
     '/comingSoon': 'This part of the app is still being worked on.',
     default: 'This page does not exist or was moved.'

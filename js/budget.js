@@ -140,3 +140,22 @@ const formatDateShort = (date) => { // returns the date like
 const isBudgetExpired = (budget) => { // check if the budget is expired
     return budget.budgetPeriod === "date" && budget.budgetEndDate < getTodayISO();
 };
+
+const initBudgetsPage = () => {
+    budgetList = document.getElementById("budget-list");
+    budgetEmpty = document.getElementById("budget-empty");
+    budgetListDiv = document.getElementById("budget-list-div");
+    addBudgetBtn = document.getElementById("add-budget-btn");
+    addBudgetBtnEmpty = document.getElementById("add-budget-btn-empty");
+
+    addBudgetBtn.addEventListener("click", toggleBudgetModal);
+    addBudgetBtnEmpty.addEventListener("click", toggleBudgetModal);
+
+    renderBudgets();
+};
+
+const getDaysLeft = (end) => {
+    const today = new Date().setHours(0, 0, 0, 0);
+    const newEnd = new Date(end).setHours(0, 0, 0, 0);
+    return Math.round((newEnd - today) / (1000 * 60 * 60 * 24)) + 1
+};
