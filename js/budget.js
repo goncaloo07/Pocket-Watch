@@ -151,6 +151,12 @@ const initBudgetsPage = () => {
     addBudgetBtn.addEventListener("click", toggleBudgetModal);
     addBudgetBtnEmpty.addEventListener("click", toggleBudgetModal);
 
+    budgetList.addEventListener('click', (e) => {
+        const row = e.target.closest('.budget-row'); // finds the row that was clicked
+        if (!row) return; // clicked outside a row
+        openEditBudgetModal(Number(row.dataset.index)); // dataset is always text, so convert
+    });
+
     renderBudgets();
 };
 
@@ -158,4 +164,142 @@ const getDaysLeft = (end) => {
     const today = new Date().setHours(0, 0, 0, 0);
     const newEnd = new Date(end).setHours(0, 0, 0, 0);
     return Math.round((newEnd - today) / (1000 * 60 * 60 * 24)) + 1
+};
+
+const openEditBudgetModal = (index) => {
+    editingBudgetIndex = index; // remembers which budget is open
+    const b = getBudgets()[index];
+
+    editBudgetCategory.textContent = b.budgetCat === GENERAL_BUDGET_CAT ? 'General' : b.budgetCat;
+    editBudgetLimitInput.value = b.budgetLimit;
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    editBudgetEndDateInput.min = formatDateISO(tomorrow);
+
+    // check the right radio and fill its value
+    if (b.budgetPeriod === 'recurring') {
+        editBudgetRecurringRadio.checked = true;
+        editBudgetRecurringUnit.value = b.budgetUnit;
+    } else {
+        editBudgetDateRadio.checked = true;
+        editBudgetEndDateInput.value = b.budgetEndDate;
+    }
+
+    // clear leftover errors from a previous open
+    editBudgetLimitError.classList.add('hidden');
+    editBudgetEndDateError.classList.add('hidden');
+
+    setEditBudgetMode(false); // fields start locked
+    editBudgetModal.classList.add('open');
+};
+
+const initEditBudgetModal = () => {
+    editBudgetModal = document.getElementById('edit-budget-modal-overlay');
+    editBudgetForm = document.getElementById('edit-budget-form');
+    editBudgetCategory = document.getElementById('edit-budget-category');
+    editBudgetLimitInput = document.getElementById('edit-budget-limit');
+    editBudgetLimitError = document.getElementById('edit-budget-limit-error');
+    editBudgetRecurringRadio = document.getElementById('edit-budget-period-recurring');
+    editBudgetDateRadio = document.getElementById('edit-budget-period-date');
+    editBudgetRecurringUnit = document.getElementById('edit-budget-recurring-unit');
+    editBudgetEndDateInput = document.getElementById('edit-budget-end-date');
+    editBudgetEndDateError = document.getElementById('edit-budget-end-date-error');
+    deleteBudgetBtn = document.getElementById('delete-budget-btn');
+    editBudgetModeBtn = document.getElementById('edit-budget-mode-btn');
+    cancelEditBudgetBtn = document.getElementById('cancel-edit-budget-btn');
+
+    editBudgetLimitInput.closest('.amount-input-wrap').classList.remove('input-invalid');
+    editBudgetEndDateInput.classList.remove('input-invalid');
+
+    document.getElementById('close-edit-budget-modal-btn').addEventListener('click', closeEditBudgetModal);
+    editBudgetModeBtn.addEventListener('click', () => setEditBudgetMode(true));
+    cancelEditBudgetBtn.addEventListener('click', cancelEditBudget);
+    editBudgetForm.addEventListener('submit', saveEditedBudget);
+    deleteBudgetBtn.addEventListener('click', deleteBudget);
+    editBudgetLimitInput.addEventListener('input', () => {
+        if (parseFloat(editBudgetLimitInput.value) > 0) {
+            editBudgetLimitError.classList.add('hidden');
+            editBudgetLimitInput.closest('.amount-input-wrap').classList.remove('input-invalid');
+        }
+    });
+    editBudgetEndDateInput.addEventListener('input', () => {
+        if (editBudgetEndDateInput.value > getTodayISO()) {
+            editBudgetEndDateError.classList.add('hidden');
+            editBudgetEndDateInput.classList.remove('input-invalid');
+        };
+    });
+};
+
+const setEditBudgetMode = (isEditing) => {
+    editBudgetForm.classList.toggle('editing', isEditing); // CSS swaps the buttons
+    editBudgetForm.querySelectorAll('input, select').forEach(field => {
+        field.disabled = !isEditing;
+    });
+};
+
+// goes back to view mode with the original values
+const cancelEditBudget = () => {
+    openEditBudgetModal(editingBudgetIndex);
+};
+
+const closeEditBudgetModal = () => {
+    editBudgetModal.classList.remove('open');
+    editingBudgetIndex = null;
+};
+
+const saveEditedBudget = (e) => {
+    e.preventDefault();
+
+    // limit can't be 0 (same idea as addBudget)
+    const limit = parseFloat(editBudgetLimitInput.value) || 0;
+    if (limit === 0) {
+        editBudgetLimitInput.closest('.amount-input-wrap').classList.add('input-invalid');
+        editBudgetLimitError.classList.remove('hidden');
+        editBudgetLimitInput.focus();
+        return;
+    }
+
+    // which radio is selected
+    const periodType = document.querySelector('input[name="edit-budget-period"]:checked').value;
+
+    // read the value of the selected type, and validate the date
+    let unit;
+    if (periodType === 'recurring') {
+        unit = editBudgetRecurringUnit.value;
+    } else {
+        unit = editBudgetEndDateInput.value;
+        if (unit <= getTodayISO()) {
+            editBudgetEndDateError.classList.remove('hidden');
+            editBudgetEndDateInput.classList.add('input-invalid');
+            editBudgetEndDateInput.focus();
+            return;
+        };
+    };
+
+    // replace the budget in the array
+    const budgets = getBudgets();
+    const original = budgets[editingBudgetIndex];
+    budgets[editingBudgetIndex] = {
+        budgetCat: original.budgetCat,             // category can't change
+        budgetLimit: limit,
+        budgetPeriod: periodType,
+        budgetCreatedAt: original.budgetCreatedAt, // keep the original creation date
+        ...(periodType === 'recurring' ? { budgetUnit: unit } : { budgetEndDate: unit }),
+    };
+
+    // save, close and redraw
+    saveBudgets(budgets);
+    closeEditBudgetModal();
+    renderBudgets();
+};
+
+const deleteBudget = async () => {
+    const ok = await showConfirm("Are you sure you want to delete this budget? (This is irreversible)");
+    if (!ok) return; // user clicked Cancel
+    const budgets = getBudgets();
+    budgets.splice(editingBudgetIndex, 1); // removes the budget at the open position
+    saveBudgets(budgets);
+    closeEditBudgetModal();
+    renderBudgets();
 };

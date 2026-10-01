@@ -665,7 +665,7 @@ body.menu-open #main-content {
         flex: 1 1 0;
     }
 
-    .budget-div {
+    .budget-link {
         order: 4;
     }
 
@@ -2539,4 +2539,49 @@ input.input-invalid {
 
 .budget-detail-footer span.over {
     color: var(--negative-color);
+}
+
+/* Edit budget modal */
+
+.modal-form:has(#edit-budget-period-recurring:checked) .budget-recurring-group {
+    display: flex;
+}
+
+.modal-form:has(#edit-budget-period-date:checked) .budget-end-date-group {
+    display: flex;
+}
+
+#edit-budget-period-recurring:checked + .budget-period-recurring,
+#edit-budget-period-date:checked + .budget-period-date {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background-color: color-mix(in srgb, var(--accent-color) 12%, var(--navcolor));
+}
+
+#edit-budget-form:not(.editing) #cancel-edit-budget-btn,
+#edit-budget-form:not(.editing) #save-edit-budget-btn {
+    display: none;
+}
+
+#edit-budget-form.editing #edit-budget-mode-btn,
+#edit-budget-form.editing #delete-budget-btn {
+    display: none;
+}
+
+#delete-budget-btn {
+    margin-right: auto;
+}
+
+#edit-budget-form input:disabled + .type-option {
+    cursor: default;
+}
+
+#budget-page .budget-row {
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+}
+
+#budget-page .budget-row:hover {
+    background-color: var(--navcolor);
 }

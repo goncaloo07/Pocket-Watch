@@ -69,12 +69,26 @@ let addTransactionBtn,
     filterClearBtn,
     activeFiltersDiv,
     budgetListDiv,
-    addBudgetBtnEmpty;
+    addBudgetBtnEmpty,
+    editBudgetModal,
+    editBudgetForm,
+    editBudgetCategory,
+    editBudgetLimitInput,
+    editBudgetLimitError,
+    editBudgetRecurringRadio,
+    editBudgetDateRadio,
+    editBudgetRecurringUnit,
+    editBudgetEndDateInput,
+    editBudgetEndDateError,
+    deleteBudgetBtn,
+    editBudgetModeBtn,
+    cancelEditBudgetBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
 
 let editingIndex = null; // position of the transaction currently open in the modal
+let editingBudgetIndex = null;
 
 // list of categories shown in the "Category" dropdown when adding a spending transaction
 // (or a budget, since budgets are always tied to a spending category)
@@ -308,6 +322,7 @@ removeExpiredBudgets(); // removes expired budgets from localStorage on first lo
 initTransactionModal();
 initEditTransactionModal();
 initBudgetModal();
+initEditBudgetModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path

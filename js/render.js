@@ -147,7 +147,7 @@ const renderBudgets = () => {
     }); // sort the budgets from the most completed to the less completed (general always first)
     const budgetsToShow = isBudgetsPage ? sortedBudgets : sortedBudgets.slice(0, 3);
     const buildRow = isBudgetsPage ? buildBudgetDetailRow : buildBudgetRow;
-    budgetList.innerHTML = budgetsToShow.map(budget => buildRow(budget, spentMap.get(budget))).join('');
+    budgetList.innerHTML = budgetsToShow.map(budget => buildRow(budget, spentMap.get(budget), budgets.indexOf(budget))).join('');
 };
 
 // Escapes HTML so user text can't run as code. Example: turns "<b>" into visible text, not bold.
@@ -305,7 +305,7 @@ const renderActiveFilters = () => {
     `).join('');
 };
 
-const buildBudgetDetailRow = (budget, totalSpent) => {
+const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
     const { budgetCat, budgetLimit, budgetPeriod } = budget;
     const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
     const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots';
@@ -324,7 +324,7 @@ const buildBudgetDetailRow = (budget, totalSpent) => {
         : "Until " + formatDateShort(end);
 
     return `
-        <li class="budget-row">
+        <li class="budget-row" data-index="${originalIndex}">
             <div class="budget-row-top">
                 <div class="transaction-left">
                     <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>

@@ -263,6 +263,70 @@
             </div>
         </div>
 
+        <div id="edit-budget-modal-overlay" class="modal-overlay">
+            <div id="edit-budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-budget-modal-title">
+                <div class="modal-header">
+                    <h1 id="edit-budget-modal-title" class="container-title">Budget Details</h1>
+                    <button id="close-edit-budget-modal-btn" class="close-btn" aria-label="Close">
+                        <i class="bi bi-x" aria-hidden="true"></i>
+                    </button>
+                </div>
+
+                <form id="edit-budget-form" class="modal-form">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <span id="edit-budget-category" class="edit-type-badge"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-budget-limit">Limit</label>
+                        <div class="amount-input-wrap">
+                            <span class="amount-currency">€</span>
+                            <input type="number" id="edit-budget-limit" step="0.01" min="0" inputmode="decimal" required>
+                        </div>
+                        <span id="edit-budget-limit-error" class="input-error hidden">Limit must be greater than 0€</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Renews</label>
+                        <div class="type-toggle">
+                            <input type="radio" id="edit-budget-period-recurring" name="edit-budget-period" value="recurring" checked>
+                            <label for="edit-budget-period-recurring" class="type-option budget-period-recurring">
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Every So Often
+                            </label>
+
+                            <input type="radio" id="edit-budget-period-date" name="edit-budget-period" value="date">
+                            <label for="edit-budget-period-date" class="type-option budget-period-date">
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> Until Date
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group budget-recurring-group">
+                        <label for="edit-budget-recurring-unit">Frequency</label>
+                        <select id="edit-budget-recurring-unit">
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="yearly">Yearly</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group budget-end-date-group">
+                        <label for="edit-budget-end-date">End Date</label>
+                        <input type="date" id="edit-budget-end-date">
+                        <span id="edit-budget-end-date-error" class="input-error hidden">End date must be after today</span>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" id="delete-budget-btn" class="btn btn-danger">Delete</button>
+                        <button type="button" id="edit-budget-mode-btn" class="btn btn-secondary">Edit</button>
+                        <button type="button" id="cancel-edit-budget-btn" class="btn btn-secondary">Cancel</button>
+                        <button type="submit" id="save-edit-budget-btn" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div id="confirm-modal-overlay" class="modal-overlay">
             <div id="confirm-modal" class="modal" role="dialog" aria-modal="true">
                 <div class="modal-header">
