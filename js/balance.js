@@ -22,6 +22,7 @@ const initBalancePage = () => {
     balanceHoverPoints = document.getElementById('balance-hover-points');
 
     balancePeriodInputs.forEach((period) => period.addEventListener("change", renderBalanceHistory)); // redraw on period change
+    document.addEventListener('click', closeDayDetails);
 
     renderBalanceHistory()
 };
@@ -258,6 +259,8 @@ const attachBalanceHoverEvents = () => {
             const balance = e.target.getAttribute('data-balance');
             const cx = e.target.getAttribute('data-cx');
             const cy = e.target.getAttribute('data-cy');
+            const dot = balancePoints.querySelector(`circle[cx="${cx}"]`);
+            if (dot) dot.classList.add('hovered');
 
             const leftPercent = (cx / CHART_WIDTH) * 100;
             const topPercent = (cy / CHART_HEIGHT) * 100;
@@ -272,6 +275,61 @@ const attachBalanceHoverEvents = () => {
         });
         point.addEventListener('mouseleave', () => {
             balanceTooltip.classList.add('hidden');
+            balancePoints.querySelectorAll('.hovered').forEach(d => d.classList.remove('hovered'));
+        });
+        point.addEventListener('click', (e) => {
+            const date = e.target.getAttribute('data-date');
+            const cx = e.target.getAttribute('data-cx');
+            showDayDetails(date, cx);
         });
     });
 }
+
+const showDayDetails = (date, cx) => {
+    const dayTransactions = getTransactions().filter(t => t.transactionDate === date);
+    const spent = dayTransactions
+        .filter(t => t.transactionType === 'spending')
+        .reduce((sum, t) => sum + Math.abs(parseFloat(t.transactionAmount)), 0);
+    const received = dayTransactions
+        .filter(t => t.transactionType === 'receiving')
+        .reduce((sum, t) => sum + parseFloat(t.transactionAmount), 0);
+    const net = received - spent;
+    const content = dayTransactions.length === 0
+        ? '<li class="transactions-empty-subtitle">No transactions this day</li>'
+        : dayTransactions.map(buildTransactionRow).join('');
+    balanceSummaryDiv.innerHTML = `
+        <div class="balance-day-details">
+            <div class="balance-day-details-header">
+                <span class="balance-summary-date">${formatDateDMY(date)}</span>
+                <button class="balance-day-back-btn">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+                </button>
+            </div>
+            <div class="balance-day-totals">
+                <div class="balance-summary-row">
+                    <span class="balance-summary-label">Received</span>
+                    <span class="balance-summary-value positive">${received.toFixed(2)}€</span>
+                </div>
+                <div class="balance-summary-row">
+                    <span class="balance-summary-label">Spent</span>
+                    <span class="balance-summary-value negative">${spent.toFixed(2)}€</span>
+                </div>
+                <div class="balance-summary-row">
+                    <span class="balance-summary-label">Change</span>
+                    <span class="balance-summary-value ${net < 0 ? 'negative' : 'positive'}">${net > 0 ? '+' : ''}${net.toFixed(2)}€</span>
+                </div>
+            </div>
+            <ul class="transactions-list">${content}</ul>
+        </div>
+    `;
+    balancePoints.querySelectorAll('.selected').forEach(d => d.classList.remove('selected'));
+    const dot = balancePoints.querySelector(`circle[cx="${cx}"]`);
+    if (dot) dot.classList.add('selected');
+    balanceSummaryDiv.querySelector('.balance-day-back-btn').addEventListener('click', renderBalanceHistory);
+};
+
+const closeDayDetails = (e) => {
+    if (!document.querySelector('.balance-day-details')) return; // no day open
+    if (e.target.closest('.balance-chart-svg-wrap, .balance-day-details')) return; // click was inside
+    renderBalanceHistory();
+};

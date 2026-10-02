@@ -1755,10 +1755,13 @@ input.input-invalid {
     transition: r 0.15s ease, fill 0.15s ease;
 }
 
-#balance-points circle:hover {
+#balance-points {
+    pointer-events: none;
+}
+
+#balance-points circle.hovered {
     r: 6;
     fill: var(--positive-color);
-    cursor: pointer;
 }
 
 .balance-grid-line {
@@ -1908,6 +1911,16 @@ input.input-invalid {
     fill: var(--positive-color);
 }
 
+.balance-hover-point {
+    cursor: pointer;
+}
+
+.balance-day-totals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
 @media (max-width: 480px) {
     .balance-summary-div {
         grid-template-columns: 1fr;
@@ -1920,6 +1933,10 @@ input.input-invalid {
 
     .balance-summary-current .balance-summary-value {
         font-size: 1.7rem;
+    }
+
+    .balance-day-totals {
+        grid-template-columns: 1fr;
     }
 }
 
