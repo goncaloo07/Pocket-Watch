@@ -100,4 +100,6 @@ window.addEventListener('unhandledrejection', () => { // same here
 });
 
 // load the right page on first load
-loadPage(window.location.pathname);
+document.addEventListener('DOMContentLoaded', () => {
+    loadPage(window.location.pathname);
+});
