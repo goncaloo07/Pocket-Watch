@@ -82,7 +82,8 @@ let addTransactionBtn,
     editBudgetEndDateError,
     deleteBudgetBtn,
     editBudgetModeBtn,
-    cancelEditBudgetBtn;
+    cancelEditBudgetBtn,
+    settingsBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;

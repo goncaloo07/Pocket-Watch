@@ -4,6 +4,7 @@ const ROUTES = {
     '/balance': 'html/pages/balance.html',
     '/budgets': 'html/pages/budgets.html',
     '/transactions': 'html/pages/transactions.html',
+    '/settings': 'html/pages/settings.html',
     '/comingSoon': 'html/pages/comingSoon.html',
     default: 'html/pages/404.html'
 };
@@ -14,6 +15,7 @@ const PAGE_TITLES = {
     '/balance': 'Balance History',
     '/budgets': 'Budgets',
     '/transactions': 'Transactions',
+    '/settings': 'Settings',
     '/comingSoon': 'Coming Soon',
     default: 'Page Not Found'
 };
@@ -24,6 +26,7 @@ const PAGE_DESCRIPTIONS = {
     '/balance': 'Check your balance history and see how your transactions affect your finances over time.',
     '/budgets': 'See all your budgets, check how much you have spent in each category and edit or delete them.',
     '/transactions': 'View your transaction history and manage your spending and receiving records.',
+    '/settings': 'Change the app settings, including theme, currency, language and data management options.',
     '/comingSoon': 'This part of the app is still being worked on.',
     default: 'This page does not exist or was moved.'
 };

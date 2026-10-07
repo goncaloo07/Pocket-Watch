@@ -7,6 +7,7 @@ const initHeader = () => {
     themeToggleBtn = document.getElementById('theme-toggle-btn');
     themeToggleIcon = document.getElementById('theme-toggle-icon');
     menuBtn = document.getElementById('menu-btn');
+    settingsBtn = document.getElementById('settings-btn');
     const logoLink = document.getElementById('logo-link');
  
     initTheme();
@@ -14,6 +15,7 @@ const initHeader = () => {
     themeToggleBtn.addEventListener('click', toggleTheme);
     logoLink.addEventListener('click', sendToHomePage);
     menuBtn.addEventListener('click', toggleMenu);
+    settingsBtn.addEventListener('click', () => navigateTo('/settings'));
  
     requestAnimationFrame(updateHeaderHeightVar);
     

@@ -1,0 +1,102 @@
+<div id="settings-page" class="settings-page">
+    <h1 class="container-title">Settings</h1>
+
+    <!-- Appearance -->
+    <section id="settings-appearance" class="container settings-section">
+        <h2 class="settings-section-title">Appearance</h2>
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <span class="settings-row-label">Theme</span>
+                <span class="settings-row-hint">System follows your device setting.</span>
+            </div>
+            <div class="type-toggle settings-toggle">
+                <input type="radio" id="settings-theme-light" name="settings-theme" value="light">
+                <label for="settings-theme-light" class="type-option">
+                    <i class="bi bi-sun" aria-hidden="true"></i> Light
+                </label>
+
+                <input type="radio" id="settings-theme-dark" name="settings-theme" value="dark">
+                <label for="settings-theme-dark" class="type-option">
+                    <i class="bi bi-moon" aria-hidden="true"></i> Dark
+                </label>
+
+                <input type="radio" id="settings-theme-system" name="settings-theme" value="system" checked>
+                <label for="settings-theme-system" class="type-option">
+                    <i class="bi bi-circle-half" aria-hidden="true"></i> System
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Currency -->
+    <section id="settings-currency-section" class="container settings-section">
+        <h2 class="settings-section-title">Currency</h2>
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <label for="settings-currency" class="settings-row-label">Currency</label>
+            </div>
+            <div class="form-group settings-control">
+                <select id="settings-currency" name="settings-currency">
+                    <option value="EUR" selected>Euro (€)</option>
+                    <option value="USD">US Dollar ($)</option>
+                    <option value="GBP">Pound (£)</option>
+                    <option value="BRL">Real (R$)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Language -->
+    <section id="settings-language-section" class="container settings-section">
+        <h2 class="settings-section-title">Language</h2>
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <label for="settings-language" class="settings-row-label">App language</label>
+                <span class="settings-row-hint">Changes the text across the whole app.</span>
+            </div>
+            <div class="form-group settings-control">
+                <select id="settings-language" name="settings-language">
+                    <option value="en" selected>English</option>
+                    <option value="pt">Português</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Your Data -->
+    <section id="settings-data-section" class="container settings-section">
+        <h2 class="settings-section-title">Your Data</h2>
+
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <span class="settings-row-label">Export data</span>
+                <span class="settings-row-hint">Download your transactions and budgets as a file you can keep as a backup.</span>
+            </div>
+            <button type="button" id="export-data-btn" class="btn btn-secondary settings-btn">
+                <i class="bi bi-download" aria-hidden="true"></i> Export
+            </button>
+        </div>
+
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <span class="settings-row-label">Import data</span>
+                <span class="settings-row-hint">Load a file you exported before. This replaces what you have now.</span>
+            </div>
+            <button type="button" id="import-data-btn" class="btn btn-secondary settings-btn">
+                <i class="bi bi-upload" aria-hidden="true"></i> Import
+            </button>
+            <!-- hidden on purpose, the Import button opens it -->
+            <input type="file" id="import-data-input" class="hidden" accept="application/json,.json" aria-label="Choose a file to import">
+        </div>
+
+        <div class="settings-row">
+            <div class="settings-row-text">
+                <span class="settings-row-label">Delete all data</span>
+                <span class="settings-row-hint">Removes every transaction and budget from this browser. This cannot be undone.</span>
+            </div>
+            <button type="button" id="delete-data-btn" class="btn btn-danger settings-btn">
+                <i class="bi bi-trash" aria-hidden="true"></i> Delete
+            </button>
+        </div>
+    </section>
+</div>
