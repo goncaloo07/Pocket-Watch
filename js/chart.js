@@ -4,7 +4,6 @@ let chartSegmentsG,
     chartContent, 
     chartCenterValue,
     chartCenterLabel, 
-    chartToolTip, 
     chartSVGWrap,
     CATEGORY_COLORS;
 
@@ -15,7 +14,6 @@ const initChart = () => {
     chartContent = document.getElementById("chart-content");
     chartCenterValue = document.getElementById("chart-center-value");
     chartCenterLabel = document.getElementById("chart-center-label");
-    chartToolTip = document.getElementById("chart-tooltip");
     chartSVGWrap = document.querySelector(".chart-svg-wrap");
 
     CATEGORY_COLORS = new Map(

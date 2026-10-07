@@ -54,18 +54,7 @@ const setTheme = (theme) => {
     safeSetItem('theme', theme); // Store the selected theme in localStorage
     applyTheme(theme);
 }
- 
-const getTheme = (theme) => {
-    const storedTheme = localStorage.getItem('theme'); // Retrieve the stored theme from localStorage
-    if (storedTheme) {
-        applyTheme(storedTheme); // Apply the stored theme if it exists
-    } else {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches; // Check if the user prefers a dark color scheme
-        const defaultTheme = prefersDark ? 'dark' : 'light'; // Set the default theme based on the user's preference
-        applyTheme(defaultTheme);
-    }
-}
- 
+
 const initTheme = () => {
     const storedTheme = localStorage.getItem('theme'); //gets the theme, if there isnt a theme it applies it
     if (storedTheme) {
