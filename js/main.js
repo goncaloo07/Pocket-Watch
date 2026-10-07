@@ -83,7 +83,11 @@ let addTransactionBtn,
     deleteBudgetBtn,
     editBudgetModeBtn,
     cancelEditBudgetBtn,
-    settingsBtn;
+    settingsBtn,
+    settingsTheme,
+    settingsThemeDark,
+    settingsThemeLight,
+    settingsThemeSystem;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -332,6 +336,7 @@ document.addEventListener('page:loaded', (e) => {
     if (e.detail.path === '/balance') initBalancePage();
     if (e.detail.path === '/transactions') initTransactionsPage();
     if (e.detail.path === '/budgets') initBudgetsPage();
+    if (e.detail.path === '/settings') initSettingsPage();
 });
 
 window.addEventListener('storage', () => {

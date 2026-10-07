@@ -52,20 +52,23 @@ const applyTheme = (theme) => {
     
 const setTheme = (theme) => {
     safeSetItem('theme', theme); // Store the selected theme in localStorage
-    applyTheme(theme);
+    applyTheme(resolveTheme(theme));
 }
 
 const initTheme = () => {
-    const storedTheme = localStorage.getItem('theme'); //gets the theme, if there isnt a theme it applies it
-    if (storedTheme) {
-        applyTheme(storedTheme);
-        return;
-    }
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(prefersDark ? 'dark' : 'light');
+    const storedTheme = localStorage.getItem('theme');
+    applyTheme(resolveTheme(storedTheme));
 };
  
 const toggleTheme = () => {
     const currentTheme = document.documentElement.dataset.theme;
     setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+};
+
+const resolveTheme = (theme) => {
+    if (theme === 'dark' || theme === 'light') {
+        return theme;
+    }
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
 };
