@@ -7,7 +7,9 @@ Pocket Watch is built with vanilla HTML, CSS, and JavaScript (no frameworks). Al
 ## Pages
 
 - [Home](https://pocket-watch-murex.vercel.app/): Current balance, recent transactions, spending/receiving overview, budget tracking, and a spending breakdown chart.
-- [Balance History](https://pocket-watch-murex.vercel.app/balance): Interactive line chart of balance over time, with daily transaction details.
+- [Balance History](https://pocket-watch-murex.vercel.app/balance): Interactive line chart of balance over time, with daily transaction details when you click a point.
+- [Transactions](https://pocket-watch-murex.vercel.app/transactions): Full list of transactions grouped by day, with search, filters by type, category, date and amount, and the option to edit or delete each one.
+- [Budgets](https://pocket-watch-murex.vercel.app/budgets): All budgets with how much was spent, how much is left, days left and how much you can spend per day. Budgets can be edited or deleted.
 
 ## Notes
 
