@@ -5,6 +5,7 @@ const initSettingsPage = () => {
     settingsThemeDark = document.getElementById('settings-theme-dark');
     settingsThemeLight = document.getElementById('settings-theme-light');
     settingsThemeSystem = document.getElementById('settings-theme-system');
+    settingsCurrencySelect = document.getElementById('settings-currency');
     if (savedTheme === 'dark') {
         settingsThemeDark.checked = true;
     } else if (savedTheme === 'light') {
@@ -25,4 +26,26 @@ const initSettingsPage = () => {
             }
         });
     });
+
+    settingsCurrencySelect.addEventListener('change', () => {
+        const selectedCurrency = settingsCurrencySelect.value;
+        safeSetItem('currency', selectedCurrency);
+    });
+
+    fillCurrencyOptions();
+};
+
+// fills the currency dropdown with the currencies from rates.json
+const fillCurrencyOptions = async () => {
+    const data = await loadRates();
+    if (!data) return; // keeps the options that are already in the HTML
+    settingsCurrencySelect.innerHTML = ''; // clears the options that are already in the HTML
+    Object.keys(data.rates).forEach(code => {
+        const option = document.createElement('option');
+        option.value = code;
+        option.textContent = getCurrencyLabel(code);
+        settingsCurrencySelect.appendChild(option);
+    });
+    const savedCurrency = localStorage.getItem('currency');
+    settingsCurrencySelect.value = data.rates[savedCurrency] ? savedCurrency : 'EUR';
 };

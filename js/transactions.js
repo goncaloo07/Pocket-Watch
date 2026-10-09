@@ -95,6 +95,7 @@ const addTransaction = (e) => {
             isSpending ? 'transaction-category-spending' : 'transaction-category-receiving'
         ).value,
         transactionAmount: (isSpending ? -rawAmount : rawAmount).toFixed(2), // spending is stored as negative
+        transactionCurrency: getActiveCurrency() // store the currency at the time of the transaction
     };
 
     const transactions = getTransactions();
@@ -310,6 +311,7 @@ const saveEditedTransaction = (e) => {
         transactionType: original.transactionType, // can't change type in edit mode
         transactionCat: editCategorySelect.value,
         transactionAmount: (original.transactionType === 'spending' ? -rawAmount : rawAmount).toFixed(2),
+        transactionCurrency: original.transactionCurrency || 'EUR',
     };
     transactions[editingIndex] = editedTransaction;
     saveTransactions(transactions);

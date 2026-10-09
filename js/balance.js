@@ -7,7 +7,7 @@ const calcBalance = () => {
     const transactions = getTransactions()
     let balance = 0
     transactions.forEach(transaction => {
-        balance += parseFloat(transaction.transactionAmount) // sum all transactions
+        balance += toActive(transaction.transactionAmount, transaction.transactionCurrency) // sum all transactions
     })
     return balance
 };

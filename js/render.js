@@ -1,4 +1,4 @@
-const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, originalIndex }) => {
+const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, originalIndex, transactionCurrency }) => {
     const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots';
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative';
     const safeName = escapeHTML(transactionName);
@@ -13,7 +13,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
                     <span class="transaction-meta">${transactionCat} | <span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
-            <span class="transaction-amount ${amountClass}">${transactionAmount}€</span>
+            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency))}</span>
         </li>
     `;
 };
@@ -29,7 +29,7 @@ const renderTransactions = () => {
     transactionsListEl.innerHTML = transactions.slice(0, 3).map(buildTransactionRow).join(''); //sends all rows to a map, then joins it to build the code
 };
 
-const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transactionDate, transactionCat }) => {
+const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, transactionCurrency }) => {
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative'; //checks if its positive or negative
     const safeName = escapeHTML(transactionName);
 
@@ -41,7 +41,7 @@ const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transac
                     <span class="transaction-meta"><span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
-            <span class="transaction-amount ${amountClass}">${transactionAmount}€</span>
+            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency))}</span>
         </li>
     `;
 };
@@ -81,14 +81,14 @@ const animateBalance = (targetValue, duration = 800) => {
         const current = start + (targetValue - start) * eased;
 
         // Update the DOM with the current in-progress value, formatted to 2 decimals + € sign
-        balanceEl.textContent = `${current.toFixed(2)}€`;
+        balanceEl.textContent = `${formatAmount(current)}`;
 
         if (progress < 1) {
             // Animation isn't done yet — schedule the next frame
             requestAnimationFrame(step);
         } else {
             // Animation finished — snap to the exact target value
-            balanceEl.textContent = `${targetValue.toFixed(2)}€`;
+            balanceEl.textContent = `${formatAmount(targetValue)}`;
         }
     };
 
@@ -97,10 +97,11 @@ const animateBalance = (targetValue, duration = 800) => {
 };
 
 const buildBudgetRow = (budget, totalSpent) => {
-    const { budgetCat, budgetLimit } = budget;
+    const { budgetCat } = budget;
+    const limit = getBudgetLimit(budget);
     const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
     const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots'; // gets the icon
-    const perc = ((totalSpent / budgetLimit) * 100) // calculates the percentage of the limit spent
+    const perc = ((totalSpent / limit) * 100) // calculates the percentage of the limit spent
 
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
 
@@ -117,7 +118,7 @@ const buildBudgetRow = (budget, totalSpent) => {
                         <span class="transaction-meta">${dateLabel}</span>
                     </div>
                 </div>
-                <span class="budget-amounts ${barClass}">${totalSpent.toFixed(2)}€ <span class="budget-amounts-sep">/</span> ${budgetLimit.toFixed(2)}€</span>
+                <span class="budget-amounts ${barClass}">${formatAmount(totalSpent)} <span class="budget-amounts-sep">/</span> ${formatAmount(limit)}</span>
             </div>
             <div class="budget-bar-track">
                 <div class="budget-bar-fill ${barClass}" style="width: ${perc > 100 ? 100 : perc}%;"></div>
@@ -143,7 +144,7 @@ const renderBudgets = () => {
     const sortedBudgets = [...budgets].sort((a, b) => {
         if (a.budgetCat === GENERAL_BUDGET_CAT) return -1;
         if (b.budgetCat === GENERAL_BUDGET_CAT) return 1;
-        return (spentMap.get(b) / b.budgetLimit) - (spentMap.get(a) / a.budgetLimit);
+        return (spentMap.get(b) / getBudgetLimit(b)) - (spentMap.get(a) / getBudgetLimit(a));
     }); // sort the budgets from the most completed to the less completed (general always first)
     const budgetsToShow = isBudgetsPage ? sortedBudgets : sortedBudgets.slice(0, 3);
     const buildRow = isBudgetsPage ? buildBudgetDetailRow : buildBudgetRow;
@@ -176,7 +177,7 @@ const buildDateGroup = (dateStr, dayTransactions, balanceAfter) => {
         <li class="transactions-date-group">
             <div class="transactions-date-header">
                 <span class="transactions-date-label">${getRelativeDateLabel(dateStr)}</span>
-                <span class="transactions-date-total ${totalClass}">${balanceAfter.toFixed(2)}€</span>
+                <span class="transactions-date-total ${totalClass}">${formatAmount(balanceAfter)}</span>
             </div>
             <ul class="transactions-date-rows">
                 ${dayTransactions.map(buildTransactionRow).join('')}
@@ -240,7 +241,7 @@ const renderAllTransactions = () => {
     let runningBalance = 0;
     for (let i = dayEntries.length - 1; i >= 0; i--) {
         const [date, dayTransactions] = dayEntries[i];
-        const dayTotal = dayTransactions.reduce((sum, t) => sum + parseFloat(t.transactionAmount), 0);
+        const dayTotal = dayTransactions.reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency), 0);
         runningBalance += dayTotal;
         balanceByDate.set(date, runningBalance);
     }
@@ -306,13 +307,14 @@ const renderActiveFilters = () => {
 };
 
 const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
-    const { budgetCat, budgetLimit, budgetPeriod } = budget;
+    const { budgetCat, budgetPeriod } = budget;
     const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
     const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots';
     const { end } = getPeriodRange(budget);
 
-    const left = budgetLimit - totalSpent; // negative means over the limit
-    const perc = Math.round((totalSpent / budgetLimit) * 100);
+    const limit = getBudgetLimit(budget); // limit in the active currency, same as totalSpent
+    const left = limit - totalSpent; // negative means over the limit
+    const perc = Math.round((totalSpent / limit) * 100);
     const daysLeft = getDaysLeft(end);
     const perDay = left > 0 ? left / daysLeft : 0; // nothing left to spend if over the limit
     const isOver = left < 0;
@@ -333,7 +335,7 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
                         <span class="transaction-meta">${budgetType}</span>
                     </div>
                 </div>
-                <span class="budget-amounts ${barClass}">${totalSpent.toFixed(2)}€ <span class="budget-amounts-sep">/</span> ${budgetLimit.toFixed(2)}€</span>
+                <span class="budget-amounts ${barClass}">${formatAmount(totalSpent)} <span class="budget-amounts-sep">/</span> ${formatAmount(limit)}</span>
             </div>
             <div class="budget-bar-row">
                 <div class="budget-bar-track">
@@ -343,10 +345,10 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
             </div>
             <div class="budget-detail-footer">
                 <span class="${isOver ? 'over' : ''}">
-                    ${isOver ? `${Math.abs(left).toFixed(2)}€ over` : `${left.toFixed(2)}€ left`}
+                    ${isOver ? `${formatAmount(Math.abs(left))} over` : `${formatAmount(left)} left`}
                 </span>
                 <span>${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left</span>
-                <span>Can spend ${perDay.toFixed(2)}€ per day</span>
+                <span>Can spend ${formatAmount(perDay)} per day</span>
             </div>
         </li>
     `;

@@ -87,7 +87,8 @@ let addTransactionBtn,
     settingsTheme,
     settingsThemeDark,
     settingsThemeLight,
-    settingsThemeSystem;
+    settingsThemeSystem,
+    settingsCurrencySelect;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -331,7 +332,8 @@ initEditBudgetModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path
-document.addEventListener('page:loaded', (e) => {
+document.addEventListener('page:loaded', async (e) => {
+    await loadRates();
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
     if (e.detail.path === '/transactions') initTransactionsPage();

@@ -71,6 +71,7 @@ const addBudget = (e) => {
         budgetPeriod: periodType,
         budgetCreatedAt: getTodayISO(),
         ...(periodType === "recurring" ? { budgetUnit: unit } : { budgetEndDate: unit }),
+        budgetCurrency: getActiveCurrency()
     };
     
     budgets.unshift(budget); // puts it at the top of the budgets (LIFO)
@@ -95,7 +96,7 @@ const getSpentByCat = (budget) => {
         && (cat === GENERAL_BUDGET_CAT || transaction.transactionCat === cat)
         && transaction.transactionDate >= start
         && transaction.transactionDate <= end)
-    .reduce((a,b) => a + Math.abs(parseFloat(b.transactionAmount)), 0); // filters to see only the spending of said category and gets the total money spent
+    .reduce((a,b) => a + Math.abs(toActive(b.transactionAmount, b.transactionCurrency)), 0); // filters to see only the spending of said category and gets the total money spent
     return parseFloat(catTransactions.toFixed(2)); // returns the total as a string with 2 decimals
 };
 
@@ -286,6 +287,7 @@ const saveEditedBudget = (e) => {
         budgetPeriod: periodType,
         budgetCreatedAt: original.budgetCreatedAt, // keep the original creation date
         ...(periodType === 'recurring' ? { budgetUnit: unit } : { budgetEndDate: unit }),
+        budgetCurrency: original.budgetCurrency    // keep the original currency
     };
 
     // save, close and redraw
@@ -303,3 +305,7 @@ const deleteBudget = async () => {
     closeEditBudgetModal();
     renderBudgets();
 };
+
+const getBudgetLimit = (budget) => {
+    return toActive(budget.budgetLimit, budget.budgetCurrency); // converts the budget limit to the active currency
+}
