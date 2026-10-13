@@ -29,15 +29,16 @@ const getCategoryTotals = () => {
     const transactions = getTransactions();
     const spending = transactions.filter(transaction => transaction.transactionType === "spending"); // gets only the spending transactions
     const spendingMap = new Map();
-
+ 
     spending.forEach(transaction => {
+        const amount = Math.abs(toActive(transaction.transactionAmount, transaction.transactionCurrency)); // in the active currency
         if (spendingMap.has(transaction.transactionCat)) {
-            spendingMap.set(transaction.transactionCat, Math.abs(parseFloat(transaction.transactionAmount)) + spendingMap.get(transaction.transactionCat));
+            spendingMap.set(transaction.transactionCat, amount + spendingMap.get(transaction.transactionCat));
         } else {
-            spendingMap.set(transaction.transactionCat, Math.abs(parseFloat(transaction.transactionAmount)));
+            spendingMap.set(transaction.transactionCat, amount);
         }
-    }) // if there is already that category in the map, sums the values of all the transactions of that category, if not creates a new entry in the map for that category and the value of the transaction
-
+    }); // if there is already that category in the map, sums the values of all the transactions of that category, if not creates a new entry in the map for that category and the value of the transaction
+ 
     const spendingArr = Array.from(spendingMap) // turns the map into a array
         .map(([key, value], index) => ({label: key, value, color: CATEGORY_COLORS.get(key) || '#999999'})) // turns the array back into a map but with a new value for each entry (the color)
         .sort((a,b) => b.value - a.value); // sorts the map by most value to least
@@ -46,8 +47,8 @@ const getCategoryTotals = () => {
 
 const getTypeTotals = () => {
     const transactions = getTransactions();
-    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + parseFloat(b.transactionAmount), 0); // gets the total value spent
-    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + parseFloat(b.transactionAmount), 0); // gets the total value received
+    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency), 0); // gets the total value spent
+    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency), 0); // gets the total value received
     const transactionsArr = [{label: 'Spending', value: Math.abs(spending), color: 'var(--negative-color)'}, {label: 'Receiving', value: Math.abs(receiving), color: 'var(--positive-color)'}]; // makes an array with both the spending totals and receiving totals
     return transactionsArr;
 }
@@ -100,21 +101,21 @@ const renderSegments = (items) => {
 
 const renderLegend = (items) => {
     const total = items.reduce((sum, item) => sum + item.value, 0); // gets the total value
-
+ 
     const legend = items.map((item, index) => {
         const percent = Math.round((item.value / total) * 100); // gets the percentage that item has to the total value
-
+ 
         return `
             <li class="chart-legend-item" data-index="${index}">
                 <div class="chart-legend-left">
                     <span class="chart-legend-dot" style="background-color: ${item.color}"></span>
                     <span class="chart-legend-name">${item.label}</span>
                 </div>
-                <span class="chart-legend-amount">${item.value.toFixed(2)}€ (${percent}%)</span>
+                <span class="chart-legend-amount">${formatAmount(item.value)} (${percent}%)</span>
             </li>
         `;
     })
-
+ 
     chartLegend.innerHTML = legend.join('')
 }
 
@@ -158,5 +159,5 @@ const renderChart = () => {
     renderLegend(data)
     attachChartInteractions()
     chartCenterLabel.textContent = document.querySelector('input[name="chart-mode"]:checked').value === 'category' ? "Total Spent" : "Total Activity"
-    chartCenterValue.textContent = `${total.toFixed(2)}€`
+    chartCenterValue.textContent = formatAmount(total)
 }

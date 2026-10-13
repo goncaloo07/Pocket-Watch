@@ -137,6 +137,7 @@ const toggleTransactionModal = () => {
         document.getElementById('transaction-date').max = getTodayISO();
         transactionModalCatSpending.innerHTML = buildCategoryOptions(CATEGORIES_SPENDING);
         transactionModalCatReceiving.innerHTML = buildCategoryOptions(CATEGORIES_RECEIVING);
+        document.getElementById('transaction-currency-symbol').textContent = getActiveSymbol();
     } else {
         // closing: reset the form and clear any leftover "amount can't be 0" error
         transactionForm.reset();
@@ -157,7 +158,10 @@ const toggleBudgetModal = (e) => {
         // reset the "renews" section back to its default: recurring, monthly
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
-
+ 
+        // the limit text uses the symbol of the active currency, it can change between openings
+        budgetLimitValue.textContent = `${budgetLimit.value}${getActiveSymbol()}`;
+ 
         // the "until date" option can't be today or earlier, so default it to tomorrow
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -166,7 +170,7 @@ const toggleBudgetModal = (e) => {
     } else {
         // closing: reset the form and clear any leftover validation errors
         budgetForm.reset();
-        budgetLimitValue.textContent = `${budgetLimit.value}€`;
+        budgetLimitValue.textContent = `${budgetLimit.value}${getActiveSymbol()}`;
         budgetLimitInput.value = budgetLimit.value;
         budgetLimitInput.closest('.budget-slider-wrap').classList.remove('input-invalid');
         budgetLimitError.classList.add('hidden');
@@ -270,9 +274,9 @@ const initBudgetModal = () => {
             value = 0;
         }
         const sliderMax = parseFloat(budgetLimit.max);
-        const sliderValue = Math.min(value, sliderMax); // slider can't go higher than its own max, e.g. typing 5000€ still caps the slider at 1000€
+        const sliderValue = Math.min(value, sliderMax); // slider can't go higher than its own max, e.g. typing 5000 still caps the slider at 1000
         value = value.toFixed(2);
-        budgetLimitValue.textContent = `${value}€`;
+        budgetLimitValue.textContent = `${value}${getActiveSymbol()}`;
         budgetLimit.value = sliderValue;
         budgetLimitInput.value = parseFloat(value);
         budgetLimitInput.classList.add("hidden");
@@ -294,7 +298,7 @@ const initBudgetModal = () => {
             e.target.closest('.budget-slider-wrap').classList.remove('input-invalid');
         }
         budgetLimitInput.value = e.target.value;
-        budgetLimitValue.textContent = e.target.value + "€";
+        budgetLimitValue.textContent = e.target.value + getActiveSymbol();
     });
 
     // clears the "end date must be after today" error as soon as the user picks a new date

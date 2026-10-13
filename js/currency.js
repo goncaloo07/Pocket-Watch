@@ -55,3 +55,5 @@ const toActive = (amount, currency) => {
     const converted = convertAmount(parseFloat(amount), currency || "EUR", activeCurrency);
     return converted;
 }   
+
+const getActiveSymbol = () => getCurrencySymbol(getActiveCurrency());

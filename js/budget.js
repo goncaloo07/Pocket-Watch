@@ -173,6 +173,13 @@ const openEditBudgetModal = (index) => {
 
     editBudgetCategory.textContent = b.budgetCat === GENERAL_BUDGET_CAT ? 'General' : b.budgetCat;
     editBudgetLimitInput.value = b.budgetLimit;
+    document.getElementById('edit-budget-currency-symbol').textContent = getCurrencySymbol(b.budgetCurrency || 'EUR');
+    const limitNote = document.getElementById('edit-budget-limit-note');
+    const differentCurrency = (b.budgetCurrency || 'EUR') !== getActiveCurrency();
+    limitNote.classList.toggle('hidden', !differentCurrency);
+    if (differentCurrency) {
+        limitNote.textContent = `Original limit, shown as ${formatAmount(getBudgetLimit(b))} in the list`;
+    }
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);

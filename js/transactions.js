@@ -195,7 +195,7 @@ const initTransactionsPage = () => {
             filterMinAmount.value = filterMaxAmount.value;
             filterMinAmountNum.textContent = filterMaxAmountNum.textContent;
         } else {
-            filterMinAmountNum.textContent = `${filterMinAmount.value}€`;
+            filterMinAmountNum.textContent = `${filterMinAmount.value}${getActiveSymbol()}`;
         }
         scheduleRender();
     });
@@ -204,7 +204,7 @@ const initTransactionsPage = () => {
             filterMaxAmount.value = filterMinAmount.value;
             filterMaxAmountNum.textContent = filterMinAmountNum.textContent;
         } else {
-            filterMaxAmountNum.textContent = `${filterMaxAmount.value}€`;
+            filterMaxAmountNum.textContent = `${filterMaxAmount.value}${getActiveSymbol()}`;
         }
         scheduleRender();
     });
@@ -280,6 +280,14 @@ const openEditTransactionModal = (index) => {
     editNameInput.value = t.transactionName;
     editTypeLabel.textContent = t.transactionType === 'spending' ? 'Spending' : 'Receiving';
     editAmountInput.value = Math.abs(t.transactionAmount);
+    document.getElementById('edit-transaction-currency-symbol').textContent = getCurrencySymbol(t.transactionCurrency || 'EUR');
+    // note shown only when the transaction is in another currency than the active one
+    const amountNote = document.getElementById('edit-amount-note');
+    const differentCurrency = (t.transactionCurrency || 'EUR') !== getActiveCurrency();
+    amountNote.classList.toggle('hidden', !differentCurrency);
+    if (differentCurrency) {
+        amountNote.textContent = `Original amount, shown as ${formatAmount(Math.abs(toActive(t.transactionAmount, t.transactionCurrency)))} in the list`;
+    }
     editDateInput.value = t.transactionDate;
     editDateInput.max = getTodayISO(); // can't edit to a future date
     // spending and receiving have different category lists
@@ -340,7 +348,7 @@ const getMaxTransactionAmount = () => {
     const transactions = getTransactions();
     if (transactions.length === 0) return 1000;
     return transactions.reduce((max, t) => {
-        const amount = Math.abs(parseFloat(t.transactionAmount));
+        const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency)); // in the active currency
         return amount > max ? amount : max;
     }, 0);
 };
@@ -359,8 +367,8 @@ const setupAmountFilter = (curMin, curMax) => {
     const newMin = curMin === undefined ? 0 : Math.min(curMin, newMax);
     filterMaxAmount.value = newMax;
     filterMinAmount.value = newMin;
-    filterMaxAmountNum.textContent = `${newMax}€`;
-    filterMinAmountNum.textContent = `${newMin}€`;
+    filterMaxAmountNum.textContent = `${newMax}${getActiveSymbol()}`;
+    filterMinAmountNum.textContent = `${newMin}${getActiveSymbol()}`;
 };
 
 const fillFilterCats = (curCat = "all") => {

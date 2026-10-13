@@ -211,7 +211,10 @@ const renderAllTransactions = () => {
     const filtered = indexed.filter(t => selectedType === 'all' || t.transactionType === selectedType)
                                 .filter(t => selectedCat === 'all' || t.transactionCat === selectedCat)
                                 .filter(t => (dateFrom === '' || t.transactionDate >= dateFrom) && (dateTo === '' || t.transactionDate <= dateTo))
-                                .filter(t => Math.abs(parseFloat(t.transactionAmount)) >= amountMin && Math.abs(parseFloat(t.transactionAmount)) <= amountMax)
+                                .filter(t => {
+                                    const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency)); // in the active currency
+                                    return amount >= amountMin && amount <= amountMax;
+                                })
                                 .filter(matchesSearch);
     transactionsPageEmptyDiv.classList.add('hidden');
     transactionsNoResultsPage.classList.add("hidden");
@@ -282,8 +285,8 @@ const getActiveFilters = () => {
     const minValue = parseFloat(filterMinAmount.value);
     const maxValue = parseFloat(filterMaxAmount.value);
     let value1 = "", value2 = "";
-    if (minValue > 0) value1 = `>${minValue}€`;
-    if (maxValue < parseFloat(filterMaxAmount.max)) value2 = `<${maxValue}€`;
+    if (minValue > 0) value1 = `>${minValue}${getActiveSymbol()}`;
+    if (maxValue < parseFloat(filterMaxAmount.max)) value2 = `<${maxValue}${getActiveSymbol()}`;
     if (value1 || value2) {
         const selectedValues = [value1, value2].filter(Boolean).join(' ');
         active.push({ key: 'value', label: selectedValues});

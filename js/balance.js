@@ -75,9 +75,10 @@ const buildGridLines = (gridLines, plotWidth) => {
 
 // grid line positions -> € labels next to the chart
 const buildGridLabels = (gridLines, chartHeight) => {
+    const symbol = getCurrencySymbol(getActiveCurrency());
     return gridLines.map(line => {
         const topPercent = (line.y / chartHeight) * 100;
-        return `<span class="balance-grid-label" style="top: ${topPercent}%">${Math.round(line.value)}€</span>`;
+        return `<span class="balance-grid-label" style="top: ${topPercent}%">${Math.round(line.value)}${symbol}</span>`;
     }).join('');
 };
 
@@ -118,7 +119,7 @@ const getBalanceHistory = (time) => {
     let balance = 0;
     let start;
     let result = [];
-
+ 
     switch (time) {
         case "7d": 
             start = new Date(today);
@@ -144,20 +145,20 @@ const getBalanceHistory = (time) => {
             }
             break;
     }
-
+ 
     let startISO = formatDateISO(start);
     const byDate = new Map();
     transactions.forEach(t => {
         if (!byDate.has(t.transactionDate)) byDate.set(t.transactionDate, []);
         byDate.get(t.transactionDate).push(t);
     });
-    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + parseFloat(transaction.transactionAmount) : total, 0); // balance before the chart's start day
-
+    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + toActive(transaction.transactionAmount, transaction.transactionCurrency) : total, 0); // balance before the chart's start day
+ 
     do {
         const dailyTransactions = byDate.get(startISO) ?? []; // days with nothing give an empty list
         const hasTransactions = dailyTransactions.length > 0;
         dailyTransactions.forEach(transaction => {
-            balance += parseFloat(transaction.transactionAmount);
+            balance += toActive(transaction.transactionAmount, transaction.transactionCurrency);
         });
         result.push({ date: startISO, balance: balance.toFixed(2), hasTransactions });
         start.setDate(start.getDate() + 1);
@@ -193,30 +194,30 @@ const getBalanceSummary = (balanceHistory, period) => {
 // summary numbers -> summary panel HTML
 const buildBalanceSummary = (summary, period) => {
     const { current, maxDay, minDay, change } = summary;
-
+ 
     const changeHTML = period === "all" ? '' : `
         <div class="balance-summary-row balance-summary-change">
             <span class="balance-summary-label">Change</span>
-            <span class="balance-summary-value ${change < 0 ? 'negative' : 'positive'}">${change.toFixed(2)}€</span>
+            <span class="balance-summary-value ${change < 0 ? 'negative' : 'positive'}">${formatAmount(change)}</span>
         </div>
     `;
-
+ 
     return `
         <div class="balance-summary-row balance-summary-current">
             <span class="balance-summary-label">Current Balance</span>
-            <span class="balance-summary-value ${current < 0 ? 'negative' : ''}">${current.toFixed(2)}€</span>
+            <span class="balance-summary-value ${current < 0 ? 'negative' : ''}">${formatAmount(current)}</span>
         </div>
         <div class="balance-summary-row balance-summary-max">
             <span class="balance-summary-label">Max Balance</span>
             <span class="balance-summary-value ${maxDay.balance < 0 ? 'negative' : ''}">
-                ${maxDay.balance.toFixed(2)}€
+                ${formatAmount(maxDay.balance)}
                 <span class="balance-summary-date">${formatDateDMY(maxDay.day)}</span>
             </span>
         </div>
         <div class="balance-summary-row balance-summary-min">
             <span class="balance-summary-label">Min Balance</span>
             <span class="balance-summary-value ${minDay.balance < 0 ? 'negative' : ''}">
-                ${minDay.balance.toFixed(2)}€
+                ${formatAmount(minDay.balance)}
                 <span class="balance-summary-date">${formatDateDMY(minDay.day)}</span>
             </span>
         </div>
@@ -261,13 +262,13 @@ const attachBalanceHoverEvents = () => {
             const cy = e.target.getAttribute('data-cy');
             const dot = balancePoints.querySelector(`circle[cx="${cx}"]`);
             if (dot) dot.classList.add('hovered');
-
+ 
             const leftPercent = (cx / CHART_WIDTH) * 100;
             const topPercent = (cy / CHART_HEIGHT) * 100;
-
+ 
             balanceTooltip.innerHTML = `
                 <div class="balance-tooltip-date">${formatDateDMY(date)}</div>
-                <div class="balance-tooltip-balance">${parseFloat(balance).toFixed(2)}€</div>
+                <div class="balance-tooltip-balance">${formatAmount(balance)}</div>
             `;
             balanceTooltip.classList.remove('hidden');
             balanceTooltip.style.left = `${leftPercent}%`;
@@ -289,10 +290,10 @@ const showDayDetails = (date, cx) => {
     const dayTransactions = getTransactions().filter(t => t.transactionDate === date);
     const spent = dayTransactions
         .filter(t => t.transactionType === 'spending')
-        .reduce((sum, t) => sum + Math.abs(parseFloat(t.transactionAmount)), 0);
+        .reduce((sum, t) => sum + Math.abs(toActive(t.transactionAmount, t.transactionCurrency)), 0);
     const received = dayTransactions
         .filter(t => t.transactionType === 'receiving')
-        .reduce((sum, t) => sum + parseFloat(t.transactionAmount), 0);
+        .reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency), 0);
     const net = received - spent;
     const content = dayTransactions.length === 0
         ? '<li class="transactions-empty-subtitle">No transactions this day</li>'
@@ -308,15 +309,15 @@ const showDayDetails = (date, cx) => {
             <div class="balance-day-totals">
                 <div class="balance-summary-row">
                     <span class="balance-summary-label">Received</span>
-                    <span class="balance-summary-value positive">${received.toFixed(2)}€</span>
+                    <span class="balance-summary-value positive">${formatAmount(received)}</span>
                 </div>
                 <div class="balance-summary-row">
                     <span class="balance-summary-label">Spent</span>
-                    <span class="balance-summary-value negative">${spent.toFixed(2)}€</span>
+                    <span class="balance-summary-value negative">${formatAmount(spent)}</span>
                 </div>
                 <div class="balance-summary-row">
                     <span class="balance-summary-label">Change</span>
-                    <span class="balance-summary-value ${net < 0 ? 'negative' : 'positive'}">${net > 0 ? '+' : ''}${net.toFixed(2)}€</span>
+                    <span class="balance-summary-value ${net < 0 ? 'negative' : 'positive'}">${net > 0 ? '+' : ''}${formatAmount(net)}</span>
                 </div>
             </div>
             <ul class="transactions-list">${content}</ul>
