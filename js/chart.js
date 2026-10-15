@@ -31,7 +31,7 @@ const getCategoryTotals = () => {
     const spendingMap = new Map();
  
     spending.forEach(transaction => {
-        const amount = Math.abs(toActive(transaction.transactionAmount, transaction.transactionCurrency)); // in the active currency
+        const amount = Math.abs(toActive(transaction.transactionAmount, transaction.transactionCurrency, transaction.transactionDate)); // in the active currency
         if (spendingMap.has(transaction.transactionCat)) {
             spendingMap.set(transaction.transactionCat, amount + spendingMap.get(transaction.transactionCat));
         } else {
@@ -47,8 +47,8 @@ const getCategoryTotals = () => {
 
 const getTypeTotals = () => {
     const transactions = getTransactions();
-    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency), 0); // gets the total value spent
-    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency), 0); // gets the total value received
+    const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate), 0); // gets the total value spent
+    const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate), 0); // gets the total value received
     const transactionsArr = [{label: 'Spending', value: Math.abs(spending), color: 'var(--negative-color)'}, {label: 'Receiving', value: Math.abs(receiving), color: 'var(--positive-color)'}]; // makes an array with both the spending totals and receiving totals
     return transactionsArr;
 }

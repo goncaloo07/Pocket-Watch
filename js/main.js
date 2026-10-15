@@ -338,6 +338,7 @@ initEditBudgetModal();
 // so this decides which page's init function to run based on the current path
 document.addEventListener('page:loaded', async (e) => {
     await loadRates();
+    await ensureAllRates();
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
     if (e.detail.path === '/transactions') initTransactionsPage();

@@ -96,7 +96,7 @@ const getSpentByCat = (budget) => {
         && (cat === GENERAL_BUDGET_CAT || transaction.transactionCat === cat)
         && transaction.transactionDate >= start
         && transaction.transactionDate <= end)
-    .reduce((a,b) => a + Math.abs(toActive(b.transactionAmount, b.transactionCurrency)), 0); // filters to see only the spending of said category and gets the total money spent
+    .reduce((a,b) => a + Math.abs(toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate)), 0); // filters to see only the spending of said category and gets the total money spent
     return parseFloat(catTransactions.toFixed(2)); // returns the total as a string with 2 decimals
 };
 
@@ -314,5 +314,5 @@ const deleteBudget = async () => {
 };
 
 const getBudgetLimit = (budget) => {
-    return toActive(budget.budgetLimit, budget.budgetCurrency); // converts the budget limit to the active currency
+    return toActive(budget.budgetLimit, budget.budgetCurrency, budget.budgetCreatedAt); // converts the budget limit to the active currency
 }

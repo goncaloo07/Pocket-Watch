@@ -69,7 +69,7 @@ const formatDateDMY = (dateStr) => {
 };
 
 // validates and saves a new transaction from the form, then re-renders the whole page
-const addTransaction = (e) => {
+const addTransaction = async (e) => {
     e.preventDefault();
 
     const isSpending = document.getElementById('type-spending').checked; // spending or receiving
@@ -104,6 +104,7 @@ const addTransaction = (e) => {
 
     transactionForm.reset();
     toggleTransactionModal();
+    await ensureRatesFor([transaction.transactionDate]);
     // only refresh what's actually visible
     if (window.location.pathname === '/transactions') {
         renderAllTransactions(); // this one updates the full list on the transactions page
@@ -286,7 +287,7 @@ const openEditTransactionModal = (index) => {
     const differentCurrency = (t.transactionCurrency || 'EUR') !== getActiveCurrency();
     amountNote.classList.toggle('hidden', !differentCurrency);
     if (differentCurrency) {
-        amountNote.textContent = `Original amount, shown as ${formatAmount(Math.abs(toActive(t.transactionAmount, t.transactionCurrency)))} in the list`;
+        amountNote.textContent = `Original amount, shown as ${formatAmount(Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)))} in the list`;
     }
     editDateInput.value = t.transactionDate;
     editDateInput.max = getTodayISO(); // can't edit to a future date
@@ -302,7 +303,7 @@ const closeEditTransactionModal = () => {
     editingIndex = null; // no transaction open anymore
 };
 
-const saveEditedTransaction = (e) => {
+const saveEditedTransaction = async (e) => {
     e.preventDefault();
     const transactions = getTransactions();
     const original = transactions[editingIndex]; // to know if it's spending or receiving
@@ -324,6 +325,7 @@ const saveEditedTransaction = (e) => {
     transactions[editingIndex] = editedTransaction;
     saveTransactions(transactions);
     closeEditTransactionModal();
+    await ensureRatesFor([editedTransaction.transactionDate]);
     renderAllTransactions(); // refreshes the list on the transactions page
     setupAmountFilter();
 }
@@ -348,7 +350,7 @@ const getMaxTransactionAmount = () => {
     const transactions = getTransactions();
     if (transactions.length === 0) return 1000;
     return transactions.reduce((max, t) => {
-        const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency)); // in the active currency
+        const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)); // in the active currency
         return amount > max ? amount : max;
     }, 0);
 };

@@ -13,7 +13,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
                     <span class="transaction-meta">${transactionCat} | <span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
-            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency))}</span>
+            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency, transactionDate))}</span>
         </li>
     `;
 };
@@ -41,7 +41,7 @@ const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transac
                     <span class="transaction-meta"><span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
-            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency))}</span>
+            <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency, transactionDate))}</span>
         </li>
     `;
 };
@@ -212,7 +212,7 @@ const renderAllTransactions = () => {
                                 .filter(t => selectedCat === 'all' || t.transactionCat === selectedCat)
                                 .filter(t => (dateFrom === '' || t.transactionDate >= dateFrom) && (dateTo === '' || t.transactionDate <= dateTo))
                                 .filter(t => {
-                                    const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency)); // in the active currency
+                                    const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)); // in the active currency
                                     return amount >= amountMin && amount <= amountMax;
                                 })
                                 .filter(matchesSearch);
@@ -244,7 +244,7 @@ const renderAllTransactions = () => {
     let runningBalance = 0;
     for (let i = dayEntries.length - 1; i >= 0; i--) {
         const [date, dayTransactions] = dayEntries[i];
-        const dayTotal = dayTransactions.reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency), 0);
+        const dayTotal = dayTransactions.reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate), 0);
         runningBalance += dayTotal;
         balanceByDate.set(date, runningBalance);
     }

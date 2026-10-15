@@ -7,7 +7,7 @@ const calcBalance = () => {
     const transactions = getTransactions()
     let balance = 0
     transactions.forEach(transaction => {
-        balance += toActive(transaction.transactionAmount, transaction.transactionCurrency) // sum all transactions
+        balance += toActive(transaction.transactionAmount, transaction.transactionCurrency, transaction.transactionDate) // sum all transactions
     })
     return balance
 };
@@ -152,13 +152,13 @@ const getBalanceHistory = (time) => {
         if (!byDate.has(t.transactionDate)) byDate.set(t.transactionDate, []);
         byDate.get(t.transactionDate).push(t);
     });
-    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + toActive(transaction.transactionAmount, transaction.transactionCurrency) : total, 0); // balance before the chart's start day
+    balance = transactions.reduce((total, transaction) => transaction.transactionDate < startISO ? total + toActive(transaction.transactionAmount, transaction.transactionCurrency, transaction.transactionDate) : total, 0); // balance before the chart's start day
  
     do {
         const dailyTransactions = byDate.get(startISO) ?? []; // days with nothing give an empty list
         const hasTransactions = dailyTransactions.length > 0;
         dailyTransactions.forEach(transaction => {
-            balance += toActive(transaction.transactionAmount, transaction.transactionCurrency);
+            balance += toActive(transaction.transactionAmount, transaction.transactionCurrency, transaction.transactionDate);
         });
         result.push({ date: startISO, balance: balance.toFixed(2), hasTransactions });
         start.setDate(start.getDate() + 1);
@@ -290,10 +290,10 @@ const showDayDetails = (date, cx) => {
     const dayTransactions = getTransactions().filter(t => t.transactionDate === date);
     const spent = dayTransactions
         .filter(t => t.transactionType === 'spending')
-        .reduce((sum, t) => sum + Math.abs(toActive(t.transactionAmount, t.transactionCurrency)), 0);
+        .reduce((sum, t) => sum + Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)), 0);
     const received = dayTransactions
         .filter(t => t.transactionType === 'receiving')
-        .reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency), 0);
+        .reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate), 0);
     const net = received - spent;
     const content = dayTransactions.length === 0
         ? '<li class="transactions-empty-subtitle">No transactions this day</li>'
