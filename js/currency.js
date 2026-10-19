@@ -106,4 +106,18 @@ const ensureAllRates = () => ensureRatesFor([
     ...getBudgets().map(b => b.budgetCreatedAt)
 ]);
 
+// rounds to 1 significant digit
+const roundNice = (n) => {
+    const magnitude = 10 ** Math.floor(Math.log10(n)); // 1118.8 -> 1000, 844.6 -> 100
+    return Math.round(n / magnitude) * magnitude;
+};
+
+// the values of the budget limit slider for the active currency
+const getBudgetSliderRange = () => {
+    const rate = ratesCache?.rates[getActiveCurrency()] ?? 1; // how much 1€ is worth in the active currency
+    const max = roundNice(1000 * rate); // the slider goes up to what 1000€ is worth
+    const step = Math.max(1, roundNice(max / 200)); // about 200 positions along the slider
+    return { max, step, start: max / 10 }; // starts at a tenth of the max (100 in euros)
+};
+
 const getActiveSymbol = () => getCurrencySymbol(getActiveCurrency());

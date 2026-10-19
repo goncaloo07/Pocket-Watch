@@ -159,7 +159,13 @@ const toggleBudgetModal = (e) => {
         document.getElementById("budget-period-recurring").checked = true;
         budgetRecurringUnit.value = 'monthly';
  
-        // the limit text uses the symbol of the active currency, it can change between openings
+        // the slider adapts to the active currency (max first, otherwise the browser cuts the value)
+        const range = getBudgetSliderRange();
+        budgetLimit.max = range.max;
+        budgetLimit.step = range.step;
+        budgetLimit.value = range.start;
+        budgetLimitInput.step = 'any'; // any value can be typed, not only multiples of the step
+        budgetLimitInput.value = range.start;
         budgetLimitValue.textContent = `${budgetLimit.value}${getActiveSymbol()}`;
  
         // the "until date" option can't be today or earlier, so default it to tomorrow
