@@ -1,3 +1,7 @@
+const sortByDateDesc = (transactions) => {
+    return [...transactions].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
+};
+
 const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, originalIndex, transactionCurrency }) => {
     const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots';
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative';
@@ -19,7 +23,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
 };
 
 const renderTransactions = () => {
-    const transactions = getTransactions();
+    const transactions = sortByDateDesc(getTransactions()); // sorted by transaction date, not by when it was added
 
     if (transactions.length === 0) { //if there aren't any transactions, the empty message will show
         transactionsEmptyDiv.classList.remove('hidden');
@@ -47,7 +51,7 @@ const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transac
 };
 
 const renderSpendingReceiving = () => {
-    const transactions = getTransactions();
+    const transactions = sortByDateDesc(getTransactions());
     const spending = transactions.filter(transaction => transaction.transactionType === "spending").slice(0, 3); // gets last 3 spending transactions (LIFO)
     const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").slice(0, 3); // gets last 3 receiving transactions (LIFO)
     
