@@ -293,7 +293,8 @@ const openEditTransactionModal = (index) => {
     editDateInput.max = getTodayISO(); // can't edit to a future date
     // spending and receiving have different category lists
     const cats = t.transactionType === 'spending' ? CATEGORIES_SPENDING : CATEGORIES_RECEIVING;
-    editCategorySelect.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    editCategorySelect.innerHTML = buildCategoryOptions(cats);
+    editCategorySelect.value = t.transactionCat;
     setEditMode(false); // fields start locked, only Edit unlocks them
     editTransactionModal.classList.add('open'); // shows the modal
 };

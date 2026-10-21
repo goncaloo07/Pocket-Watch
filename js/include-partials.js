@@ -14,6 +14,7 @@ Promise.all([
     loadPartial('../html/menu.html', 'menu-placeholder'),
     loadPartial('../html/footer.html', 'footer-placeholder')
 ]).then(() => {
+    applyTranslations(); 
     // same order as before: the footer needs the header, because initFooter calls applyTheme
     document.dispatchEvent(new CustomEvent('header:loaded'));
     document.dispatchEvent(new CustomEvent('menu:loaded'));

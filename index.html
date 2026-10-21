@@ -83,10 +83,11 @@
     <main id="main-content" class="main-content">
         <div id="page-content"></div>
 
+        <!-- Add budget modal -->
         <div id="budget-modal-overlay" class="modal-overlay">
             <div id="budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
                 <div class="modal-header">
-                    <h1 id="budget-modal-title" class="container-title">Add Budget</h1>
+                    <h1 id="budget-modal-title" class="container-title" data-i18n="budgets.add"></h1>
                     <button id="close-budget-modal-btn" class="close-btn" aria-label="Close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
@@ -94,55 +95,53 @@
 
                 <form id="budget-form" class="modal-form">
                     <div class="form-group">
-                        <label for="budget-category-spending" class="category-label-spending">
-                            Category
-                        </label>
+                        <label for="budget-category-spending" class="category-label-spending" data-i18n="common.category"></label>
                         <select id="budget-category-spending" name="budget-category-spending" class="category-select-spending">
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="budget-limit">Limit</label>
+                        <label for="budget-limit" data-i18n="budgetModal.limit"></label>
                         <div class="budget-slider-wrap">
                             <input type="range" id="budget-limit" name="budget-limit" min="0" max="1000" step="5" value="100">
                             <span id="budget-limit-value" class="budget-slider-value" tabindex="0">100</span>
                             <input type="number" id="budget-limit-input" class="budget-slider-input hidden" min="0" step="5" value="100">
                         </div>
-                        <span id="budget-limit-error" class="input-error hidden">Limit must be greater than 0</span>
+                        <span id="budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
                     </div>
 
                     <div class="form-group">
-                        <label>Renews</label>
+                        <label data-i18n="budgetModal.renews"></label>
                         <div class="type-toggle">
                             <input type="radio" id="budget-period-recurring" name="budget-period" value="recurring" checked>
                             <label for="budget-period-recurring" class="type-option budget-period-recurring">
-                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Every So Often
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span data-i18n="budgetModal.everySoOften"></span>
                             </label>
 
                             <input type="radio" id="budget-period-date" name="budget-period" value="date">
                             <label for="budget-period-date" class="type-option budget-period-date">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> Until Date
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> <span data-i18n="budgetModal.untilDate"></span>
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group budget-recurring-group">
-                        <label for="budget-recurring-unit">Frequency</label>
+                        <label for="budget-recurring-unit" data-i18n="budgetModal.frequency"></label>
                         <select id="budget-recurring-unit" name="budget-recurring-unit">
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly" selected>Monthly</option>
-                            <option value="yearly">Yearly</option>
+                            <option value="weekly" data-i18n="budget.weekly"></option>
+                            <option value="monthly" data-i18n="budget.monthly" selected></option>
+                            <option value="yearly" data-i18n="budget.yearly"></option>
                         </select>
                     </div>
 
                     <div class="form-group budget-end-date-group">
-                        <label for="budget-end-date">End Date</label>
+                        <label for="budget-end-date" data-i18n="budgetModal.endDate"></label>
                         <input type="date" id="budget-end-date" name="budget-end-date">
-                        <span id="budget-end-date-error" class="input-error hidden">End date must be after today</span>
+                        <span id="budget-end-date-error" class="input-error hidden" data-i18n="budgetModal.endDateError"></span>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" id="cancel-budget-btn" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" id="save-budget-btn" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel-budget-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="submit" id="save-budget-btn" class="btn btn-primary" data-i18n="common.save"></button>
                     </div>
                 </form>
             </div>
@@ -264,10 +263,11 @@
             </div>
         </div>
 
+        <!-- Edit budget modal -->
         <div id="edit-budget-modal-overlay" class="modal-overlay">
             <div id="edit-budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-budget-modal-title">
                 <div class="modal-header">
-                    <h1 id="edit-budget-modal-title" class="container-title">Budget Details</h1>
+                    <h1 id="edit-budget-modal-title" class="container-title" data-i18n="budgetModal.details"></h1>
                     <button id="close-edit-budget-modal-btn" class="close-btn" aria-label="Close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
@@ -275,55 +275,55 @@
 
                 <form id="edit-budget-form" class="modal-form">
                     <div class="form-group">
-                        <label>Category</label>
+                        <label data-i18n="common.category"></label>
                         <span id="edit-budget-category" class="edit-type-badge"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-budget-limit">Limit</label>
+                        <label for="edit-budget-limit" data-i18n="budgetModal.limit"></label>
                         <div class="amount-input-wrap">
                             <span id="edit-budget-currency-symbol" class="amount-currency">€</span>
                             <input type="number" id="edit-budget-limit" step="0.01" min="0" inputmode="decimal" required>
                         </div>
-                        <span id="edit-budget-limit-error" class="input-error hidden">Limit must be greater than 0</span>
+                        <span id="edit-budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
                         <span id="edit-budget-limit-note" class="transaction-meta hidden"></span>
                     </div>
 
                     <div class="form-group">
-                        <label>Renews</label>
+                        <label data-i18n="budgetModal.renews"></label>
                         <div class="type-toggle">
                             <input type="radio" id="edit-budget-period-recurring" name="edit-budget-period" value="recurring" checked>
                             <label for="edit-budget-period-recurring" class="type-option budget-period-recurring">
-                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Every So Often
+                                <i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span data-i18n="budgetModal.everySoOften"></span>
                             </label>
 
                             <input type="radio" id="edit-budget-period-date" name="edit-budget-period" value="date">
                             <label for="edit-budget-period-date" class="type-option budget-period-date">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> Until Date
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> <span data-i18n="budgetModal.untilDate"></span>
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group budget-recurring-group">
-                        <label for="edit-budget-recurring-unit">Frequency</label>
+                        <label for="edit-budget-recurring-unit" data-i18n="budgetModal.frequency"></label>
                         <select id="edit-budget-recurring-unit">
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
+                            <option value="weekly" data-i18n="budget.weekly"></option>
+                            <option value="monthly" data-i18n="budget.monthly"></option>
+                            <option value="yearly" data-i18n="budget.yearly"></option>
                         </select>
                     </div>
 
                     <div class="form-group budget-end-date-group">
-                        <label for="edit-budget-end-date">End Date</label>
+                        <label for="edit-budget-end-date" data-i18n="budgetModal.endDate"></label>
                         <input type="date" id="edit-budget-end-date">
-                        <span id="edit-budget-end-date-error" class="input-error hidden">End date must be after today</span>
+                        <span id="edit-budget-end-date-error" class="input-error hidden" data-i18n="budgetModal.endDateError"></span>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" id="delete-budget-btn" class="btn btn-danger">Delete</button>
-                        <button type="button" id="edit-budget-mode-btn" class="btn btn-secondary">Edit</button>
-                        <button type="button" id="cancel-edit-budget-btn" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" id="save-edit-budget-btn" class="btn btn-primary">Save</button>
+                        <button type="button" id="delete-budget-btn" class="btn btn-danger" data-i18n="common.delete"></button>
+                        <button type="button" id="edit-budget-mode-btn" class="btn btn-secondary" data-i18n="common.edit"></button>
+                        <button type="button" id="cancel-edit-budget-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="submit" id="save-edit-budget-btn" class="btn btn-primary" data-i18n="common.save"></button>
                     </div>
                 </form>
             </div>
@@ -349,6 +349,7 @@
     
     <div id="footer-placeholder"></div>
 
+    <script src="js/translate.js" defer></script>
     <script src="js/router.js" defer></script>
     <script src="js/theme.js" defer></script>
     <script src="js/header.js" defer></script>

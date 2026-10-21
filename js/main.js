@@ -88,7 +88,8 @@ let addTransactionBtn,
     settingsThemeDark,
     settingsThemeLight,
     settingsThemeSystem,
-    settingsCurrencySelect;
+    settingsCurrencySelect,
+    settingsLanguageSelect;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -123,7 +124,7 @@ const CATEGORIES_RECEIVING = [
 ];
 
 const buildCategoryOptions = (categories) => {
-    return categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+    return categories.map(cat => `<option value="${cat}">${tCat(cat)}</option>`).join('');
 };
 
 // opens/closes the "Add Transaction" modal. When opening, resets the form to
@@ -153,7 +154,7 @@ const toggleBudgetModal = (e) => {
     if (isOpen) {  // if its open, the categories will be built from the available categories that dont have a budget yet
         const usedCats = getCats();
         const availableCats = CATEGORIES_SPENDING.filter(cat => !usedCats.includes(cat)); // only categories without a budget
-        const generalOption = usedCats.includes(GENERAL_BUDGET_CAT) ? '' : `<option value="${GENERAL_BUDGET_CAT}">General</option>`;
+        const generalOption = usedCats.includes(GENERAL_BUDGET_CAT) ? '' : `<option value="${GENERAL_BUDGET_CAT}">${t('budget.general')}</option>`;
         budgetCategory.innerHTML = generalOption + buildCategoryOptions(availableCats);
         // reset the "renews" section back to its default: recurring, monthly
         document.getElementById("budget-period-recurring").checked = true;

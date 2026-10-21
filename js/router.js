@@ -51,6 +51,7 @@ const loadPage = (path) => {
         .then(response => response.text())
         .then(html => {
             pageContent.innerHTML = html;
+            applyTranslations(pageContent);
             document.title = PAGE_TITLES[path] || PAGE_TITLES.default; // updates the browser tab title for this page
             document.querySelector('meta[name="description"]').setAttribute('content', PAGE_DESCRIPTIONS[path] || PAGE_DESCRIPTIONS.default); // updates the meta description for this page
             document.getElementById('canonical-link').setAttribute('href', `https://pocket-watch-murex.vercel.app${path}`); // updates the canonical URL for this page

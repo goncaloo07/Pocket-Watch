@@ -6,6 +6,10 @@ const initSettingsPage = () => {
     settingsThemeLight = document.getElementById('settings-theme-light');
     settingsThemeSystem = document.getElementById('settings-theme-system');
     settingsCurrencySelect = document.getElementById('settings-currency');
+    
+    settingsLanguageSelect = document.getElementById('settings-language');
+    settingsLanguageSelect.value = getActiveLanguage(); // shows the saved language when the page opens
+
     if (savedTheme === 'dark') {
         settingsThemeDark.checked = true;
     } else if (savedTheme === 'light') {
@@ -30,6 +34,13 @@ const initSettingsPage = () => {
     settingsCurrencySelect.addEventListener('change', () => {
         const selectedCurrency = settingsCurrencySelect.value;
         safeSetItem('currency', selectedCurrency);
+    });
+
+    settingsLanguageSelect.addEventListener('change', () => {
+        safeSetItem('language', settingsLanguageSelect.value);
+        document.documentElement.lang = settingsLanguageSelect.value; // helps screen readers and Google
+        applyTranslations(); // updates the menu right away, no reload needed
+        fillCurrencyOptions(); // rebuilds the currency names in the new language
     });
 
     fillCurrencyOptions();

@@ -19,7 +19,8 @@ const loadRates = async () => {
 
 // "USD" -> "US Dollar ($)"
 const getCurrencyLabel = (code) => {
-    const name = new Intl.DisplayNames(['en'], { type: 'currency' }).of(code);
+    const rawName = new Intl.DisplayNames([getLocale()], { type: 'currency' }).of(code);
+    const name = rawName.charAt(0).toUpperCase() + rawName.slice(1);
     const symbol = getCurrencySymbol(code);
     return `${name} (${symbol})`;
 };

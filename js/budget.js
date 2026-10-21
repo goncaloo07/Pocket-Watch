@@ -135,7 +135,7 @@ const getSpendPeriodRange = (budget) => {
 };
 
 const formatDateShort = (date) => { // returns the date like 
-    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    return date.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' });
 };
 
 const isBudgetExpired = (budget) => { // check if the budget is expired
@@ -171,14 +171,14 @@ const openEditBudgetModal = (index) => {
     editingBudgetIndex = index; // remembers which budget is open
     const b = getBudgets()[index];
 
-    editBudgetCategory.textContent = b.budgetCat === GENERAL_BUDGET_CAT ? 'General' : b.budgetCat;
+    editBudgetCategory.textContent = b.budgetCat === GENERAL_BUDGET_CAT ? t('budget.general') : b.budgetCat;
     editBudgetLimitInput.value = b.budgetLimit;
     document.getElementById('edit-budget-currency-symbol').textContent = getCurrencySymbol(b.budgetCurrency || 'EUR');
     const limitNote = document.getElementById('edit-budget-limit-note');
     const differentCurrency = (b.budgetCurrency || 'EUR') !== getActiveCurrency();
     limitNote.classList.toggle('hidden', !differentCurrency);
     if (differentCurrency) {
-        limitNote.textContent = `Original limit, shown as ${formatAmount(getBudgetLimit(b))} in the list`;
+        limitNote.textContent = t('budgetModal.originalLimit').replace('{amount}', formatAmount(getBudgetLimit(b)));
     }
 
     const tomorrow = new Date();

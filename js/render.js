@@ -14,7 +14,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
                 <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                 <div class="transaction-info">
                     <span class="transaction-name">${safeName}</span>
-                    <span class="transaction-meta">${transactionCat} | <span class="transaction-date">${transactionDate}</span></span>
+                    <span class="transaction-meta">${tCat(transactionCat)} | <span class="transaction-date">${transactionDate}</span></span>
                 </div>
             </div>
             <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency, transactionDate))}</span>
@@ -103,14 +103,14 @@ const animateBalance = (targetValue, duration = 800) => {
 const buildBudgetRow = (budget, totalSpent) => {
     const { budgetCat } = budget;
     const limit = getBudgetLimit(budget);
-    const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
-    const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots'; // gets the icon
+    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // budgetCat is "__general__" or the category name
+    const label = tCat(budgetCat);
     const perc = ((totalSpent / limit) * 100) // calculates the percentage of the limit spent
 
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : ''; // if its 80% through the budget, it gets the near-limit class, if its over the budget it gets the over-limit class
 
     const { start, end } = getPeriodRange(budget);
-    const dateLabel = budget.budgetPeriod === "date" ? `Until ${formatDateShort(end)}` : `${formatDateShort(start)} - ${formatDateShort(end)}`; // get the start and end to the budget
+    const dateLabel = budget.budgetPeriod === "date" ? `${t('budget.until')} ${formatDateShort(end)}` : `${formatDateShort(start)} - ${formatDateShort(end)}`; // get the start and end to the budget
 
     return `
         <li class="budget-row">
@@ -118,7 +118,7 @@ const buildBudgetRow = (budget, totalSpent) => {
                 <div class="transaction-left">
                     <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                     <div class="transaction-info">
-                        <span class="transaction-name">${displayName}</span>
+                        <span class="transaction-name">${label}</span>
                         <span class="transaction-meta">${dateLabel}</span>
                     </div>
                 </div>
@@ -271,7 +271,7 @@ const getActiveFilters = () => {
     }
     const selectedCat = transactionFilterCat.value;
     if (selectedCat !== 'all') {
-        active.push({ key: 'category', label: selectedCat})
+        active.push({ key: 'category', label: tCat(selectedCat)})
     }
     const selectedDateStart = transactionFilterDateMin.value;
     const selectedDateEnd = transactionFilterDateMax.value;
@@ -315,8 +315,8 @@ const renderActiveFilters = () => {
 
 const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
     const { budgetCat, budgetPeriod } = budget;
-    const displayName = budgetCat === GENERAL_BUDGET_CAT ? "General" : budgetCat;
-    const icon = CATEGORY_ICONS.get(displayName) || 'bi-three-dots';
+    const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // budgetCat is "__general__" or the category name
+    const label = tCat(budgetCat);
     const { end } = getPeriodRange(budget);
 
     const limit = getBudgetLimit(budget); // limit in the active currency, same as totalSpent
@@ -329,8 +329,8 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
 
     // "Monthly", "Weekly", "Yearly" or "Until 31 Oct"
     const budgetType = budgetPeriod === 'recurring'
-        ? budget.budgetUnit[0].toUpperCase() + budget.budgetUnit.slice(1)
-        : "Until " + formatDateShort(end);
+        ? t('budget.' + budget.budgetUnit)
+        : t('budget.until') + " " + formatDateShort(end);
 
     return `
         <li class="budget-row" data-index="${originalIndex}">
@@ -338,7 +338,7 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
                 <div class="transaction-left">
                     <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                     <div class="transaction-info">
-                        <span class="transaction-name">${displayName}</span>
+                        <span class="transaction-name">${label}</span>
                         <span class="transaction-meta">${budgetType}</span>
                     </div>
                 </div>
@@ -352,10 +352,10 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
             </div>
             <div class="budget-detail-footer">
                 <span class="${isOver ? 'over' : ''}">
-                    ${isOver ? `${formatAmount(Math.abs(left))} over` : `${formatAmount(left)} left`}
+                    ${isOver ? `${formatAmount(Math.abs(left))} ${t('budget.over')}` : `${formatAmount(left)} ${t('budget.left')}`}
                 </span>
-                <span>${daysLeft} ${daysLeft === 1 ? 'day' : 'days'} left</span>
-                <span>Can spend ${formatAmount(perDay)} per day</span>
+                <span>${daysLeft} ${t(daysLeft === 1 ? 'budget.day' : 'budget.days')}</span>
+                <span>${t('budget.canSpend')} ${formatAmount(perDay)} ${t('budget.perDay')}</span>
             </div>
         </li>
     `;
