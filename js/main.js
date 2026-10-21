@@ -165,7 +165,6 @@ const toggleBudgetModal = (e) => {
         budgetLimit.max = range.max;
         budgetLimit.step = range.step;
         budgetLimit.value = range.start;
-        budgetLimitInput.step = 'any'; // any value can be typed, not only multiples of the step
         budgetLimitInput.value = range.start;
         budgetLimitValue.textContent = `${budgetLimit.value}${getActiveSymbol()}`;
  
@@ -238,6 +237,7 @@ const initTransactionModal = () => {
     closeTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     cancelTransactionModalBtn.addEventListener('click', toggleTransactionModal);
     transactionForm.addEventListener('submit', addTransaction);
+    limitToNumbers(document.getElementById('transaction-amount'));
     // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
     document.getElementById('transaction-amount').addEventListener('input', (e) => {
         if (parseFloat(e.target.value) > 0) {
@@ -276,7 +276,7 @@ const initBudgetModal = () => {
     // when the user finishes typing in that number input (clicks away), validate
     // it, sync it back to the slider, and swap back to the plain text display
     budgetLimitInput.addEventListener('blur', () => {
-        let value = parseFloat(budgetLimitInput.value);
+        let value = parseAmount(budgetLimitInput.value);
         if (isNaN(value) || value < 0) {
             value = 0;
         }
@@ -290,12 +290,7 @@ const initBudgetModal = () => {
         budgetLimitValue.classList.remove("hidden");
     });
 
-    // don't let the number input go negative while typing
-    budgetLimitInput.addEventListener('input', () => {
-        if (budgetLimitInput.value < 0) {
-            budgetLimitInput.value = 0;
-        }
-    });
+    limitToNumbers(budgetLimitInput);
 
     // dragging the slider keeps the number input and its text label in sync,
     // and clears the "must be greater than 0€" error as soon as it's fixed
@@ -334,6 +329,20 @@ const safeSetItem = (key, value) => {
         return false;
     }
 }
+
+
+// sets the tab title and meta description for a path, in the active language
+const updatePageMeta = (path) => {
+    document.title = t(PAGE_TITLES[path] || PAGE_TITLES.default);
+    document.querySelector('meta[name="description"]').setAttribute('content', t(PAGE_DESCRIPTIONS[path] || PAGE_DESCRIPTIONS.default));
+};
+
+// keeps only digits, dots and commas while typing
+const limitToNumbers = (input) => {
+    input.addEventListener('input', () => {
+        input.value = input.value.replace(/[^0-9.,]/g, '');
+    });
+};
 
 removeExpiredBudgets(); // removes expired budgets from localStorage on first load, so the user doesn't see them anymore
 initTransactionModal();

@@ -64,8 +64,10 @@ const getTodayISO = () => formatDateISO(new Date());
 
 // "2026-08-23" -> "23-08-2026"
 const formatDateDMY = (dateStr) => {
-    const [year, month, day] = dateStr.split('-');
-    return `${day}-${month}-${year}`;
+    if (!dateStr) return ''; // empty date input, nothing to show
+    return parseDateISO(dateStr).toLocaleDateString(getLocale(), {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+    });
 };
 
 // validates and saves a new transaction from the form, then re-renders the whole page
@@ -254,6 +256,8 @@ const initEditTransactionModal = () => {
     deleteTransactionBtn = document.getElementById('delete-transaction-btn');
     editModeBtn = document.getElementById('edit-mode-btn');
     cancelEditBtn = document.getElementById('cancel-edit-btn');
+
+    limitToNumbers(editAmountInput);
 
     document.getElementById('close-edit-modal-btn').addEventListener('click', closeEditTransactionModal);
     editModeBtn.addEventListener('click', () => setEditMode(true));

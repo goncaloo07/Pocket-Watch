@@ -41,7 +41,7 @@ const getCats = () => { //gets the localStorage item budgets and turns it into a
 const addBudget = (e) => {
     e.preventDefault();
 
-    if(parseFloat(budgetLimitInput.value) === 0) { // doesn't let the amount be 0
+    if (!(parseAmount(budgetLimitInput.value) > 0)) { // doesn't let the amount be 0
         budgetLimitInput.closest('.budget-slider-wrap').classList.add('input-invalid');
         budgetLimitError.classList.remove('hidden');
         budgetLimitInput.focus();
@@ -67,7 +67,7 @@ const addBudget = (e) => {
 
     const budget = { //creates the budget object
         budgetCat: budgetCategory.value,
-        budgetLimit: parseFloat(budgetLimitInput.value),
+        budgetLimit: parseAmount(budgetLimitInput.value),
         budgetPeriod: periodType,
         budgetCreatedAt: getTodayISO(),
         ...(periodType === "recurring" ? { budgetUnit: unit } : { budgetEndDate: unit }),
@@ -225,8 +225,9 @@ const initEditBudgetModal = () => {
     cancelEditBudgetBtn.addEventListener('click', cancelEditBudget);
     editBudgetForm.addEventListener('submit', saveEditedBudget);
     deleteBudgetBtn.addEventListener('click', deleteBudget);
+    limitToNumbers(editBudgetLimitInput);
     editBudgetLimitInput.addEventListener('input', () => {
-        if (parseFloat(editBudgetLimitInput.value) > 0) {
+        if (parseAmount(editBudgetLimitInput.value) > 0) {
             editBudgetLimitError.classList.add('hidden');
             editBudgetLimitInput.closest('.amount-input-wrap').classList.remove('input-invalid');
         }
@@ -260,7 +261,7 @@ const saveEditedBudget = (e) => {
     e.preventDefault();
 
     // limit can't be 0 (same idea as addBudget)
-    const limit = parseFloat(editBudgetLimitInput.value) || 0;
+    const limit = parseAmount(editBudgetLimitInput.value) || 0;
     if (limit === 0) {
         editBudgetLimitInput.closest('.amount-input-wrap').classList.add('input-invalid');
         editBudgetLimitError.classList.remove('hidden');

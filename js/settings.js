@@ -41,6 +41,7 @@ const initSettingsPage = () => {
         document.documentElement.lang = settingsLanguageSelect.value; // helps screen readers and Google
         applyTranslations(); // updates the menu right away, no reload needed
         fillCurrencyOptions(); // rebuilds the currency names in the new language
+        updatePageMeta(window.location.pathname); // tab title changes right away
     });
 
     fillCurrencyOptions();

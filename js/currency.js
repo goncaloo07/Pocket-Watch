@@ -45,9 +45,15 @@ const convertAmount = (amount, fromCurrency, toCurrency, date) => {
 };
 
 const formatAmount = (amount) => {
-    const activeCurrency = getActiveCurrency();
-    return `${parseFloat(amount).toFixed(2)}${getCurrencySymbol(activeCurrency)}`;
+    const symbol = getCurrencySymbol(getActiveCurrency());
+    const number = parseFloat(amount).toLocaleString(getLocale(), {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    return `${number}${symbol}`;
 };
+
+const parseAmount = (text) => parseFloat(String(text).replace(',', '.'));
 
 const toActive = (amount, currency, date) => {
     return convertAmount(parseFloat(amount), currency || "EUR", getActiveCurrency(), date);

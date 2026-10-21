@@ -14,7 +14,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
                 <div class="transaction-icon"><i class="bi ${icon}" aria-hidden="true"></i></div>
                 <div class="transaction-info">
                     <span class="transaction-name">${safeName}</span>
-                    <span class="transaction-meta">${tCat(transactionCat)} | <span class="transaction-date">${transactionDate}</span></span>
+                    <span class="transaction-meta">${tCat(transactionCat)} | <span class="transaction-date">${formatDateDMY(transactionDate)}</span></span>
                 </div>
             </div>
             <span class="transaction-amount ${amountClass}">${formatAmount(toActive(transactionAmount, transactionCurrency, transactionDate))}</span>
@@ -277,10 +277,10 @@ const getActiveFilters = () => {
     const selectedDateEnd = transactionFilterDateMax.value;
     let date1 = "", date2 = "";
     if(selectedDateStart !== getOldestTransactionDate()) {
-        date1 = `${t('filters.from')} ${selectedDateStart}`;
+        date1 = `${t('filters.from')} ${formatDateDMY(selectedDateStart)}`;
     };
     if (selectedDateEnd !== getTodayISO()) {
-        date2 = `${t('filters.until')} ${selectedDateEnd}`;
+        date2 = `${t('filters.until')} ${formatDateDMY(selectedDateEnd)}`;
     };
     if (date1 || date2) {
         const selectedDate = [date1, date2].filter(Boolean).join(' ');

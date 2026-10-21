@@ -11,24 +11,24 @@ const ROUTES = {
 
 // title shown in the browser tab for each route
 const PAGE_TITLES = {
-    '/': 'Pocket Watch',
-    '/balance': 'Balance History',
-    '/budgets': 'Budgets',
-    '/transactions': 'Transactions',
-    '/settings': 'Settings',
-    '/comingSoon': 'Coming Soon',
-    default: 'Page Not Found'
+    '/': 'title.home',
+    '/balance': 'title.balance',
+    '/budgets': 'title.budgets',
+    '/transactions': 'title.transactions',
+    '/settings': 'title.settings',
+    '/comingSoon': 'title.comingSoon',
+    default: 'title.default'
 };
 
 // meta description shown in Google search results for each route
 const PAGE_DESCRIPTIONS = {
-    '/': 'A personal finance app where you can see your balance, add transactions and set budgets. Everything stays saved in your own browser.',
-    '/balance': 'Check your balance history and see how your transactions affect your finances over time.',
-    '/budgets': 'See all your budgets, check how much you have spent in each category and edit or delete them.',
-    '/transactions': 'View your transaction history and manage your spending and receiving records.',
-    '/settings': 'Change the app settings, including theme, currency, language and data management options.',
-    '/comingSoon': 'This part of the app is still being worked on.',
-    default: 'This page does not exist or was moved.'
+    '/': 'desc.home',
+    '/balance': 'desc.balance',
+    '/budgets': 'desc.budgets',
+    '/transactions': 'desc.transactions',
+    '/settings': 'desc.settings',
+    '/comingSoon': 'desc.comingSoon',
+    default: 'desc.default'
 };
 
 const pageContent = document.getElementById('page-content'); // where the page HTML goes
@@ -52,8 +52,7 @@ const loadPage = (path) => {
         .then(html => {
             pageContent.innerHTML = html;
             applyTranslations(pageContent);
-            document.title = PAGE_TITLES[path] || PAGE_TITLES.default; // updates the browser tab title for this page
-            document.querySelector('meta[name="description"]').setAttribute('content', PAGE_DESCRIPTIONS[path] || PAGE_DESCRIPTIONS.default); // updates the meta description for this page
+            updatePageMeta(path);
             document.getElementById('canonical-link').setAttribute('href', `https://pocket-watch-murex.vercel.app${path}`); // updates the canonical URL for this page
             document.dispatchEvent(new CustomEvent('page:loaded', { detail: { path } }));
         })

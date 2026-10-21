@@ -104,7 +104,7 @@
                         <div class="budget-slider-wrap">
                             <input type="range" id="budget-limit" name="budget-limit" min="0" max="1000" step="5" value="100">
                             <span id="budget-limit-value" class="budget-slider-value" tabindex="0">100</span>
-                            <input type="number" id="budget-limit-input" class="budget-slider-input hidden" min="0" step="5" value="100">
+                            <input type="text" id="budget-limit-input" class="budget-slider-input hidden" inputmode="decimal" autocomplete="off" value="100">
                         </div>
                         <span id="budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
                     </div>
@@ -181,7 +181,7 @@
                         <label for="transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
                             <span id="transaction-currency-symbol" class="amount-currency">€</span>
-                            <input type="number" id="transaction-amount" name="transaction-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" required>
+                            <input type="text" id="transaction-amount" name="transaction-amount" placeholder="0.00" inputmode="decimal" autocomplete="off" required>
                         </div>
                         <span id="amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
                     </div>
@@ -233,7 +233,7 @@
                         <label for="edit-transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
                             <span id="edit-transaction-currency-symbol" class="amount-currency">€</span>
-                            <input type="number" id="edit-transaction-amount" step="0.01" min="0" inputmode="decimal" required>
+                            <input type="text" id="edit-transaction-amount" inputmode="decimal" autocomplete="off" required>
                         </div>
                         <span id="edit-amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
                         <span id="edit-amount-note" class="transaction-meta hidden"></span>
@@ -278,7 +278,7 @@
                         <label for="edit-budget-limit" data-i18n="budgetModal.limit"></label>
                         <div class="amount-input-wrap">
                             <span id="edit-budget-currency-symbol" class="amount-currency">€</span>
-                            <input type="number" id="edit-budget-limit" step="0.01" min="0" inputmode="decimal" required>
+                            <input type="text" id="edit-budget-limit" inputmode="decimal" autocomplete="off" required>
                         </div>
                         <span id="edit-budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
                         <span id="edit-budget-limit-note" class="transaction-meta hidden"></span>

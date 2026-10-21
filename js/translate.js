@@ -145,7 +145,21 @@ const TRANSLATIONS = {
         'error.crashTitle': 'Something went wrong',
         'error.crashSubtitle': 'An unexpected error happened. Try reloading the page.',
         'error.backHome': 'Back to Home',
-        'error.reload': 'Reload Page'
+        'error.reload': 'Reload Page',
+        'title.home': 'Pocket Watch',
+        'title.balance': 'Balance History',
+        'title.budgets': 'Budgets',
+        'title.transactions': 'Transactions',
+        'title.settings': 'Settings',
+        'title.comingSoon': 'Coming Soon',
+        'title.default': 'Page Not Found',
+        'desc.home': 'A personal finance app where you can see your balance, add transactions and set budgets. Everything stays saved in your own browser.',
+        'desc.balance': 'Check your balance history and see how your transactions affect your finances over time.',
+        'desc.budgets': 'See all your budgets, check how much you have spent in each category and edit or delete them.',
+        'desc.transactions': 'View your transaction history and manage your spending and receiving records.',
+        'desc.settings': 'Change the app settings, including theme, currency, language and data management options.',
+        'desc.comingSoon': 'This part of the app is still being worked on.',
+        'desc.default': 'This page does not exist or was moved.'
     },
     pt: {
         'menu.home': 'Início',
@@ -292,12 +306,30 @@ const TRANSLATIONS = {
         'error.crashTitle': 'Algo correu mal',
         'error.crashSubtitle': 'Ocorreu um erro inesperado. Tenta recarregar a página.',
         'error.backHome': 'Voltar ao Início',
-        'error.reload': 'Recarregar Página'
+        'error.reload': 'Recarregar Página',
+        'title.home': 'Pocket Watch',
+        'title.balance': 'Histórico de Saldo',
+        'title.budgets': 'Orçamentos',
+        'title.transactions': 'Transações',
+        'title.settings': 'Definições',
+        'title.comingSoon': 'Em Breve',
+        'title.default': 'Página Não Encontrada',
+        'desc.home': 'Uma app de finanças pessoais onde vês o teu saldo, adicionas transações e defines orçamentos. Tudo fica guardado no teu próprio browser.',
+        'desc.balance': 'Consulta o histórico do teu saldo e vê como as transações afetam as tuas finanças ao longo do tempo.',
+        'desc.budgets': 'Vê todos os teus orçamentos, confirma quanto gastaste em cada categoria e edita ou apaga-os.',
+        'desc.transactions': 'Consulta o histórico de transações e gere os teus registos de despesas e receitas.',
+        'desc.settings': 'Altera as definições da app, incluindo tema, moeda, idioma e opções de gestão de dados.',
+        'desc.comingSoon': 'Esta parte da app ainda está em construção.',
+        'desc.default': 'Esta página não existe ou foi movida.'
     }
 };
 
 // language saved by the user, English by default
-const getActiveLanguage = () => localStorage.getItem('language') || 'en';
+const getActiveLanguage = () => {
+    const saved = localStorage.getItem('language');
+    if (saved === 'en' || saved === 'pt') return saved; // the user already chose one
+    return navigator.language.startsWith('pt') ? 'pt' : 'en';
+};
 
 // returns the text for a key, or the key itself if it's missing
 const t = (key) => TRANSLATIONS[getActiveLanguage()]?.[key] ?? key;
@@ -322,3 +354,5 @@ const applyTranslations = (root = document) => {
         el.placeholder = t(el.dataset.i18nPlaceholder);
     });
 };
+
+document.documentElement.lang = getActiveLanguage();    

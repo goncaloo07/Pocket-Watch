@@ -1012,7 +1012,7 @@ input.input-invalid {
     border-radius: 10px;
     padding: 0.5rem 0.9rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
+}   
 
 .amount-currency {
     font-family: 'Space Grotesk', sans-serif;
@@ -1022,28 +1022,28 @@ input.input-invalid {
     transition: color 0.2s ease;
 }
 
-.amount-input-wrap input[type="number"] {
+.amount-input-wrap input[type="text"] {
     flex: 1 1 0;
     min-width: 0;
     border: none;
+    border-radius: 0;
+    padding: 0;
     background: transparent;
     outline: none;
     font-family: 'Archivo', sans-serif;
     font-size: 1.6rem;
     font-weight: 800;
     color: var(--textcolor);
-    -moz-appearance: textfield;
-    appearance: textfield;
     transition: color 0.2s ease;
 }
 
-.amount-input-wrap input[type="number"]::placeholder {
+.amount-input-wrap input[type="text"]::placeholder {
     color: var(--secondary-color);
     font-weight: 500;
 }
 
-.amount-input-wrap input[type="number"]::-webkit-outer-spin-button,
-.amount-input-wrap input[type="number"]::-webkit-inner-spin-button {
+.amount-input-wrap input[type="text"]::-webkit-outer-spin-button,
+.amount-input-wrap input[type="text"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
@@ -1061,7 +1061,7 @@ input.input-invalid {
 }
 
 .modal-form:has(#type-spending:checked) .amount-currency,
-.modal-form:has(#type-spending:checked) .amount-input-wrap input[type="number"]:not(:placeholder-shown) {
+.modal-form:has(#type-spending:checked) .amount-input-wrap input[type="text"]:not(:placeholder-shown) {
     color: var(--negative-color);
 }
 
@@ -1071,9 +1071,10 @@ input.input-invalid {
 }
 
 .modal-form:has(#type-receiving:checked) .amount-currency,
-.modal-form:has(#type-receiving:checked) .amount-input-wrap input[type="number"]:not(:placeholder-shown) {
+.modal-form:has(#type-receiving:checked) .amount-input-wrap input[type="text"]:not(:placeholder-shown) {
     color: var(--positive-color);
 }
+
 /* Breakdown Chart */
 
 .chart-div {
@@ -1456,20 +1457,20 @@ input.input-invalid {
     transition: transform 0.15s ease, background-color 0.15s ease;
 }
 
-.budget-slider-input {
+.budget-slider-wrap input[type="text"].budget-slider-input {
     width: 4.5ch;
     flex-shrink: 0;
     text-align: right;
+    padding: 0;
+    border: none;
+    border-bottom: 1px solid var(--accent-color);
+    border-radius: 0;
+    background: transparent;
     font-family: 'Archivo', sans-serif;
     font-size: 1.1rem;
     font-weight: 800;
     color: var(--accent-color);
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--accent-color);
     outline: none;
-    -moz-appearance: textfield;
-    appearance: textfield;
 }
 
 .budget-slider-input::-webkit-outer-spin-button,
@@ -2250,25 +2251,8 @@ input.input-invalid {
     font-size: 0.8rem;
 }
 
-/* amount range: two compact amount inputs with a dash between them */
-.filter-amount-range {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.filter-amount-wrap {
-    flex: 1 1 0;
-    padding: 0.4rem 0.65rem;
-}
-
 .filter-amount-wrap .amount-currency {
     font-size: 1rem;
-}
-
-.filter-amount-wrap input[type="number"] {
-    font-size: 1rem;
-    font-weight: 600;
 }
 
 .filter-amount-sep {
