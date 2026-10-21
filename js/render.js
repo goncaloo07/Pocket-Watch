@@ -168,8 +168,8 @@ const getRelativeDateLabel = (dateStr) => {
     const yesterday = new Date();
     yesterday.setDate(today.getDate() - 1);
 
-    if (dateStr === formatDateISO(today)) return "Today";
-    if (dateStr === formatDateISO(yesterday)) return "Yesterday";
+    if (dateStr === formatDateISO(today)) return t('date.today');
+    if (dateStr === formatDateISO(yesterday)) return t('date.yesterday');
     return formatDateDMY(dateStr);
 };
 
@@ -271,16 +271,16 @@ const getActiveFilters = () => {
     }
     const selectedCat = transactionFilterCat.value;
     if (selectedCat !== 'all') {
-        active.push({ key: 'category', label: tCat(selectedCat)})
+        active.push({ key: 'type', label: t(selectedType === 'spending' ? 'common.spending' : 'common.receiving') });
     }
     const selectedDateStart = transactionFilterDateMin.value;
     const selectedDateEnd = transactionFilterDateMax.value;
     let date1 = "", date2 = "";
     if(selectedDateStart !== getOldestTransactionDate()) {
-        date1 = `From ${selectedDateStart}`;
+        date1 = `${t('filters.from')} ${selectedDateStart}`;
     };
     if (selectedDateEnd !== getTodayISO()) {
-        date2 = `Until ${selectedDateEnd}`;
+        date2 = `${t('filters.until')} ${selectedDateEnd}`;
     };
     if (date1 || date2) {
         const selectedDate = [date1, date2].filter(Boolean).join(' ');

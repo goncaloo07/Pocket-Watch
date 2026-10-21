@@ -1,12 +1,12 @@
 <div id="transactions-page" class="transactions-page">
     <div id="transactions-list-div" class="container transactions-list-div">
-        <h1 class="container-title"> Transactions
+        <h1 class="container-title"> <span data-i18n="menu.transactions"></span>
             <div class="transactions-title-actions">
                 <div class="search-wrap">
                     <i class="bi bi-search" aria-hidden="true"></i>
-                    <input type="text" id="search-input" placeholder="Search" aria-label="Search transactions by name">
+                    <input type="text" id="search-input" data-i18n-placeholder="transactions.search" data-i18n-aria="transactions.searchAria">
                 </div>
-                <button id="filter-toggle-btn" class="add-btn" aria-label="Toggle filters">
+                <button id="filter-toggle-btn" class="add-btn" data-i18n-aria="transactions.filterAria">
                     <i class="bi bi-funnel" aria-hidden="true"></i>
                 </button>
                 <button id="add-transaction-btn" class="add-btn">+</button>
@@ -15,39 +15,39 @@
         <div id="filter-panel" class="filter-panel hidden">
             <div class="filter-row">
                 <div class="form-group">
-                    <label>Type</label>
+                    <label data-i18n="common.type"></label>
                     <div class="type-toggle filter-type-toggle">
                         <input type="radio" id="filter-type-all" name="filter-type" value="all" checked>
-                        <label for="filter-type-all" class="type-option">All</label>
+                        <label for="filter-type-all" class="type-option" data-i18n="common.all"></label>
 
                         <input type="radio" id="filter-type-spending" name="filter-type" value="spending">
-                        <label for="filter-type-spending" class="type-option">Spending</label>
+                        <label for="filter-type-spending" class="type-option" data-i18n="common.spending"></label>
 
                         <input type="radio" id="filter-type-receiving" name="filter-type" value="receiving">
-                        <label for="filter-type-receiving" class="type-option">Receiving</label>
+                        <label for="filter-type-receiving" class="type-option" data-i18n="common.receiving"></label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="filter-category">Category</label>
+                    <label for="filter-category" data-i18n="common.category"></label>
                     <select id="filter-category">
-                        <option value="all">All categories</option>
+                        <option value="all" data-i18n="transactions.allCategories"></option>
                     </select>
                 </div>
             </div>
 
             <div class="filter-row">
                 <div class="form-group">
-                    <label>Date range</label>
+                    <label data-i18n="transactions.dateRange"></label>
                     <div class="filter-date-range">
                         <input type="date" id="filter-date-from" autocomplete="off">
                         <span class="filter-amount-sep">-</span>
-                        <input type="date" id="filter-date-to" autocomplete="off"       >
+                        <input type="date" id="filter-date-to" autocomplete="off">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Amount range</label>
+                    <label data-i18n="transactions.amountRange"></label>
                     <div class="filter-amount-slider-wrap">
                         <div class="filter-amount-values">
                             <span id="filter-amount-min-value">0€</span>
@@ -63,23 +63,23 @@
                 </div>
             </div>
 
-            <button type="button" id="filter-clear-btn" class="btn btn-secondary">Clear Filters</button>
+            <button type="button" id="filter-clear-btn" class="btn btn-secondary" data-i18n="transactions.clearFilters"></button>
         </div>
         <div id="active-filters" class="active-filters hidden"></div>
         <ul id="transactions-list" class="transactions-list"></ul>
         <div id="transactions-sentinel"></div>
         <div id="transactions-no-results" class="transactions-empty hidden">
             <i class="bi bi-search transactions-empty-icon" aria-hidden="true"></i>
-            <p class="transactions-empty-title">No matches found</p>
-            <p class="transactions-empty-subtitle">Try adjusting or clearing your filters.</p>
+            <p class="transactions-empty-title" data-i18n="transactions.noMatchesTitle"></p>
+            <p class="transactions-empty-subtitle" data-i18n="transactions.noMatchesSubtitle"></p>
         </div>
     </div>
     <div id="transactions-empty" class="transactions-empty hidden">
         <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
-        <p class="transactions-empty-title">No transactions yet</p>
-        <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+        <p class="transactions-empty-title" data-i18n="transactions.emptyTitle"></p>
+        <p class="transactions-empty-subtitle" data-i18n="transactions.emptySubtitle"></p>
         <button id="add-transaction-btn-empty" class="btn btn-primary transactions-empty-btn">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i> Add Transaction
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> <span data-i18n="transactionModal.add"></span>
         </button>
     </div>
 </div>

@@ -329,7 +329,7 @@ const safeSetItem = (key, value) => {
         localStorage.setItem(key, value);
         return true;
     } catch (e) {
-        showToast("Error saving data. Your changes may not be saved.", 6000);
+        showToast(t('toast.saveError'), 6000);
         console.error("Error saving to localStorage:", e);
         return false;
     }

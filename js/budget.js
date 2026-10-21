@@ -304,7 +304,7 @@ const saveEditedBudget = (e) => {
 };
 
 const deleteBudget = async () => {
-    const ok = await showConfirm("Are you sure you want to delete this budget? (This is irreversible)");
+    const ok = await showConfirm(t('confirm.deleteBudget'));
     if (!ok) return; // user clicked Cancel
     const budgets = getBudgets();
     budgets.splice(editingBudgetIndex, 1); // removes the budget at the open position

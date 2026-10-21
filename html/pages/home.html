@@ -1,4 +1,4 @@
-<h1 class="sr-only">Pocket Watch Dashboard</h1>
+<h1 class="sr-only" data-i18n="home.dashboard"></h1>
 <div id="priority-content" class="priority-content">
             <div id="balance-column" class="balance-column">
                 <a href="/balance" class="balance-link">
@@ -15,7 +15,7 @@
                             <line class="dial-needle dial-needle-v" x1="75" y1="75" x2="75" y2="34" stroke="var(--accent-color)" stroke-width="3"/>
                             <line class="dial-needle dial-needle-h" x1="75" y1="75" x2="103" y2="75" stroke="var(--accent-color)" stroke-width="3"/>
                         </svg>
-                        <h2 id="balance-label" class="container-title">Current Balance</h2>
+                        <h2 id="balance-label" class="container-title" data-i18n="home.currentBalance"></h2>
                         <h2 id="balance-value" class="balance-value"></h2>
                     </div>
                 </a>
@@ -23,11 +23,11 @@
                 <div id="sr-div" class="sr-div">
                     <a href="/transactions?type=spending" class="sr-link">
                         <div id="spending-div" class="container sr-item">
-                            <h2 class="container-title">Spending</h2>
+                            <h2 class="container-title" data-i18n="common.spending"></h2>
                             <div id="no-spending" class="sr-empty">
                                 <i class="bi bi-arrow-down-circle sr-empty-icon" aria-hidden="true"></i>
-                                <p class="sr-empty-title">No spending yet</p>
-                                <p class="sr-empty-subtitle">Expenses you add will show up here.</p>
+                                <p class="sr-empty-title" data-i18n="home.noSpendingTitle"></p>
+                                <p class="sr-empty-subtitle" data-i18n="home.noSpendingSubtitle"></p>
                             </div>
                             <ul id="spending-list" class="sr-list">
                             </ul>
@@ -36,11 +36,11 @@
 
                     <a href="/transactions?type=receiving" class="sr-link">
                         <div id="receiving-div" class="container sr-item">
-                            <h2 class="container-title">Receiving</h2>
+                            <h2 class="container-title" data-i18n="common.receiving"></h2>
                             <div id="no-receiving" class="sr-empty">
                                 <i class="bi bi-arrow-up-circle sr-empty-icon" aria-hidden="true"></i>
-                                <p class="sr-empty-title">No receiving yet</p>
-                                <p class="sr-empty-subtitle">Income you add will show up here.</p>
+                                <p class="sr-empty-title" data-i18n="home.noReceivingTitle"></p>
+                                <p class="sr-empty-subtitle" data-i18n="home.noReceivingSubtitle"></p>
                             </div>
                             <ul id="receiving-list" class="sr-list">
                             </ul>
@@ -50,11 +50,11 @@
 
                 <a href="/budgets" class="budget-link">
                     <div id="budget-div" class="container budget-div">
-                        <h2 class="container-title">Budget <button id="add-budget-btn" class="add-btn">+</button></h2>
+                        <h2 class="container-title"><span data-i18n="home.budget"></span> <button id="add-budget-btn" class="add-btn">+</button></h2>
                         <div id="budget-empty" class="budget-empty">
                             <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
-                            <p class="transactions-empty-title">No budgets yet</p>
-                            <p class="transactions-empty-subtitle">Set a limit for a category to start tracking it.</p>
+                            <p class="transactions-empty-title" data-i18n="budgets.emptyTitle"></p>
+                            <p class="transactions-empty-subtitle" data-i18n="home.budgetEmptySubtitle"></p>
                         </div>
                         <ul id="budget-list" class="budget-list hidden">
                         </ul>
@@ -65,11 +65,11 @@
             <div id="transactions-column" class="transactions-column">
                 <a href="/transactions" class="transactions-link">
                     <div id="transactions-div" class="container transactions-div">
-                        <h2 class="container-title">Transactions <button id="add-transaction-btn" class="add-btn">+</button></h2>
+                        <h2 class="container-title"><span data-i18n="menu.transactions"></span> <button id="add-transaction-btn" class="add-btn">+</button></h2>
                         <div id="transactions-empty" class="transactions-empty hidden">
                             <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
-                            <p class="transactions-empty-title">No transactions yet</p>
-                            <p class="transactions-empty-subtitle">Add your first one to start tracking your spending and income.</p>
+                            <p class="transactions-empty-title" data-i18n="transactions.emptyTitle"></p>
+                            <p class="transactions-empty-subtitle" data-i18n="transactions.emptySubtitle"></p>
                         </div>
                         <ul id="transactions-list" class="transactions-list">
                         </ul>
@@ -78,20 +78,20 @@
 
                 <div id="chart-div" class="container chart-div">
                     <div class="chart-header">
-                        <h2 class="container-title">Breakdown</h2>
+                        <h2 class="container-title" data-i18n="home.breakdown"></h2>
                         <div class="chart-toggle">
                             <input type="radio" id="chart-mode-category" name="chart-mode" value="category" checked>
-                            <label for="chart-mode-category" class="chart-toggle-option">By Category</label>
+                            <label for="chart-mode-category" class="chart-toggle-option" data-i18n="home.byCategory"></label>
 
                             <input type="radio" id="chart-mode-type" name="chart-mode" value="type">
-                            <label for="chart-mode-type" class="chart-toggle-option">Spending vs Receiving</label>
+                            <label for="chart-mode-type" class="chart-toggle-option" data-i18n="home.spendingVsReceiving"></label>
                         </div>
                     </div>
 
                     <div id="chart-empty" class="chart-empty hidden">
                         <i class="bi bi-pie-chart chart-empty-icon" aria-hidden="true"></i>
-                        <p class="transactions-empty-title">Nothing to show yet</p>
-                        <p class="transactions-empty-subtitle">Add a transaction to see your breakdown.</p>
+                        <p class="transactions-empty-title" data-i18n="home.chartEmptyTitle"></p>
+                        <p class="transactions-empty-subtitle" data-i18n="home.chartEmptySubtitle"></p>
                     </div>
 
                     <div id="chart-content" class="chart-content">

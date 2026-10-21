@@ -88,7 +88,7 @@
             <div id="budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="budget-modal-title">
                 <div class="modal-header">
                     <h1 id="budget-modal-title" class="container-title" data-i18n="budgets.add"></h1>
-                    <button id="close-budget-modal-btn" class="close-btn" aria-label="Close">
+                    <button id="close-budget-modal-btn" class="close-btn" data-i18n-aria="common.close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -150,64 +150,60 @@
         <div id="transaction-modal-overlay" class="modal-overlay">
             <div id="transaction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="transaction-modal-title">
                 <div class="modal-header">
-                    <h1 id="transaction-modal-title" class="container-title">Add Transaction</h1>
-                    <button id="close-modal-btn" class="close-btn" aria-label="Close">
+                    <h1 id="transaction-modal-title" class="container-title" data-i18n="transactionModal.add"></h1>
+                    <button id="close-modal-btn" class="close-btn" data-i18n-aria="common.close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
                 </div>
 
                 <form id="transaction-form" class="modal-form">
                     <div class="form-group">
-                        <label for="transaction-name">Name</label>
-                        <input type="text" id="transaction-name" name="transaction-name" placeholder="e.g. Groceries" required>
+                        <label for="transaction-name" data-i18n="common.name"></label>
+                        <input type="text" id="transaction-name" name="transaction-name" data-i18n-placeholder="transactionModal.namePlaceholder" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Type</label>
+                        <label data-i18n="common.type"></label>
                         <div class="type-toggle">
                             <input type="radio" id="type-spending" name="transaction-type" value="spending" checked>
                             <label for="type-spending" class="type-option type-spending">
-                                <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> Spending
+                                <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> <span data-i18n="common.spending"></span>
                             </label>
 
                             <input type="radio" id="type-receiving" name="transaction-type" value="receiving">
                             <label for="type-receiving" class="type-option type-receiving">
-                                <i class="bi bi-arrow-up-circle" aria-hidden="true"></i> Receiving
+                                <i class="bi bi-arrow-up-circle" aria-hidden="true"></i> <span data-i18n="common.receiving"></span>
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="transaction-amount">Amount</label>
+                        <label for="transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
                             <span id="transaction-currency-symbol" class="amount-currency">€</span>
                             <input type="number" id="transaction-amount" name="transaction-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" required>
                         </div>
-                        <span id="amount-error" class="input-error hidden">Amount must be greater than 0€</span>
+                        <span id="amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="transaction-date">Date</label>
+                        <label for="transaction-date" data-i18n="common.date"></label>
                         <input type="date" id="transaction-date" name="transaction-date" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="transaction-category-spending" class="category-label-spending">
-                            Category
-                        </label>
+                        <label for="transaction-category-spending" class="category-label-spending" data-i18n="common.category"></label>
                         <select id="transaction-category-spending" name="transaction-category-spending" class="category-select-spending">
                         </select>
 
-                        <label for="transaction-category-receiving" class="category-label-receiving">
-                            Category
-                        </label>
+                        <label for="transaction-category-receiving" class="category-label-receiving" data-i18n="common.category"></label>
                         <select id="transaction-category-receiving" name="transaction-category-receiving" class="category-select-receiving">
                         </select>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" id="cancel-transaction-btn" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" id="save-transaction-btn" class="btn btn-primary">Save</button>
+                        <button type="button" id="cancel-transaction-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="submit" id="save-transaction-btn" class="btn btn-primary" data-i18n="common.save"></button>
                     </div>
                 </form>
             </div>
@@ -216,59 +212,58 @@
         <div id="edit-transaction-modal-overlay" class="modal-overlay">
             <div id="edit-transaction-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-transaction-modal-title">
                 <div class="modal-header">
-                    <h1 id="edit-transaction-modal-title" class="container-title">Transaction Details</h1>
-                    <button id="close-edit-modal-btn" class="close-btn" aria-label="Close">
+                    <h1 id="edit-transaction-modal-title" class="container-title" data-i18n="transactionModal.details"></h1>
+                    <button id="close-edit-modal-btn" class="close-btn" data-i18n-aria="common.close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
                 </div>
 
                 <form id="edit-transaction-form" class="modal-form">
                     <div class="form-group">
-                        <label for="edit-transaction-name">Name</label>
+                        <label for="edit-transaction-name" data-i18n="common.name"></label>
                         <input type="text" id="edit-transaction-name" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Type</label>
+                        <label data-i18n="common.type"></label>
                         <span id="edit-transaction-type" class="edit-type-badge"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-transaction-amount">Amount</label>
+                        <label for="edit-transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
                             <span id="edit-transaction-currency-symbol" class="amount-currency">€</span>
                             <input type="number" id="edit-transaction-amount" step="0.01" min="0" inputmode="decimal" required>
                         </div>
-                        <span id="edit-amount-error" class="input-error hidden">Amount must be greater than 0</span>
+                        <span id="edit-amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
                         <span id="edit-amount-note" class="transaction-meta hidden"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-transaction-date">Date</label>
+                        <label for="edit-transaction-date" data-i18n="common.date"></label>
                         <input type="date" id="edit-transaction-date" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="edit-transaction-category">Category</label>
+                        <label for="edit-transaction-category" data-i18n="common.category"></label>
                         <select id="edit-transaction-category"></select>
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" id="delete-transaction-btn" class="btn btn-danger">Delete</button>
-                        <button type="button" id="edit-mode-btn" class="btn btn-secondary">Edit</button>
-                        <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" id="save-edit-btn" class="btn btn-primary">Save</button>
+                        <button type="button" id="delete-transaction-btn" class="btn btn-danger" data-i18n="common.delete"></button>
+                        <button type="button" id="edit-mode-btn" class="btn btn-secondary" data-i18n="common.edit"></button>
+                        <button type="button" id="cancel-edit-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="submit" id="save-edit-btn" class="btn btn-primary" data-i18n="common.save"></button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <!-- Edit budget modal -->
         <div id="edit-budget-modal-overlay" class="modal-overlay">
             <div id="edit-budget-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="edit-budget-modal-title">
                 <div class="modal-header">
                     <h1 id="edit-budget-modal-title" class="container-title" data-i18n="budgetModal.details"></h1>
-                    <button id="close-edit-budget-modal-btn" class="close-btn" aria-label="Close">
+                    <button id="close-edit-budget-modal-btn" class="close-btn" data-i18n-aria="common.close">
                         <i class="bi bi-x" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -332,13 +327,13 @@
         <div id="confirm-modal-overlay" class="modal-overlay">
             <div id="confirm-modal" class="modal" role="dialog" aria-modal="true">
                 <div class="modal-header">
-                    <h1 id="confirm-modal-title" class="container-title">Confirm</h1>
+                    <h1 id="confirm-modal-title" class="container-title" data-i18n="common.confirm"></h1>
                 </div>
                 <div class="confirm-modal-form">
                     <p id="confirm-modal-message"></p>
                     <div class="modal-actions">
-                        <button type="button" id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
-                        <button type="button" id="confirm-ok-btn" class="btn btn-danger">Confirm</button>
+                        <button type="button" id="confirm-cancel-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="button" id="confirm-ok-btn" class="btn btn-danger" data-i18n="common.confirm"></button>
                     </div>
                 </div>
             </div>

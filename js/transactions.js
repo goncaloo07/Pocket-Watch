@@ -277,24 +277,24 @@ const cancelEdit = () => {
 
 const openEditTransactionModal = (index) => {
     editingIndex = index; // remembers which transaction is open
-    const t = getTransactions()[index]; // the transaction itself
-    editNameInput.value = t.transactionName;
-    editTypeLabel.textContent = t.transactionType === 'spending' ? 'Spending' : 'Receiving';
-    editAmountInput.value = Math.abs(t.transactionAmount);
-    document.getElementById('edit-transaction-currency-symbol').textContent = getCurrencySymbol(t.transactionCurrency || 'EUR');
+    const tr = getTransactions()[index]; // the transaction itself
+    editNameInput.value = tr.transactionName;
+    editTypeLabel.textContent = t(tr.transactionType === 'spending' ? 'common.spending' : 'common.receiving');
+    editAmountInput.value = Math.abs(tr.transactionAmount);
+    document.getElementById('edit-transaction-currency-symbol').textContent = getCurrencySymbol(tr.transactionCurrency || 'EUR');
     // note shown only when the transaction is in another currency than the active one
     const amountNote = document.getElementById('edit-amount-note');
-    const differentCurrency = (t.transactionCurrency || 'EUR') !== getActiveCurrency();
+    const differentCurrency = (tr.transactionCurrency || 'EUR') !== getActiveCurrency();
     amountNote.classList.toggle('hidden', !differentCurrency);
     if (differentCurrency) {
-        amountNote.textContent = `Original amount, shown as ${formatAmount(Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)))} in the list`;
+        amountNote.textContent = t('transactionModal.originalAmount').replace('{amount}', formatAmount(Math.abs(toActive(tr.transactionAmount, tr.transactionCurrency, tr.transactionDate))));
     }
-    editDateInput.value = t.transactionDate;
+    editDateInput.value = tr.transactionDate;
     editDateInput.max = getTodayISO(); // can't edit to a future date
     // spending and receiving have different category lists
-    const cats = t.transactionType === 'spending' ? CATEGORIES_SPENDING : CATEGORIES_RECEIVING;
+    const cats = tr.transactionType === 'spending' ? CATEGORIES_SPENDING : CATEGORIES_RECEIVING;
     editCategorySelect.innerHTML = buildCategoryOptions(cats);
-    editCategorySelect.value = t.transactionCat;
+    editCategorySelect.value = tr.transactionCat;
     setEditMode(false); // fields start locked, only Edit unlocks them
     editTransactionModal.classList.add('open'); // shows the modal
 };
@@ -332,7 +332,7 @@ const saveEditedTransaction = async (e) => {
 }
 
 const deleteTransaction = async () => {
-    const ok = await showConfirm("Are you sure you want to delete this transaction? (This is irreversible)");
+    const ok = await showConfirm(t('confirm.deleteTransaction'));
     if (!ok) return;
     const transactions = getTransactions();
     transactions.splice(editingIndex, 1); // removes the transaction at the editing index
@@ -377,7 +377,7 @@ const setupAmountFilter = (curMin, curMax) => {
 const fillFilterCats = (curCat = "all") => {
     const transactions = getTransactions();
     const uniqueCats = new Set(transactions.map(t => t.transactionCat));
-    transactionFilterCat.innerHTML = `<option value="all">All categories</option>${buildCategoryOptions([...uniqueCats])}`;
+    transactionFilterCat.innerHTML = `<option value="all">${t('transactions.allCategories')}</option>${buildCategoryOptions([...uniqueCats])}`;
     const option = transactionFilterCat.querySelector(`[value="${curCat}"]`);
     if (option) option.selected = true;
 };

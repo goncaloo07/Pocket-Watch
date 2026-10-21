@@ -40,7 +40,7 @@ const getCategoryTotals = () => {
     }); // if there is already that category in the map, sums the values of all the transactions of that category, if not creates a new entry in the map for that category and the value of the transaction
  
     const spendingArr = Array.from(spendingMap) // turns the map into a array
-        .map(([key, value], index) => ({label: key, value, color: CATEGORY_COLORS.get(key) || '#999999'})) // turns the array back into a map but with a new value for each entry (the color)
+        .map(([key, value]) => ({label: tCat(key), value, color: CATEGORY_COLORS.get(key) || '#999999'})) // label is translated, color still uses the English key
         .sort((a,b) => b.value - a.value); // sorts the map by most value to least
     return spendingArr;
 }
@@ -49,7 +49,7 @@ const getTypeTotals = () => {
     const transactions = getTransactions();
     const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate), 0); // gets the total value spent
     const receiving = transactions.filter(transaction => transaction.transactionType === "receiving").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate), 0); // gets the total value received
-    const transactionsArr = [{label: 'Spending', value: Math.abs(spending), color: 'var(--negative-color)'}, {label: 'Receiving', value: Math.abs(receiving), color: 'var(--positive-color)'}]; // makes an array with both the spending totals and receiving totals
+    const transactionsArr = [{label: t('common.spending'), value: Math.abs(spending), color: 'var(--negative-color)'}, {label: t('common.receiving'), value: Math.abs(receiving), color: 'var(--positive-color)'}]; // makes an array with both the spending totals and receiving totals
     return transactionsArr;
 }
 
@@ -158,6 +158,6 @@ const renderChart = () => {
     renderSegments(data)
     renderLegend(data)
     attachChartInteractions()
-    chartCenterLabel.textContent = document.querySelector('input[name="chart-mode"]:checked').value === 'category' ? "Total Spent" : "Total Activity"
+    chartCenterLabel.textContent = t(document.querySelector('input[name="chart-mode"]:checked').value === 'category' ? 'chart.totalSpent' : 'chart.totalActivity');
     chartCenterValue.textContent = formatAmount(total)
 }

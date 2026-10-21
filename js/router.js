@@ -36,10 +36,10 @@ const pageContent = document.getElementById('page-content'); // where the page H
 const ERROR_PAGE_HTML = `<div id="crash-page" class="error-page">
                     <div class="error-content">
                         <i class="bi bi-exclamation-triangle error-icon" aria-hidden="true"></i>
-                        <p class="error-title">Something went wrong</p>
-                        <p class="error-subtitle">An unexpected error happened. Try reloading the page.</p>
+                        <p class="error-title" data-i18n="error.crashTitle"></p>
+                        <p class="error-subtitle" data-i18n="error.crashSubtitle"></p>
                         <button id="reload-btn" class="btn btn-primary error-home-btn">
-                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Reload Page
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> <span data-i18n="error.reload"></span>
                         </button>
                     </div>
                 </div>`; // error content to show when a page crashes
@@ -69,6 +69,7 @@ const navigateTo = (path) => {
 
 const showErrorPage = () => {
     pageContent.innerHTML = ERROR_PAGE_HTML;
+    applyTranslations(pageContent);
     document.getElementById('reload-btn').addEventListener('click', () => window.location.reload());
 }
 

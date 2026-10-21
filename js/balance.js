@@ -197,25 +197,25 @@ const buildBalanceSummary = (summary, period) => {
  
     const changeHTML = period === "all" ? '' : `
         <div class="balance-summary-row balance-summary-change">
-            <span class="balance-summary-label">Change</span>
+            <span class="balance-summary-label">${t('balance.change')}</span>
             <span class="balance-summary-value ${change < 0 ? 'negative' : 'positive'}">${formatAmount(change)}</span>
         </div>
     `;
  
     return `
         <div class="balance-summary-row balance-summary-current">
-            <span class="balance-summary-label">Current Balance</span>
+            <span class="balance-summary-label">${t('home.currentBalance')}</span>
             <span class="balance-summary-value ${current < 0 ? 'negative' : ''}">${formatAmount(current)}</span>
         </div>
         <div class="balance-summary-row balance-summary-max">
-            <span class="balance-summary-label">Max Balance</span>
+            <span class="balance-summary-label">${t('balance.max')}</span>
             <span class="balance-summary-value ${maxDay.balance < 0 ? 'negative' : ''}">
                 ${formatAmount(maxDay.balance)}
                 <span class="balance-summary-date">${formatDateDMY(maxDay.day)}</span>
             </span>
         </div>
         <div class="balance-summary-row balance-summary-min">
-            <span class="balance-summary-label">Min Balance</span>
+            <span class="balance-summary-label">${t('balance.min')}</span>
             <span class="balance-summary-value ${minDay.balance < 0 ? 'negative' : ''}">
                 ${formatAmount(minDay.balance)}
                 <span class="balance-summary-date">${formatDateDMY(minDay.day)}</span>
@@ -296,27 +296,27 @@ const showDayDetails = (date, cx) => {
         .reduce((sum, t) => sum + toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate), 0);
     const net = received - spent;
     const content = dayTransactions.length === 0
-        ? '<li class="transactions-empty-subtitle">No transactions this day</li>'
+        ? `<li class="transactions-empty-subtitle">${t('balance.noTransactions')}</li>`
         : dayTransactions.map(buildTransactionRow).join('');
     balanceSummaryDiv.innerHTML = `
         <div class="balance-day-details">
             <div class="balance-day-details-header">
                 <span class="balance-summary-date">${formatDateDMY(date)}</span>
                 <button class="balance-day-back-btn">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> Back
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> ${t('balance.back')}
                 </button>
             </div>
             <div class="balance-day-totals">
                 <div class="balance-summary-row">
-                    <span class="balance-summary-label">Received</span>
+                    <span class="balance-summary-label">${t('balance.received')}</span>
                     <span class="balance-summary-value positive">${formatAmount(received)}</span>
                 </div>
                 <div class="balance-summary-row">
-                    <span class="balance-summary-label">Spent</span>
+                    <span class="balance-summary-label">${t('balance.spent')}</span>
                     <span class="balance-summary-value negative">${formatAmount(spent)}</span>
                 </div>
                 <div class="balance-summary-row">
-                    <span class="balance-summary-label">Change</span>
+                    <span class="balance-summary-label">${t('balance.change')}</span>
                     <span class="balance-summary-value ${net < 0 ? 'negative' : 'positive'}">${net > 0 ? '+' : ''}${formatAmount(net)}</span>
                 </div>
             </div>
