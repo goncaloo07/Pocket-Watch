@@ -2,6 +2,17 @@
     "buildCommand": "node scripts/generate-sitemap.js",
     "outputDirectory": ".",
     "routes": [
+        {
+            "src": "/(scripts|\\.github)(/.*)?",
+            "status": 404,
+            "dest": "/index.html"
+        },
+        {
+            "src": "/(html|js|css|data|assets)/.*",
+            "has": [{ "type": "header", "key": "Sec-Fetch-Dest", "value": "document" }],
+            "status": 404,
+            "dest": "/index.html"
+        },
         { "handle": "filesystem" },
         {
             "src": "/(.*)",
