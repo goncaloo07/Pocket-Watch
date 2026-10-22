@@ -167,7 +167,11 @@ const TRANSLATIONS = {
         'exportModal.title': 'Export Data',
         'exportModal.format': 'Format',
         'exportModal.jsonHint': 'Full backup of your transactions and budgets. Use this one to import later.',
-        'exportModal.csvHint': 'Transactions only, with the balance after each one. Opens in Excel or Google Sheets.'
+        'exportModal.csvHint': 'Transactions only, with the balance after each one. Opens in Excel or Google Sheets.',
+        'toast.importInvalid': 'This file is not a valid Pocket Watch export.',
+        'confirm.importJSON': 'This replaces your current data with {transactions} transactions and {budgets} budgets from the file. This cannot be undone. Continue?',
+        'confirm.importCSV': 'This replaces your current transactions with the {transactions} from the file. Your budgets stay as they are. This cannot be undone. Continue?',
+        'toast.importDone': 'Data imported.'
     },
     pt: {
         'menu.home': 'Início',
@@ -336,7 +340,11 @@ const TRANSLATIONS = {
         'exportModal.title': 'Exportar Dados',
         'exportModal.format': 'Formato',
         'exportModal.jsonHint': 'Cópia completa das tuas transações e orçamentos. Usa esta para importar mais tarde.',
-        'exportModal.csvHint': 'Só transações, com o saldo depois de cada uma. Abre no Excel ou no Google Sheets.'
+        'exportModal.csvHint': 'Só transações, com o saldo depois de cada uma. Abre no Excel ou no Google Sheets.',
+        'toast.importInvalid': 'Este ficheiro não é uma exportação válida do Pocket Watch.',
+        'confirm.importJSON': 'Isto substitui os teus dados atuais por {transactions} transações e {budgets} orçamentos do ficheiro. Isto não se pode desfazer. Continuar?',
+        'confirm.importCSV': 'Isto substitui as tuas transações atuais pelas {transactions} do ficheiro. Os teus orçamentos ficam como estão. Isto não se pode desfazer. Continuar?',
+        'toast.importDone': 'Dados importados.',
     } 
 };
 

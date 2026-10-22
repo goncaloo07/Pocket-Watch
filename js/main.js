@@ -96,7 +96,9 @@ let addTransactionBtn,
     exportForm,
     closeExportModalBtn,
     cancelExportBtn,
-    settingsExportBtn;
+    settingsExportBtn,
+    settingsImportBtn,
+    settingsImportInput;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -347,8 +349,9 @@ const handleExportSubmit = (e) => {
     closeExportModal();
 };
 
-const showToast = (message, duration = 4000) => {
+const showToast = (message, duration = 4000, type = 'error') => {
     toastEl.textContent = message;
+    toastEl.classList.toggle('success', type === 'success'); // green only for success
     toastEl.classList.remove("hidden");
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => {

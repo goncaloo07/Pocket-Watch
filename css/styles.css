@@ -2074,6 +2074,10 @@ input.input-invalid {
     animation: toast-pop 0.25s ease;
 }
 
+.toast.success {
+    background-color: var(--positive-color);
+}
+
 .toast.hidden {
     opacity: 0;
     pointer-events: none;
