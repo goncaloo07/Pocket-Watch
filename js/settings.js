@@ -6,6 +6,7 @@ const initSettingsPage = () => {
     settingsThemeLight = document.getElementById('settings-theme-light');
     settingsThemeSystem = document.getElementById('settings-theme-system');
     settingsCurrencySelect = document.getElementById('settings-currency');
+    settingsDeleteAll = document.getElementById('delete-data-btn');
     
     settingsLanguageSelect = document.getElementById('settings-language');
     settingsLanguageSelect.value = getActiveLanguage(); // shows the saved language when the page opens
@@ -44,6 +45,8 @@ const initSettingsPage = () => {
         updatePageMeta(window.location.pathname); // tab title changes right away
     });
 
+    settingsDeleteAll.addEventListener('click', deleteAllData)
+
     fillCurrencyOptions();
 };
 
@@ -61,3 +64,13 @@ const fillCurrencyOptions = async () => {
     const savedCurrency = localStorage.getItem('currency');
     settingsCurrencySelect.value = data.rates[savedCurrency] ? savedCurrency : 'EUR';
 };
+
+// deletes all data
+const deleteAllData = async () => {
+    const ok = await showConfirm(t('confirm.deleteAll'));
+    if (!ok) return; // user clicked Cancel
+
+    saveTransactions([]);
+    saveBudgets([]);
+    showToast(t('toast.dataDeleted'));
+}

@@ -89,7 +89,8 @@ let addTransactionBtn,
     settingsThemeLight,
     settingsThemeSystem,
     settingsCurrencySelect,
-    settingsLanguageSelect;
+    settingsLanguageSelect,
+    settingsDeleteAll;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;

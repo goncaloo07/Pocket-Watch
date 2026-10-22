@@ -267,11 +267,11 @@ const getActiveFilters = () => {
     const active = [];
     const selectedType = document.querySelector('input[name="filter-type"]:checked').value;
     if (selectedType !== 'all') {
-        active.push({ key: 'type', label: selectedType === 'spending' ? 'Spending' : 'Receiving' });
+        active.push({ key: 'type', label: t(selectedType === 'spending' ? 'common.spending' : 'common.receiving') });
     }
     const selectedCat = transactionFilterCat.value;
     if (selectedCat !== 'all') {
-        active.push({ key: 'type', label: t(selectedType === 'spending' ? 'common.spending' : 'common.receiving') });
+        active.push({ key: 'category', label: tCat(selectedCat) });
     }
     const selectedDateStart = transactionFilterDateMin.value;
     const selectedDateEnd = transactionFilterDateMax.value;

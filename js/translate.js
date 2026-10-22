@@ -159,7 +159,9 @@ const TRANSLATIONS = {
         'desc.transactions': 'View your transaction history and manage your spending and receiving records.',
         'desc.settings': 'Change the app settings, including theme, currency, language and data management options.',
         'desc.comingSoon': 'This part of the app is still being worked on.',
-        'desc.default': 'This page does not exist or was moved.'
+        'desc.default': 'This page does not exist or was moved.',
+        'confirm.deleteAll': 'Are you sure you want to delete all your data? (This is irreversible)',
+        'toast.dataDeleted': 'All data deleted.'
     },
     pt: {
         'menu.home': 'Início',
@@ -320,7 +322,9 @@ const TRANSLATIONS = {
         'desc.transactions': 'Consulta o histórico de transações e gere os teus registos de despesas e receitas.',
         'desc.settings': 'Altera as definições da app, incluindo tema, moeda, idioma e opções de gestão de dados.',
         'desc.comingSoon': 'Esta parte da app ainda está em construção.',
-        'desc.default': 'Esta página não existe ou foi movida.'
+        'desc.default': 'Esta página não existe ou foi movida.',
+        'confirm.deleteAll': 'Tens a certeza que queres apagar todos os teus dados? (Isto não se pode desfazer)',
+        'toast.dataDeleted': 'Todos os dados foram apagados.'
     }
 };
 
