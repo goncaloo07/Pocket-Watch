@@ -2699,3 +2699,13 @@ input.input-invalid {
         justify-content: center;
     }
 }
+
+/* Export modal*/
+.export-hint {
+    line-height: 1.4;
+}
+
+.modal-form:has(#export-format-json:checked) .export-hint-csv,
+.modal-form:has(#export-format-csv:checked) .export-hint-json {
+    display: none;
+}

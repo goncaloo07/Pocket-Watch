@@ -90,7 +90,13 @@ let addTransactionBtn,
     settingsThemeSystem,
     settingsCurrencySelect,
     settingsLanguageSelect,
-    settingsDeleteAll;
+    settingsDeleteAll,
+    settingsExportData,
+    exportModal,
+    exportForm,
+    closeExportModalBtn,
+    cancelExportBtn,
+    settingsExportBtn;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
 let toastTimeout;
@@ -241,7 +247,7 @@ const initTransactionModal = () => {
     limitToNumbers(document.getElementById('transaction-amount'));
     // clears the "amount must be greater than 0€" error as soon as a valid amount is typed
     document.getElementById('transaction-amount').addEventListener('input', (e) => {
-        if (parseFloat(e.target.value) > 0) {
+        if (parseAmount(e.target.value) > 0) {
             document.getElementById('amount-error').classList.add('hidden');
             e.target.closest('.amount-input-wrap').classList.remove('input-invalid');
         }
@@ -309,7 +315,37 @@ const initBudgetModal = () => {
         budgetEndDateError.classList.add('hidden');
         budgetEndDateInput.classList.remove('input-invalid');
     });
+};
+
+const initExportModal = () => {
+    exportModal = document.getElementById('export-modal-overlay');
+    exportForm = document.getElementById('export-form');
+    closeExportModalBtn = document.getElementById('close-export-modal-btn');
+    cancelExportBtn = document.getElementById('cancel-export-btn');
+    // X and Cancel both close the modal
+    closeExportModalBtn.addEventListener('click', closeExportModal);
+    cancelExportBtn.addEventListener('click', closeExportModal);
+    // Save (Export) button submits the form
+    exportForm.addEventListener('submit', handleExportSubmit);
 }
+
+const openExportModal = () => {
+    // always start on JSON, so the modal doesn't remember the last choice
+    document.getElementById('export-format-json').checked = true;
+    exportModal.classList.add('open');
+};
+
+const closeExportModal = () => {
+    exportModal.classList.remove('open');
+};
+
+const handleExportSubmit = (e) => {
+    e.preventDefault();
+    const format = document.querySelector('input[name="export-format"]:checked').value; // "json" or "csv"
+    if (format === 'json') exportJSON();
+    else exportCSV();
+    closeExportModal();
+};
 
 const showToast = (message, duration = 4000) => {
     toastEl.textContent = message;
@@ -350,6 +386,7 @@ initTransactionModal();
 initEditTransactionModal();
 initBudgetModal();
 initEditBudgetModal();
+initExportModal();
 
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path

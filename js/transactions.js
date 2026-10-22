@@ -75,7 +75,7 @@ const addTransaction = async (e) => {
     e.preventDefault();
 
     const isSpending = document.getElementById('type-spending').checked; // spending or receiving
-    const rawAmount = parseFloat(document.getElementById('transaction-amount').value) || 0;
+    const rawAmount = parseAmount(document.getElementById('transaction-amount').value) || 0;
     const amountInput = document.getElementById('transaction-amount');
     const amountError = document.getElementById('amount-error');
 
@@ -312,7 +312,7 @@ const saveEditedTransaction = async (e) => {
     e.preventDefault();
     const transactions = getTransactions();
     const original = transactions[editingIndex]; // to know if it's spending or receiving
-    const rawAmount = parseFloat(editAmountInput.value) || 0;
+    const rawAmount = parseAmount(editAmountInput.value) || 0;
     if (rawAmount === 0) { // amount can't be 0
         editAmountInput.closest('.amount-input-wrap').classList.add('input-invalid');
         editAmountError.classList.remove('hidden');

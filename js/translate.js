@@ -47,6 +47,7 @@ const TRANSLATIONS = {
         'common.delete': 'Delete',
         'common.edit': 'Edit',
         'common.category': 'Category',
+        'common.balance': 'Balance',
         'budgetModal.details': 'Budget Details',
         'budgetModal.limit': 'Limit',
         'budgetModal.renews': 'Renews',
@@ -86,6 +87,7 @@ const TRANSLATIONS = {
         'transactionModal.originalAmount': 'Original amount, shown as {amount} in the list',
         'common.confirm': 'Confirm',
         'common.close': 'Close',
+        'common.currency': 'Currency',
         'confirm.deleteTransaction': 'Are you sure you want to delete this transaction? (This is irreversible)',
         'confirm.deleteBudget': 'Are you sure you want to delete this budget? (This is irreversible)',
         'toast.saveError': 'Error saving data. Your changes may not be saved.',
@@ -161,7 +163,11 @@ const TRANSLATIONS = {
         'desc.comingSoon': 'This part of the app is still being worked on.',
         'desc.default': 'This page does not exist or was moved.',
         'confirm.deleteAll': 'Are you sure you want to delete all your data? (This is irreversible)',
-        'toast.dataDeleted': 'All data deleted.'
+        'toast.dataDeleted': 'All data deleted.',
+        'exportModal.title': 'Export Data',
+        'exportModal.format': 'Format',
+        'exportModal.jsonHint': 'Full backup of your transactions and budgets. Use this one to import later.',
+        'exportModal.csvHint': 'Transactions only, with the balance after each one. Opens in Excel or Google Sheets.'
     },
     pt: {
         'menu.home': 'Início',
@@ -210,6 +216,7 @@ const TRANSLATIONS = {
         'common.delete': 'Apagar',
         'common.edit': 'Editar',
         'common.category': 'Categoria',
+        'common.currency': 'Moeda', 
         'budgetModal.details': 'Detalhes do Orçamento',
         'budgetModal.limit': 'Limite',
         'budgetModal.renews': 'Renova',
@@ -242,6 +249,7 @@ const TRANSLATIONS = {
         'common.date': 'Data',
         'common.spending': 'Despesa',
         'common.receiving': 'Receita',
+        'common.balance': 'Saldo',
         'transactionModal.add': 'Adicionar Transação',
         'transactionModal.details': 'Detalhes da Transação',
         'transactionModal.namePlaceholder': 'ex.: Supermercado',
@@ -324,8 +332,12 @@ const TRANSLATIONS = {
         'desc.comingSoon': 'Esta parte da app ainda está em construção.',
         'desc.default': 'Esta página não existe ou foi movida.',
         'confirm.deleteAll': 'Tens a certeza que queres apagar todos os teus dados? (Isto não se pode desfazer)',
-        'toast.dataDeleted': 'Todos os dados foram apagados.'
-    }
+        'toast.dataDeleted': 'Todos os dados foram apagados.',
+        'exportModal.title': 'Exportar Dados',
+        'exportModal.format': 'Formato',
+        'exportModal.jsonHint': 'Cópia completa das tuas transações e orçamentos. Usa esta para importar mais tarde.',
+        'exportModal.csvHint': 'Só transações, com o saldo depois de cada uma. Abre no Excel ou no Google Sheets.'
+    } 
 };
 
 // language saved by the user, English by default

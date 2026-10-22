@@ -128,3 +128,5 @@ const getBudgetSliderRange = () => {
 };
 
 const getActiveSymbol = () => getCurrencySymbol(getActiveCurrency());
+
+const getCurrencyShortLabel = (code) => `${getCurrencySymbol(code)} (${code})`;

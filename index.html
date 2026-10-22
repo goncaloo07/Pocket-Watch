@@ -338,6 +338,38 @@
                 </div>
             </div>
         </div>
+
+        <div id="export-modal-overlay" class="modal-overlay">
+            <div id="export-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+                <div class="modal-header">
+                    <h1 id="export-modal-title" class="container-title" data-i18n="exportModal.title"></h1>
+                    <button id="close-export-modal-btn" class="close-btn" data-i18n-aria="common.close">
+                        <i class="bi bi-x" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <form id="export-form" class="modal-form">
+                    <div class="form-group">
+                        <label data-i18n="exportModal.format"></label>
+                        <div class="type-toggle settings-toggle">
+                            <input type="radio" id="export-format-json" name="export-format" value="json" checked>
+                            <label for="export-format-json" class="type-option">
+                                <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON
+                            </label>
+                            <input type="radio" id="export-format-csv" name="export-format" value="csv">
+                            <label for="export-format-csv" class="type-option">
+                                <i class="bi bi-filetype-csv" aria-hidden="true"></i> CSV
+                            </label>
+                        </div>
+                        <span class="transaction-meta export-hint export-hint-json" data-i18n="exportModal.jsonHint"></span>
+                        <span class="transaction-meta export-hint export-hint-csv" data-i18n="exportModal.csvHint"></span>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" id="cancel-export-btn" class="btn btn-secondary" data-i18n="common.cancel"></button>
+                        <button type="submit" id="save-export-btn" class="btn btn-primary" data-i18n="settings.export"></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
 
     <div id="toast" class="toast hidden" role="alert"></div>
