@@ -10,8 +10,10 @@ Pocket Watch is built with vanilla HTML, CSS, and JavaScript (no frameworks). Al
 - [Balance History](https://pocket-watch-murex.vercel.app/balance): Interactive line chart of balance over time, with daily transaction details when you click a point.
 - [Transactions](https://pocket-watch-murex.vercel.app/transactions): Full list of transactions grouped by day, with search, filters by type, category, date and amount, and the option to edit or delete each one.
 - [Budgets](https://pocket-watch-murex.vercel.app/budgets): All budgets with how much was spent, how much is left, days left and how much you can spend per day. Budgets can be edited or deleted.
+- [Settings](https://pocket-watch-murex.vercel.app/settings): Theme (light, dark or system), currency, language (English or Portuguese), and data tools to export (JSON or CSV), import, or delete all data.
 
 ## Notes
 
 - No user accounts, no server, no data collection. Everything is local to the browser.
+- The app only requests exchange rates from the public Frankfurter API. These requests contain dates only, never the user's transactions or budgets.
 - Source code: https://github.com/goncaloo07/Pocket-Watch
