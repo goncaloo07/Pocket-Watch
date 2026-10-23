@@ -1,4 +1,3 @@
-// runs once when the settings page loads
 const initSettingsPage = () => {
     const savedTheme = localStorage.getItem('theme') || 'system';
     settingsTheme = document.querySelectorAll('[name="settings-theme"]');
@@ -8,12 +7,12 @@ const initSettingsPage = () => {
     settingsCurrencySelect = document.getElementById('settings-currency');
     settingsDeleteAll = document.getElementById('delete-data-btn');
     settingsExportData = document.getElementById('export-data-btn');
-    settingsInportBtn = document.getElementById('import-data-btn');
-    settingsInportInput = document.getElementById('import-data-input');
+    settingsImportBtn = document.getElementById('import-data-btn');
+    settingsImportInput = document.getElementById('import-data-input');
     
     settingsLanguageSelect = document.getElementById('settings-language');
     settingsLanguageSelect.value = getActiveLanguage(); // shows the saved language when the page opens
-
+ 
     if (savedTheme === 'dark') {
         settingsThemeDark.checked = true;
     } else if (savedTheme === 'light') {
@@ -21,7 +20,7 @@ const initSettingsPage = () => {
     } else {
         settingsThemeSystem.checked = true;
     }
-
+ 
     settingsTheme.forEach((radio) => {
         radio.addEventListener('change', () => {
             if (settingsThemeDark.checked) {
@@ -34,12 +33,12 @@ const initSettingsPage = () => {
             }
         });
     });
-
+ 
     settingsCurrencySelect.addEventListener('change', () => {
         const selectedCurrency = settingsCurrencySelect.value;
         safeSetItem('currency', selectedCurrency);
     });
-
+ 
     settingsLanguageSelect.addEventListener('change', () => {
         safeSetItem('language', settingsLanguageSelect.value);
         document.documentElement.lang = settingsLanguageSelect.value; // helps screen readers and Google
@@ -47,18 +46,18 @@ const initSettingsPage = () => {
         fillCurrencyOptions(); // rebuilds the currency names in the new language
         updatePageMeta(window.location.pathname); // tab title changes right away
     });
-
-    settingsInportBtn.addEventListener('click', () => settingsInportInput.click());
-
-    settingsInportInput.addEventListener('change', handleImportFile);
-
+ 
+    settingsImportBtn.addEventListener('click', () => settingsImportInput.click());
+ 
+    settingsImportInput.addEventListener('change', handleImportFile);
+ 
     settingsDeleteAll.addEventListener('click', deleteAllData);
-
+ 
     settingsExportData.addEventListener('click', openExportModal);
-
+ 
     fillCurrencyOptions();
 };
-
+ 
 // fills the currency dropdown with the currencies from rates.json
 const fillCurrencyOptions = async () => {
     const data = await loadRates();
@@ -73,17 +72,17 @@ const fillCurrencyOptions = async () => {
     const savedCurrency = localStorage.getItem('currency');
     settingsCurrencySelect.value = data.rates[savedCurrency] ? savedCurrency : 'EUR';
 };
-
+ 
 // deletes all data
 const deleteAllData = async () => {
     const ok = await showConfirm(t('confirm.deleteAll'));
     if (!ok) return; // user clicked Cancel
-
+ 
     saveTransactions([]);
     saveBudgets([]);
     showToast(t('toast.dataDeleted'), 4000, 'success');
 }
-
+ 
 // content: the text, filename: name of the saved file, type: the MIME type
 const downloadFile = (content, filename, type) => {
     const blob = new Blob([content], { type }); // file that lives only in memory
@@ -94,7 +93,7 @@ const downloadFile = (content, filename, type) => {
     link.click();
     URL.revokeObjectURL(url); // frees the memory
 };
-
+ 
 const exportJSON = () => {
     const data = {
         version: 1,
@@ -104,21 +103,21 @@ const exportJSON = () => {
     };
     downloadFile(JSON.stringify(data, null, 2), `pocket-watch-${getTodayISO()}.json`, 'application/json')
 };
-
+ 
 // wraps text in quotes, doubles inner quotes, blocks Excel formulas
 const csvCell = (value) => {
     let text = String(value);
     if (/^[=+\-@]/.test(text)) text = "'" + text; // Excel would run it as a formula
     return `"${text.replace(/"/g, '""')}"`;
 };
-
+ 
 const exportCSV = () => {
     const headers = [t('common.date'), t('common.name'), t('common.type'), t('common.category'), t('common.amount'), t('common.currency'), `${t('common.balance')} ${getCurrencyShortLabel(getActiveCurrency())}`];
-
+ 
     // oldest first; reverse() first so same-day transactions keep the order they were added
     const ordered = [...getTransactions()].reverse()
         .sort((a, b) => a.transactionDate.localeCompare(b.transactionDate));
-
+ 
     let balance = 0;
     const rows = ordered.map(tr => {
         balance += toActive(tr.transactionAmount, tr.transactionCurrency, tr.transactionDate);
@@ -132,42 +131,42 @@ const exportCSV = () => {
             balance.toFixed(2).replace('.', ',')
         ]
     });
-
+ 
     rows.reverse();
-
+ 
     const lines = [headers, ...rows].map(row => row.join(';'));
     const csv = '\uFEFF' + lines.join('\n');
     downloadFile(csv, `pocket-watch-${getTodayISO()}.csv`, 'text/csv;charset=utf-8')
 };
-
+ 
 const handleImportFile = async (e) => {
     const file = e.target.files[0];
     if (!file) return; // user closed the picker without choosing
     const text = (await file.text()).replace(/^\uFEFF/, '').trim();
     e.target.value = ''; // lets the user pick the same file again later
-
+ 
     const format = detectImportFormat(text);
     let data = null;
     if (format === 'json') data = parseJSONImport(text);
     else if (format === 'csv') data = parseCSVImport(text);
-
+ 
     if (!data) {
         showToast(t('toast.importInvalid'), 6000); // not a file we understand
         return;
     }
     await applyImport(data, format);
 };
-
+ 
 const detectImportFormat = (text) => {
     if (text.startsWith('{')) return 'json'; // our JSON export always starts with {
     if (text.split('\n')[0].includes(';')) return 'csv';
     return null;
 };
-
+ 
 const isISODate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s) && formatDateISO(parseDateISO(s)) === s;
-
+ 
 const isKnownCurrency = (code) => code === undefined || ratesCache?.rates[code] !== undefined;
-
+ 
 const isSafeTransaction = (tr) => {
     if (!isValidTransaction(tr)) return false;
     if (!isISODate(tr.transactionDate) || !(tr.transactionDate <= getTodayISO())) return false;
@@ -181,7 +180,7 @@ const isSafeTransaction = (tr) => {
     if (!isKnownCurrency(tr.transactionCurrency)) return false
     return true;
 };
-
+ 
 const isSafeBudget = (b) => {
     if (!isValidBudget(b)) return false;
     if (b.budgetCat !== GENERAL_BUDGET_CAT && !CATEGORIES_SPENDING.includes(b.budgetCat)) return false;
@@ -191,7 +190,7 @@ const isSafeBudget = (b) => {
     }
     return true;
 };
-
+ 
 // returns { transactions, budgets } or null if the file is not a valid export
 const parseJSONImport = (text) => {
     let data;
@@ -215,7 +214,7 @@ const parseJSONImport = (text) => {
     if (hadItems && transactions.length === 0 && budgets.length === 0) return null;
     return { transactions, budgets };
 };
-
+ 
 // splits one CSV line into its columns, respecting quotes
 const splitCSVLine = (line) => {
     const cols = [];
@@ -244,7 +243,7 @@ const splitCSVLine = (line) => {
     cols.push(current); // the last column has no ";" after it
     return cols;
 };
-
+ 
 // "Despesa" or "Spending" -> 'spending'; unknown -> null
 const typeFromText = (text) => {
     for (const lang of Object.values(TRANSLATIONS)) {
@@ -253,7 +252,7 @@ const typeFromText = (text) => {
     }
     return null;
 };
-
+ 
 // "Alimentação" or "Food" -> 'Food'; unknown -> null
 const catFromText = (text) => {
     for (const lang of Object.values(TRANSLATIONS)) {
@@ -262,23 +261,23 @@ const catFromText = (text) => {
     }
     return null;
 };
-
+ 
 const currencyFromText = (text) => text.match(/\(([A-Z]{3})\)/)?.[1] ?? text.trim();
-
+ 
 // the export put a ' before names starting with = + - @ (Excel formula protection), so undo it
 const cleanName = (text) => text.replace(/^'(?=[=+\-@])/, '');
-
+ 
 // returns { transactions } or null if the file is not a valid CSV export
 const parseCSVImport = (text) => {
     const lines = text.split(/\r?\n/).filter(line => line.trim() !== ''); // \r\n is how Excel ends lines
     const dataLines = lines.slice(1); // the first line is the header
     if (dataLines.length === 0) return null;
-
+ 
     const transactions = dataLines.map(line => {
         const [date, name, typeText, catText, amountText, currencyText] = splitCSVLine(line);
         const type = typeFromText(typeText);
         if (currencyText === undefined || type === null) return null;
-        const amount = parseAmount(amountText); // handles the currencyText === undefined || currencyText === nullcomma
+        const amount = parseAmount(amountText); // parseAmount accepts the decimal comma
         if (isNaN(amount)) return null;
         return {
             transactionName: cleanName(name),
@@ -289,23 +288,23 @@ const parseCSVImport = (text) => {
             transactionCurrency: currencyFromText(currencyText)
         };
     }).filter(tr => tr !== null && isSafeTransaction(tr)); // drops the null lines and the unsafe ones
-
+ 
     if (transactions.length === 0) return null; // nothing usable, so the next step never wipes the user's data
     return { transactions };
 };
-
+ 
 const applyImport = async (data, format) => {
     // the confirm text depends on the format, and shows how many items are coming
     const message = format === 'json'
         ? t('confirm.importJSON').replace('{transactions}', data.transactions.length).replace('{budgets}', data.budgets.length)
         : t('confirm.importCSV').replace('{transactions}', data.transactions.length);
-
+ 
     const ok = await showConfirm(message);
     if (!ok) return; // user clicked Cancel, nothing changes
-
+ 
     saveTransactions(data.transactions);
     if (format === 'json') saveBudgets(data.budgets);
-
+ 
     await ensureAllRates();
     showToast(t('toast.importDone'), 4000, 'success');
 };
