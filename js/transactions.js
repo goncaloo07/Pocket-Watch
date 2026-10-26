@@ -48,7 +48,7 @@ const isValidTransaction = (t) => { // checks if the transaction object is valid
 // Date -> "YYYY-MM-DD"
 const formatDateISO = (date) => {
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0'); // months start at 0, so +1. padStart makes "5" become "05"
     const dd = String(date.getDate()).padStart(2, '0');
     return `${yyyy}-${mm}-${dd}`;
 };
@@ -106,7 +106,7 @@ const addTransaction = async (e) => {
 
     transactionForm.reset();
     toggleTransactionModal();
-    await ensureRatesFor([transaction.transactionDate]);
+    await ensureRatesFor([transaction.transactionDate]); // an old date may need rates that are not loaded yet
     // only refresh what's actually visible
     if (window.location.pathname === '/transactions') {
         renderAllTransactions(); // this one updates the full list on the transactions page
@@ -139,6 +139,7 @@ const saveTransactions = (transactions) => {
     safeSetItem('transactions', JSON.stringify(transactions));
 };
 
+// runs when the transactions page loads: grabs the elements, connects every filter and draws the list
 const initTransactionsPage = () => {
     transactionsPageListEl = document.getElementById('transactions-list');
     transactionsPageEmptyDiv = document.getElementById('transactions-empty');
@@ -161,14 +162,15 @@ const initTransactionsPage = () => {
     const sentinel = document.getElementById('transactions-sentinel');
     visibleGroups = GROUPS_PER_BATCH;
     const params = new URLSearchParams(window.location.search); 
-    const typeFromUrl = params.get('type');
+    const typeFromUrl = params.get('type'); // example: /transactions?type=spending gives "spending"
     activeFiltersDiv = document.getElementById('active-filters');
 
+    // infinite scroll: when the empty "sentinel" at the bottom comes into view, 5 more days are shown
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && visibleGroups < totalGroups) {
             visibleGroups += GROUPS_PER_BATCH;
             renderAllTransactions();
-            observer.unobserve(sentinel);
+            observer.unobserve(sentinel); // stops and starts again, so it checks again if the sentinel is still in view
             observer.observe(sentinel);
         }
     });
@@ -177,6 +179,7 @@ const initTransactionsPage = () => {
     transactionFilterDateMax.max = getTodayISO();
     transactionFilterDateMin.max = getTodayISO();
 
+    // comes from the home page links (Spending / Receiving boxes)
     if (typeFromUrl === 'spending' || typeFromUrl === 'receiving') {
         document.getElementById(`filter-type-${typeFromUrl}`).checked = true;
     }
@@ -193,6 +196,7 @@ const initTransactionsPage = () => {
         if (!row) return; // clicked outside a row
         openEditTransactionModal(Number(row.dataset.index)); // dataset is always text, so convert
     });
+    // the two sliders can't cross each other: min never goes above max
     filterMinAmount.addEventListener("input", () => {
         if (parseFloat(filterMinAmount.value) > parseFloat(filterMaxAmount.value)) {
             filterMinAmount.value = filterMaxAmount.value;
@@ -202,6 +206,7 @@ const initTransactionsPage = () => {
         }
         scheduleRender();
     });
+    // and max never goes below min
     filterMaxAmount.addEventListener("input", () => {
         if (parseFloat(filterMaxAmount.value) < parseFloat(filterMinAmount.value)) {
             filterMaxAmount.value = filterMinAmount.value;
@@ -222,11 +227,12 @@ const initTransactionsPage = () => {
         if (!chip) return; // clicked outside a chip
         const key = chip.dataset.key;
         if (e.target.closest('i')) {
-            clearSingleFilter(key);
+            clearSingleFilter(key); // clicked the x icon: remove that filter
         } else {
-            focusFilterField(key);
+            focusFilterField(key); // clicked the chip itself: open the panel on that field
         }
     });
+    // the date inputs limit each other: "from" can't be after "to"
     transactionFilterDateMin.addEventListener("change", () => {
         transactionFilterDateMax.min = transactionFilterDateMin.value;
         renderAllTransactions();
@@ -244,6 +250,7 @@ const initTransactionsPage = () => {
     renderActiveFilters();
 };
 
+// runs once: grabs the edit modal elements and connects its buttons
 const initEditTransactionModal = () => {
     editTransactionModal = document.getElementById('edit-transaction-modal-overlay');
     editTransactionForm = document.getElementById('edit-transaction-form');
@@ -279,12 +286,13 @@ const cancelEdit = () => {
     openEditTransactionModal(editingIndex); // fills the fields with the original values and locks them again
 };
 
+// fills the edit modal with a transaction's values and opens it (fields start locked)
 const openEditTransactionModal = (index) => {
     editingIndex = index; // remembers which transaction is open
     const tr = getTransactions()[index]; // the transaction itself
     editNameInput.value = tr.transactionName;
     editTypeLabel.textContent = t(tr.transactionType === 'spending' ? 'common.spending' : 'common.receiving');
-    editAmountInput.value = Math.abs(tr.transactionAmount);
+    editAmountInput.value = Math.abs(tr.transactionAmount); // spending is stored as negative, the user sees it without the sign
     document.getElementById('edit-transaction-currency-symbol').textContent = getCurrencySymbol(tr.transactionCurrency || 'EUR');
     // note shown only when the transaction is in another currency than the active one
     const amountNote = document.getElementById('edit-amount-note');
@@ -308,6 +316,7 @@ const closeEditTransactionModal = () => {
     editingIndex = null; // no transaction open anymore
 };
 
+// validates the edit form and replaces the transaction with the new values
 const saveEditedTransaction = async (e) => {
     e.preventDefault();
     const transactions = getTransactions();
@@ -330,11 +339,12 @@ const saveEditedTransaction = async (e) => {
     transactions[editingIndex] = editedTransaction;
     saveTransactions(transactions);
     closeEditTransactionModal();
-    await ensureRatesFor([editedTransaction.transactionDate]);
+    await ensureRatesFor([editedTransaction.transactionDate]); // the new date may need rates that are not loaded yet
     renderAllTransactions(); // refreshes the list on the transactions page
     setupAmountFilter();
 }
 
+// asks for confirmation, then removes the open transaction
 const deleteTransaction = async () => {
     const ok = await showConfirm(t('confirm.deleteTransaction'));
     if (!ok) return;
@@ -346,25 +356,28 @@ const deleteTransaction = async () => {
     setupAmountFilter();
 }
 
+// shows or hides the filter panel
 const toggleFilterPanel = () => {
     filterPanel.classList.toggle('hidden');
-    renderActiveFilters();
+    renderActiveFilters(); // the chips only show while the panel is closed
 }
 
+// the biggest transaction amount, used as the top of the amount slider
 const getMaxTransactionAmount = () => {
     const transactions = getTransactions();
-    if (transactions.length === 0) return 1000;
+    if (transactions.length === 0) return 1000; // default slider size when there is nothing yet
     return transactions.reduce((max, t) => {
         const amount = Math.abs(toActive(t.transactionAmount, t.transactionCurrency, t.transactionDate)); // in the active currency
         return amount > max ? amount : max;
     }, 0);
 };
 
+// sets the range of the two amount sliders. curMin/curMax keep what the user already chose
 const setupAmountFilter = (curMin, curMax) => {
     const previousMax = parseFloat(filterMaxAmount.max) || 0; // the slider's max before this recalculation
     let maxAmount = getMaxTransactionAmount();
-    const step = maxAmount < 50 ? 1 : 5;
-    maxAmount = Math.ceil(maxAmount / step) * step;
+    const step = maxAmount < 50 ? 1 : 5; // small amounts need finer steps
+    maxAmount = Math.ceil(maxAmount / step) * step; // rounds up to a multiple of the step. Example: 123 with step 5 -> 125
     filterMaxAmount.step = step;
     filterMinAmount.step = step;
     filterMaxAmount.max = maxAmount;
@@ -378,14 +391,16 @@ const setupAmountFilter = (curMin, curMax) => {
     filterMinAmountNum.textContent = `${newMin}${getActiveSymbol()}`;
 };
 
+// fills the category filter with only the categories that exist in the user's transactions
 const fillFilterCats = (curCat = "all") => {
     const transactions = getTransactions();
-    const uniqueCats = new Set(transactions.map(t => t.transactionCat));
+    const uniqueCats = new Set(transactions.map(t => t.transactionCat)); // a Set removes repeated categories
     transactionFilterCat.innerHTML = `<option value="all">${t('transactions.allCategories')}</option>${buildCategoryOptions([...uniqueCats])}`;
     const option = transactionFilterCat.querySelector(`[value="${curCat}"]`);
-    if (option) option.selected = true;
+    if (option) option.selected = true; // keeps the category the user had selected
 };
 
+// puts the date filters on their default (oldest transaction to today), or on the given dates
 const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
     const transactions = getTransactions();
     if (minDate === 0 && maxDate === 0) {
@@ -403,6 +418,7 @@ const getDefaultFilterDate = (minDate = 0, maxDate = 0) => {
     transactionFilterDateMin.max = transactionFilterDateMax.value;
 };
 
+// resets every filter back to its default
 const clearFilters = () => {
     searchInput.value = "";
     document.getElementById("filter-type-all").checked = true;
@@ -413,11 +429,13 @@ const clearFilters = () => {
     renderAllTransactions();
 };
 
+// keeps the address bar in sync with the type filter, without reloading. Example: /transactions?type=spending
 const updateUrlType = (type) => {
     const url = type === 'all' ? '/transactions' : `/transactions?type=${type}`;
-    history.replaceState({}, '', url);
+    history.replaceState({}, '', url); // replaceState does not add a new back button entry
 };
 
+// resets only one filter (the one whose chip was clicked)
 const clearSingleFilter = (key) => {
     switch (key) {
         case 'type':
@@ -441,6 +459,7 @@ const openFilterPanel = () => {
     renderActiveFilters();
 };
 
+// opens the panel and puts the cursor on the field that matches the chip
 const focusFilterField = (key) => {
     openFilterPanel();
     switch (key) {

@@ -101,10 +101,10 @@ let addTransactionBtn,
     settingsImportInput;
 
 let toastEl = document.getElementById("toast"); // the toast notification that pops up in the bottom right corner
-let toastTimeout;
+let toastTimeout; // lets a new toast cancel the timer of the previous one
 
 let editingIndex = null; // position of the transaction currently open in the modal
-let editingBudgetIndex = null;
+let editingBudgetIndex = null; // same, for the budget modal
 
 // list of categories shown in the "Category" dropdown when adding a spending transaction
 // (or a budget, since budgets are always tied to a spending category)
@@ -132,6 +132,7 @@ const CATEGORIES_RECEIVING = [
     "Freelance"
 ];
 
+// turns a list of categories into <option> tags. The value stays in English, the text is translated
 const buildCategoryOptions = (categories) => {
     return categories.map(cat => `<option value="${cat}">${tCat(cat)}</option>`).join('');
 };
@@ -236,6 +237,7 @@ const initHomePage = () => {
     renderBudgets();
 };
 
+// runs once: connects the "Add Transaction" modal buttons and form
 const initTransactionModal = () => {
     transactionModal = document.getElementById('transaction-modal-overlay');
     closeTransactionModalBtn = document.getElementById('close-modal-btn');
@@ -256,6 +258,7 @@ const initTransactionModal = () => {
     });
 }
 
+// runs once: connects the "Add Budget" modal (slider, typed value, dates and buttons)
 const initBudgetModal = () => {
     budgetModal = document.getElementById("budget-modal-overlay");
     closeBudgetModalBtn = document.getElementById("close-budget-modal-btn");
@@ -319,6 +322,7 @@ const initBudgetModal = () => {
     });
 };
 
+// runs once: connects the export modal (JSON or CSV)
 const initExportModal = () => {
     exportModal = document.getElementById('export-modal-overlay');
     exportForm = document.getElementById('export-form');
@@ -341,6 +345,7 @@ const closeExportModal = () => {
     exportModal.classList.remove('open');
 };
 
+// runs when the user clicks Export: downloads the chosen format and closes the modal
 const handleExportSubmit = (e) => {
     e.preventDefault();
     const format = document.querySelector('input[name="export-format"]:checked').value; // "json" or "csv"
@@ -349,16 +354,18 @@ const handleExportSubmit = (e) => {
     closeExportModal();
 };
 
+// shows a small message at the bottom of the screen. type is "error" (red) or "success" (green)
 const showToast = (message, duration = 4000, type = 'error') => {
     toastEl.textContent = message;
     toastEl.classList.toggle('success', type === 'success'); // green only for success
     toastEl.classList.remove("hidden");
-    clearTimeout(toastTimeout);
+    clearTimeout(toastTimeout); // if another toast is still showing, its timer is cancelled
     toastTimeout = setTimeout(() => {
         toastEl.classList.add("hidden");
     }, duration);
 };
 
+// localStorage.setItem that does not crash. If the storage is full or blocked, shows a toast instead
 const safeSetItem = (key, value) => {
     try {
         localStorage.setItem(key, value);
@@ -394,7 +401,7 @@ initExportModal();
 // fires every time the router swaps in a new page (including on first load),
 // so this decides which page's init function to run based on the current path
 document.addEventListener('page:loaded', async (e) => {
-    await loadRates();
+    await loadRates(); // the exchange rates must be ready before anything shows an amount
     await ensureAllRates();
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
@@ -403,6 +410,7 @@ document.addEventListener('page:loaded', async (e) => {
     if (e.detail.path === '/settings') initSettingsPage();
 });
 
+// if the data changes in another tab, the caches are cleared so the next read is fresh
 window.addEventListener('storage', () => {
     transactionsCache = null;
     budgetsCache = null;

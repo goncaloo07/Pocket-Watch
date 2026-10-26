@@ -1,12 +1,14 @@
+// returns a new list sorted by date, newest first (the original list is not changed)
 const sortByDateDesc = (transactions) => {
     return [...transactions].sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
 };
 
+// builds the HTML of one transaction row (icon, name, category, date and amount)
 const buildTransactionRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, originalIndex, transactionCurrency }) => {
     const icon = CATEGORY_ICONS.get(transactionCat) || 'bi-three-dots';
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative';
-    const safeName = escapeHTML(transactionName);
-    const indexAttr = originalIndex !== undefined ? `data-index="${originalIndex}"` : '';
+    const safeName = escapeHTML(transactionName); // the name is typed by the user, so it must be escaped
+    const indexAttr = originalIndex !== undefined ? `data-index="${originalIndex}"` : ''; // lets the click handler know which transaction was clicked
 
     return `
         <li class="transaction-row" ${indexAttr}>
@@ -22,6 +24,7 @@ const buildTransactionRow = ({ transactionName, transactionAmount, transactionDa
     `;
 };
 
+// the "Transactions" box on the home page: shows the 3 most recent ones
 const renderTransactions = () => {
     const transactions = sortByDateDesc(getTransactions()); // sorted by transaction date, not by when it was added
 
@@ -33,6 +36,7 @@ const renderTransactions = () => {
     transactionsListEl.innerHTML = transactions.slice(0, 3).map(buildTransactionRow).join(''); //sends all rows to a map, then joins it to build the code
 };
 
+// smaller row used in the Spending and Receiving boxes of the home page
 const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transactionDate, transactionCat, transactionCurrency }) => {
     const amountClass = parseFloat(transactionAmount) >= 0 ? 'positive' : 'negative'; //checks if its positive or negative
     const safeName = escapeHTML(transactionName);
@@ -50,6 +54,7 @@ const buildSpendingReceivingRow = ({ transactionName, transactionAmount, transac
     `;
 };
 
+// fills the Spending and Receiving boxes of the home page with the last 3 of each
 const renderSpendingReceiving = () => {
     const transactions = sortByDateDesc(getTransactions());
     const spending = transactions.filter(transaction => transaction.transactionType === "spending").slice(0, 3); // gets last 3 spending transactions (LIFO)
@@ -62,6 +67,7 @@ const renderSpendingReceiving = () => {
     receivingListEl.innerHTML = receiving.map(buildSpendingReceivingRow).join('');
 }
 
+// shows the current balance on the home page card
 const renderBalance = () => {
     const balance = calcBalance();
     balanceDiv.classList.toggle('negative', balance < 0); // if the balance is below 0, it will get the negative class
@@ -100,6 +106,7 @@ const animateBalance = (targetValue, duration = 800) => {
     requestAnimationFrame(step);
 };
 
+// builds one budget row for the home page (name, period, spent / limit and a progress bar)
 const buildBudgetRow = (budget, totalSpent) => {
     const { budgetCat } = budget;
     const limit = getBudgetLimit(budget);
@@ -131,6 +138,7 @@ const buildBudgetRow = (budget, totalSpent) => {
     `
 }
 
+// draws the budget list. Home page shows 3 short rows, the budgets page shows all with details
 const renderBudgets = () => {
     const budgets = getBudgets(); // gets all the budgets
     const isBudgetsPage = window.location.pathname === '/budgets';
@@ -152,7 +160,7 @@ const renderBudgets = () => {
     }); // sort the budgets from the most completed to the less completed (general always first)
     const budgetsToShow = isBudgetsPage ? sortedBudgets : sortedBudgets.slice(0, 3);
     const buildRow = isBudgetsPage ? buildBudgetDetailRow : buildBudgetRow;
-    budgetList.innerHTML = budgetsToShow.map(budget => buildRow(budget, spentMap.get(budget), budgets.indexOf(budget))).join('');
+    budgetList.innerHTML = budgetsToShow.map(budget => buildRow(budget, spentMap.get(budget), budgets.indexOf(budget))).join(''); // indexOf gives the position in the saved list, used when a row is clicked
 };
 
 // Escapes HTML so user text can't run as code. Example: turns "<b>" into visible text, not bold.
@@ -190,6 +198,7 @@ const buildDateGroup = (dateStr, dayTransactions, balanceAfter) => {
     `;
 };
 
+// draws the transactions page: applies every filter, groups by day and shows the visible days
 const renderAllTransactions = () => {
     const transactions = getTransactions();
     totalGroups = 0;
@@ -197,6 +206,7 @@ const renderAllTransactions = () => {
     const selectedCat = transactionFilterCat.value;
     fillFilterCats(selectedCat)
     const oldestDate = getOldestTransactionDate();
+    // if the "from" date was still the default, it follows the oldest transaction (which may have changed)
     const dateFrom = transactionFilterDateMin.value === defaultDateFrom ? oldestDate : transactionFilterDateMin.value;
     defaultDateFrom = oldestDate; // remember the default for the next render
     const dateTo = transactionFilterDateMax.value;
@@ -223,7 +233,7 @@ const renderAllTransactions = () => {
     transactionsPageEmptyDiv.classList.add('hidden');
     transactionsNoResultsPage.classList.add("hidden");
     transactionsPageListDiv.classList.remove('hidden');
-    if (filtered.length === 0) {
+    if (filtered.length === 0) { // there are transactions, but none match the filters
         transactionsPageEmptyDiv.classList.add('hidden');
         transactionsNoResultsPage.classList.remove("hidden");
         transactionsPageListEl.classList.add('hidden');
@@ -253,10 +263,12 @@ const renderAllTransactions = () => {
         balanceByDate.set(date, runningBalance);
     }
 
+    // only the first "visibleGroups" days are drawn. More appear when the user scrolls down
     transactionsPageListEl.innerHTML = dayEntries.slice(0, visibleGroups).map(([date, dayTransactions]) => buildDateGroup(date, dayTransactions, balanceByDate.get(date))).join('')
     renderActiveFilters();
 };
 
+// true if the transaction name contains what is typed in the search box (ignores capital letters)
 const matchesSearch = (t) => {
     const query = searchInput.value.trim().toLowerCase();
     return t.transactionName.toLowerCase().includes(query);
@@ -283,7 +295,7 @@ const getActiveFilters = () => {
         date2 = `${t('filters.until')} ${formatDateDMY(selectedDateEnd)}`;
     };
     if (date1 || date2) {
-        const selectedDate = [date1, date2].filter(Boolean).join(' ');
+        const selectedDate = [date1, date2].filter(Boolean).join(' '); // Boolean removes the empty ones
         active.push({ key: 'date', label: selectedDate});
     }
     const minValue = parseFloat(filterMinAmount.value);
@@ -313,6 +325,7 @@ const renderActiveFilters = () => {
     `).join('');
 };
 
+// builds one budget row for the budgets page (same as the home one, plus % and a footer with details)
 const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
     const { budgetCat, budgetPeriod } = budget;
     const icon = CATEGORY_ICONS.get(budgetCat) || 'bi-three-dots'; // budgetCat is "__general__" or the category name
@@ -323,7 +336,7 @@ const buildBudgetDetailRow = (budget, totalSpent, originalIndex) => {
     const left = limit - totalSpent; // negative means over the limit
     const perc = Math.round((totalSpent / limit) * 100);
     const daysLeft = getDaysLeft(end);
-    const perDay = left > 0 ? left / daysLeft : 0; // nothing left to spend if over the limit
+    const perDay = left > 0 ? left / daysLeft : 0; // nothing left to spend if over the limit. Example: 60€ left and 3 days left -> 20€ per day
     const isOver = left < 0;
     const barClass = perc >= 100 ? 'over-limit' : perc >= 80 ? 'near-limit' : '';
 

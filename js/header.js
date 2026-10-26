@@ -1,6 +1,7 @@
 // Shared refs populated once the header/menu are injected into the DOM
 let logoImg, header, themeToggleBtn, themeToggleIcon, menu, menuBtn;
- 
+
+// runs once the header HTML is inside the page
 const initHeader = () => {
     logoImg = document.getElementById('logo-img');
     header = document.getElementById('header');
@@ -10,28 +11,32 @@ const initHeader = () => {
     settingsBtn = document.getElementById('settings-btn');
     const logoLink = document.getElementById('logo-link');
  
-    initTheme();
- 
+    initTheme(); // applies the saved theme now that the toggle button exists
+
+    // header buttons
     themeToggleBtn.addEventListener('click', toggleTheme);
     logoLink.addEventListener('click', sendToHomePage);
     menuBtn.addEventListener('click', toggleMenu);
     settingsBtn.addEventListener('click', () => navigateTo('/settings'));
  
-    requestAnimationFrame(updateHeaderHeightVar);
+    requestAnimationFrame(updateHeaderHeightVar); // first measure, after the browser has drawn the header
     
+    // keeps --header-height up to date if the header changes size (for example when the screen is resized)
     const headerResizeObserver = new ResizeObserver((entries) => {
         document.documentElement.style.setProperty('--header-height', `${entries[0].contentRect.height}px`);
     });
     headerResizeObserver.observe(header);
 };
- 
+
+// opens or closes the side menu
 const toggleMenu = () => {
-    const isOpen = menu.classList.toggle('open');
-    document.body.classList.toggle('menu-open', isOpen);
+    const isOpen = menu.classList.toggle('open'); // toggle returns true if the class was added
+    document.body.classList.toggle('menu-open', isOpen); // CSS moves the page content to make room for the menu
     menuBtn.classList.toggle('open', isOpen); // CSS handles the list/x icon swap via #menu-btn.open
-    menuBtn.setAttribute('aria-expanded', isOpen);
+    menuBtn.setAttribute('aria-expanded', isOpen); // tells screen readers if the menu is open
 };
- 
+
+// saves the header height in a CSS variable, so the menu can sit right under the header
 const updateHeaderHeightVar = () => {
     document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
 };
@@ -45,4 +50,5 @@ const sendToHomePage = (e) => { // makes it so that when users that are on the m
     }
 }
 
+// "header:loaded" is fired by include-partials.js after all partials are in the DOM
 document.addEventListener('header:loaded', initHeader);

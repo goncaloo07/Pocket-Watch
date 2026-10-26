@@ -7,6 +7,7 @@ let chartSegmentsG,
     chartSVGWrap,
     CATEGORY_COLORS;
 
+// grabs the chart elements and gives each spending category its own color
 const initChart = () => {
     chartSegmentsG = document.getElementById('chart-segments');
     chartLegend = document.getElementById("chart-legend");
@@ -16,6 +17,7 @@ const initChart = () => {
     chartCenterLabel = document.getElementById("chart-center-label");
     chartSVGWrap = document.querySelector(".chart-svg-wrap");
 
+    // category -> color. The % makes the palette start over if there are more categories than colors
     CATEGORY_COLORS = new Map(
         CATEGORIES_SPENDING.map((cat, index) => [cat, CHART_PALETTE[index % CHART_PALETTE.length]])
     );
@@ -25,6 +27,7 @@ const CHART_RADIUS = 80; // radius of the circle
 const CHART_CIRCUMFERENCE = 2 * Math.PI * CHART_RADIUS;
 const CHART_PALETTE = ['#3a8c63', '#5b9bd5', '#e0a72e', '#c1666b', '#7d5ba6', '#4fb0a5', '#d98c4a', '#8fa63a', '#5c6bc0', '#c94f7c']; // colors for the categories
 
+// total spent per category, biggest first. Example: [{ label: "Food", value: 120, color: "#3a8c63" }, ...]
 const getCategoryTotals = () => {
     const transactions = getTransactions();
     const spending = transactions.filter(transaction => transaction.transactionType === "spending"); // gets only the spending transactions
@@ -45,6 +48,7 @@ const getCategoryTotals = () => {
     return spendingArr;
 }
 
+// total spent and total received, for the "Spending vs Receiving" view
 const getTypeTotals = () => {
     const transactions = getTransactions();
     const spending = transactions.filter(transaction => transaction.transactionType === "spending").reduce((a,b) => a + toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate), 0); // gets the total value spent
@@ -53,11 +57,13 @@ const getTypeTotals = () => {
     return transactionsArr;
 }
 
+// picks the data that matches the toggle (by category or spending vs receiving)
 const getChartData = () => {
     const type = document.querySelector('input[name="chart-mode"]:checked').value; // checks if the chart should show by category or spending vs receiving
     return type === 'category' ? getCategoryTotals() : getTypeTotals();
 }
 
+// draws the donut. Each segment is a circle where only part of the outline is visible
 const renderSegments = (items) => {
     const total = items.reduce((sum, item) => sum + item.value, 0); // gets the total value from all items
     let cumulative = 0;
@@ -88,6 +94,7 @@ const renderSegments = (items) => {
 
     const circles = chartSegmentsG.querySelectorAll(".chart-segment");
 
+    // two frames are needed so the browser draws the "0" start first, and then animates to the real size
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             circles.forEach((circle) => {
@@ -99,6 +106,7 @@ const renderSegments = (items) => {
     });
 }
 
+// builds the list next to the chart: color dot, name, amount and percentage
 const renderLegend = (items) => {
     const total = items.reduce((sum, item) => sum + item.value, 0); // gets the total value
  
@@ -123,6 +131,7 @@ const attachChartInteractions = () => { // if the mouse enters a category, it wi
     const segments = chartSegmentsG.querySelectorAll(".chart-segment")
     const legendItems = chartLegend.querySelectorAll(".chart-legend-item")
 
+    // highlights the segment and the legend item with the same index
     const highlight = (index) => {
         segments.forEach(s => s.classList.toggle("dimmed", s.dataset.index !== String(index)))
         legendItems.forEach(l => l.classList.toggle("active", l.dataset.index === String(index)))
@@ -133,6 +142,7 @@ const attachChartInteractions = () => { // if the mouse enters a category, it wi
         legendItems.forEach(l => l.classList.remove("active"))
     }
 
+    // hovering a segment or its legend item does the same thing
     segments.forEach((s) => {
         s.addEventListener("mouseenter", () => highlight(s.dataset.index)); 
         s.addEventListener("mouseleave", clearHighlight);
@@ -144,6 +154,7 @@ const attachChartInteractions = () => { // if the mouse enters a category, it wi
     });
 }
 
+// draws the whole chart, or the empty message if there is nothing to show
 const renderChart = () => {
     const data = getChartData() // gets the data for the chart
     const total = data.reduce((sum, item) => sum + item.value, 0); // gets the total value
@@ -159,5 +170,5 @@ const renderChart = () => {
     renderLegend(data)
     attachChartInteractions()
     chartCenterLabel.textContent = t(document.querySelector('input[name="chart-mode"]:checked').value === 'category' ? 'chart.totalSpent' : 'chart.totalActivity');
-    chartCenterValue.textContent = formatAmount(total)
+    chartCenterValue.textContent = formatAmount(total) // total shown in the middle of the donut
 }

@@ -1,5 +1,5 @@
 let ratesCache = null; // loaded once, then reused
-let pastRates = {};
+let pastRates = {}; // rates of past days, like { "2026-06-05": { EUR: 1, USD: 1.08, ... } }
 const monthRequests = new Map(); // month -> its request, so each month is only asked once
 
 // reads data/rates.json, returns { date, base, rates } or null if it fails
@@ -19,31 +19,35 @@ const loadRates = async () => {
 
 // "USD" -> "US Dollar ($)"
 const getCurrencyLabel = (code) => {
-    const rawName = new Intl.DisplayNames([getLocale()], { type: 'currency' }).of(code);
-    const name = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+    const rawName = new Intl.DisplayNames([getLocale()], { type: 'currency' }).of(code); // name in the app language
+    const name = rawName.charAt(0).toUpperCase() + rawName.slice(1); // makes the first letter a capital
     const symbol = getCurrencySymbol(code);
     return `${name} (${symbol})`;
 };
 
+// "USD" -> "$", "EUR" -> "€"
 const getCurrencySymbol = (code) => {
     return new Intl.NumberFormat('en', { style: 'currency', currency: code, currencyDisplay: 'narrowSymbol' })
-        .formatToParts(0).find(part => part.type === 'currency').value;
+        .formatToParts(0).find(part => part.type === 'currency').value; // formats 0 and keeps only the symbol part
 };
 
+// the currency the user picked in settings, or EUR if it is missing or unknown
 const getActiveCurrency = () => {
     const savedCurrency = localStorage.getItem('currency');
     return ratesCache?.rates[savedCurrency] ? savedCurrency : 'EUR';
 }
 
+// converts a value between currencies. Example: 10 EUR to USD on a given day
 const convertAmount = (amount, fromCurrency, toCurrency, date) => {
     if (fromCurrency === toCurrency) return amount;
     const rates = getRatesForDate(date); // rates of that day, or the latest ones if there is no date
     const fromRate = rates?.[fromCurrency];
     const toRate = rates?.[toCurrency];
     if (!fromRate || !toRate) return amount; // cannot convert, show the value as it is
-    return amount / fromRate * toRate;
+    return amount / fromRate * toRate; // goes through EUR, because all rates are based on 1 EUR
 };
 
+// 1234.5 -> "1.234,50€" (the format follows the app language)
 const formatAmount = (amount) => {
     const symbol = getCurrencySymbol(getActiveCurrency());
     const number = parseFloat(amount).toLocaleString(getLocale(), {
@@ -53,12 +57,15 @@ const formatAmount = (amount) => {
     return `${number}${symbol}`;
 };
 
+// accepts "12,50" and "12.50", returns the number 12.5
 const parseAmount = (text) => parseFloat(String(text).replace(',', '.'));
 
+// shortcut: converts an amount from the currency it was saved in to the active one
 const toActive = (amount, currency, date) => {
-    return convertAmount(parseFloat(amount), currency || "EUR", getActiveCurrency(), date);
+    return convertAmount(parseFloat(amount), currency || "EUR", getActiveCurrency(), date); // old data has no currency, so EUR
 };
 
+// downloads the daily rates of one month (plus 7 days before it, in case day 1 is a weekend)
 const loadMonthRates = async (month) => { // month looks like "2026-06"
     try {
         const [year, monthNumber] = month.split('-').map(Number);
@@ -91,6 +98,7 @@ const getRatesForDate = (date) => {
     return pastRates[days[days.length - 1]]; // the closest one
 };
 
+// asks for a month only the first time. Next calls reuse the same request
 const loadMonthOnce = (month) => {
     if (!monthRequests.has(month)) monthRequests.set(month, loadMonthRates(month));
     return monthRequests.get(month);
@@ -99,7 +107,7 @@ const loadMonthOnce = (month) => {
 // makes sure the rates of every month used by these dates are loaded
 const ensureRatesFor = async (dates) => {
     if (!ratesCache) return; // rates.json did not load, nothing to compare with
-    const months = new Set(
+    const months = new Set( // a Set removes repeated months
         dates
             .filter(date => date < ratesCache.date) // from the latest rates day onwards, rates.json is enough
             .map(date => date.slice(0, 7)) // "2026-06-05" -> "2026-06"
@@ -127,6 +135,8 @@ const getBudgetSliderRange = () => {
     return { max, step, start: max / 10 }; // starts at a tenth of the max (100 in euros)
 };
 
+// just the symbol of the active currency, like "€"
 const getActiveSymbol = () => getCurrencySymbol(getActiveCurrency());
 
+// "USD" -> "$ (USD)", used in the CSV export
 const getCurrencyShortLabel = (code) => `${getCurrencySymbol(code)} (${code})`;

@@ -1,4 +1,4 @@
-const GENERAL_BUDGET_CAT = "__general__";
+const GENERAL_BUDGET_CAT = "__general__"; // special category for the budget that counts all spending
 
 let budgetsCache = null;
 let budgetsCacheDate = null; // the day the cache was built (YYYY-MM-DD)
@@ -13,7 +13,7 @@ const isValidBudget = (b) => { // checks if the budget object is valid, returns 
 }
 
 const getBudgets = () => { //if there is a localStorage item of budgets, it returns it, if there isn't it returns an empty array and creates the budgets item
-    if (budgetsCache !== null && budgetsCacheDate === getTodayISO()) return budgetsCache;
+    if (budgetsCache !== null && budgetsCacheDate === getTodayISO()) return budgetsCache; // the cache is only valid for today, so expired budgets disappear at midnight
     try {
         budgetsCache = (JSON.parse(localStorage.getItem('budgets')) ?? []).filter(isValidBudget).filter(budget => !isBudgetExpired(budget));
         budgetsCacheDate = getTodayISO();
@@ -38,6 +38,7 @@ const getCats = () => { //gets the localStorage item budgets and turns it into a
     return cats;
 };
 
+// validates the "Add Budget" form, builds the budget and saves it
 const addBudget = (e) => {
     e.preventDefault();
 
@@ -70,7 +71,7 @@ const addBudget = (e) => {
         budgetLimit: parseAmount(budgetLimitInput.value),
         budgetPeriod: periodType,
         budgetCreatedAt: getTodayISO(),
-        ...(periodType === "recurring" ? { budgetUnit: unit } : { budgetEndDate: unit }),
+        ...(periodType === "recurring" ? { budgetUnit: unit } : { budgetEndDate: unit }), // recurring keeps the unit, "until date" keeps the end date
         budgetCurrency: getActiveCurrency()
     };
     
@@ -82,18 +83,20 @@ const addBudget = (e) => {
     renderBudgets();
 };
 
+// saves the budgets and clears the cache, so the next read gets fresh data
 const saveBudgets = (budgets) => {
     budgetsCache = null;
     safeSetItem('budgets', JSON.stringify(budgets)); // sets the budgets in localStorage
 };
 
+// how much was spent inside this budget's period. Example: "Food" monthly -> all Food spending this month
 const getSpentByCat = (budget) => {
     const cat = budget.budgetCat;
     const {start, end} = getSpendPeriodRange(budget);
     const transactions = getTransactions(); // gets all the transactions
     const catTransactions = transactions.filter(transaction => 
         transaction.transactionType === 'spending'
-        && (cat === GENERAL_BUDGET_CAT || transaction.transactionCat === cat)
+        && (cat === GENERAL_BUDGET_CAT || transaction.transactionCat === cat) // the general budget counts every category
         && transaction.transactionDate >= start
         && transaction.transactionDate <= end)
     .reduce((a,b) => a + Math.abs(toActive(b.transactionAmount, b.transactionCurrency, b.transactionDate)), 0); // filters to see only the spending of said category and gets the total money spent
@@ -134,7 +137,7 @@ const getSpendPeriodRange = (budget) => {
     return { start: formatDateISO(start), end: formatDateISO(clampedEnd) };
 };
 
-const formatDateShort = (date) => { // returns the date like 
+const formatDateShort = (date) => { // returns a short date in the app language, like "5 Oct"
     return date.toLocaleDateString(getLocale(), { day: 'numeric', month: 'short' });
 };
 
@@ -142,6 +145,7 @@ const isBudgetExpired = (budget) => { // check if the budget is expired
     return budget.budgetPeriod === "date" && budget.budgetEndDate < getTodayISO();
 };
 
+// runs when the budgets page loads
 const initBudgetsPage = () => {
     budgetList = document.getElementById("budget-list");
     budgetEmpty = document.getElementById("budget-empty");
@@ -152,6 +156,7 @@ const initBudgetsPage = () => {
     addBudgetBtn.addEventListener("click", toggleBudgetModal);
     addBudgetBtnEmpty.addEventListener("click", toggleBudgetModal);
 
+    // one listener on the list is enough, because the rows are rebuilt on every render
     budgetList.addEventListener('click', (e) => {
         const row = e.target.closest('.budget-row'); // finds the row that was clicked
         if (!row) return; // clicked outside a row
@@ -161,12 +166,14 @@ const initBudgetsPage = () => {
     renderBudgets();
 };
 
+// days until the end of the budget period, counting today. Example: today is the 30th and it ends on the 31st -> 2
 const getDaysLeft = (end) => {
-    const today = new Date().setHours(0, 0, 0, 0);
+    const today = new Date().setHours(0, 0, 0, 0); // setHours(0...) removes the time, so only the day counts
     const newEnd = new Date(end).setHours(0, 0, 0, 0);
     return Math.round((newEnd - today) / (1000 * 60 * 60 * 24)) + 1
 };
 
+// fills the edit modal with a budget's values and opens it (fields start locked)
 const openEditBudgetModal = (index) => {
     editingBudgetIndex = index; // remembers which budget is open
     const b = getBudgets()[index];
@@ -174,6 +181,7 @@ const openEditBudgetModal = (index) => {
     editBudgetCategory.textContent = b.budgetCat === GENERAL_BUDGET_CAT ? t('budget.general') : b.budgetCat;
     editBudgetLimitInput.value = b.budgetLimit;
     document.getElementById('edit-budget-currency-symbol').textContent = getCurrencySymbol(b.budgetCurrency || 'EUR');
+    // note shown only when the budget was made in another currency than the active one
     const limitNote = document.getElementById('edit-budget-limit-note');
     const differentCurrency = (b.budgetCurrency || 'EUR') !== getActiveCurrency();
     limitNote.classList.toggle('hidden', !differentCurrency);
@@ -202,6 +210,7 @@ const openEditBudgetModal = (index) => {
     editBudgetModal.classList.add('open');
 };
 
+// runs once: grabs the edit modal elements and connects its buttons
 const initEditBudgetModal = () => {
     editBudgetModal = document.getElementById('edit-budget-modal-overlay');
     editBudgetForm = document.getElementById('edit-budget-form');
@@ -226,12 +235,14 @@ const initEditBudgetModal = () => {
     editBudgetForm.addEventListener('submit', saveEditedBudget);
     deleteBudgetBtn.addEventListener('click', deleteBudget);
     limitToNumbers(editBudgetLimitInput);
+    // hides the error as soon as the limit becomes valid
     editBudgetLimitInput.addEventListener('input', () => {
         if (parseAmount(editBudgetLimitInput.value) > 0) {
             editBudgetLimitError.classList.add('hidden');
             editBudgetLimitInput.closest('.amount-input-wrap').classList.remove('input-invalid');
         }
     });
+    // same for the end date
     editBudgetEndDateInput.addEventListener('input', () => {
         if (editBudgetEndDateInput.value > getTodayISO()) {
             editBudgetEndDateError.classList.add('hidden');
@@ -257,6 +268,7 @@ const closeEditBudgetModal = () => {
     editingBudgetIndex = null;
 };
 
+// validates the edit form and replaces the budget with the new values
 const saveEditedBudget = (e) => {
     e.preventDefault();
 
@@ -304,6 +316,7 @@ const saveEditedBudget = (e) => {
     renderBudgets();
 };
 
+// asks for confirmation, then removes the open budget
 const deleteBudget = async () => {
     const ok = await showConfirm(t('confirm.deleteBudget'));
     if (!ok) return; // user clicked Cancel
@@ -314,6 +327,7 @@ const deleteBudget = async () => {
     renderBudgets();
 };
 
+// the limit in the active currency, using the rate of the day the budget was created
 const getBudgetLimit = (budget) => {
     return toActive(budget.budgetLimit, budget.budgetCurrency, budget.budgetCreatedAt); // converts the budget limit to the active currency
 }
