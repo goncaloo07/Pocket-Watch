@@ -358,7 +358,8 @@ const deleteTransaction = async () => {
 
 // shows or hides the filter panel
 const toggleFilterPanel = () => {
-    filterPanel.classList.toggle('hidden');
+    const isHidden = filterPanel.classList.toggle('hidden'); // true when it just closed
+    filterToggleBtn.setAttribute('aria-expanded', String(!isHidden));
     renderActiveFilters(); // the chips only show while the panel is closed
 }
 
@@ -456,6 +457,7 @@ const clearSingleFilter = (key) => {
 
 const openFilterPanel = () => {
     filterPanel.classList.remove('hidden');
+    filterToggleBtn.setAttribute('aria-expanded', 'true');
     renderActiveFilters();
 };
 

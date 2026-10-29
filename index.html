@@ -104,15 +104,15 @@
                         <label for="budget-limit" data-i18n="budgetModal.limit"></label>
                         <div class="budget-slider-wrap">
                             <input type="range" id="budget-limit" name="budget-limit" min="0" max="1000" step="5" value="100">
-                            <span id="budget-limit-value" class="budget-slider-value" tabindex="0">100</span>
-                            <input type="text" id="budget-limit-input" class="budget-slider-input hidden" inputmode="decimal" autocomplete="off" value="100">
+                            <span id="budget-limit-value" class="budget-slider-value" role="button" tabindex="0">100</span>
+                            <input type="text" id="budget-limit-input" class="budget-slider-input hidden" inputmode="decimal" autocomplete="off" value="100" data-i18n-aria="budgetModal.limit" aria-describedby="budget-limit-error">
                         </div>
-                        <span id="budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
+                        <span id="budget-limit-error" class="input-error hidden" role="alert" data-i18n="budgetModal.limitError"></span>
                     </div>
 
                     <div class="form-group">
                         <label data-i18n="budgetModal.renews"></label>
-                        <div class="type-toggle">
+                        <div class="type-toggle" role="radiogroup" data-i18n-aria="budgetModal.renews">
                             <input type="radio" id="budget-period-recurring" name="budget-period" value="recurring" checked>
                             <label for="budget-period-recurring" class="type-option budget-period-recurring">
                                 <i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span data-i18n="budgetModal.everySoOften"></span>
@@ -136,8 +136,8 @@
 
                     <div class="form-group budget-end-date-group">
                         <label for="budget-end-date" data-i18n="budgetModal.endDate"></label>
-                        <input type="date" id="budget-end-date" name="budget-end-date">
-                        <span id="budget-end-date-error" class="input-error hidden" data-i18n="budgetModal.endDateError"></span>
+                        <input type="date" id="budget-end-date" name="budget-end-date" aria-describedby="budget-end-date-error">
+                        <span id="budget-end-date-error" class="input-error hidden" role="alert" data-i18n="budgetModal.endDateError"></span>
                     </div>
 
                     <div class="modal-actions">
@@ -165,7 +165,7 @@
 
                     <div class="form-group">
                         <label data-i18n="common.type"></label>
-                        <div class="type-toggle">
+                        <div class="type-toggle" role="radiogroup" data-i18n-aria="common.type">
                             <input type="radio" id="type-spending" name="transaction-type" value="spending" checked>
                             <label for="type-spending" class="type-option type-spending">
                                 <i class="bi bi-arrow-down-circle" aria-hidden="true"></i> <span data-i18n="common.spending"></span>
@@ -181,10 +181,10 @@
                     <div class="form-group">
                         <label for="transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
-                            <span id="transaction-currency-symbol" class="amount-currency">€</span>
-                            <input type="text" id="transaction-amount" name="transaction-amount" placeholder="0.00" inputmode="decimal" autocomplete="off" required>
+                            <span id="transaction-currency-symbol" class="amount-currency" aria-hidden="true">€</span>
+                            <input type="text" id="transaction-amount" name="transaction-amount" placeholder="0.00" inputmode="decimal" autocomplete="off" aria-describedby="amount-error" required>
                         </div>
-                        <span id="amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
+                        <span id="amount-error" class="input-error hidden" role="alert" data-i18n="transactionModal.amountError"></span>
                     </div>
 
                     <div class="form-group">
@@ -233,10 +233,10 @@
                     <div class="form-group">
                         <label for="edit-transaction-amount" data-i18n="common.amount"></label>
                         <div class="amount-input-wrap">
-                            <span id="edit-transaction-currency-symbol" class="amount-currency">€</span>
-                            <input type="text" id="edit-transaction-amount" inputmode="decimal" autocomplete="off" required>
+                            <span id="edit-transaction-currency-symbol" class="amount-currency" aria-hidden="true">€</span>
+                            <input type="text" id="edit-transaction-amount" inputmode="decimal" autocomplete="off" aria-describedby="edit-amount-error" required>
                         </div>
-                        <span id="edit-amount-error" class="input-error hidden" data-i18n="transactionModal.amountError"></span>
+                        <span id="edit-amount-error" class="input-error hidden" role="alert" data-i18n="transactionModal.amountError"></span>
                         <span id="edit-amount-note" class="transaction-meta hidden"></span>
                     </div>
 
@@ -278,16 +278,16 @@
                     <div class="form-group">
                         <label for="edit-budget-limit" data-i18n="budgetModal.limit"></label>
                         <div class="amount-input-wrap">
-                            <span id="edit-budget-currency-symbol" class="amount-currency">€</span>
-                            <input type="text" id="edit-budget-limit" inputmode="decimal" autocomplete="off" required>
+                            <span id="edit-budget-currency-symbol" class="amount-currency" aria-hidden="true">€</span>
+                            <input type="text" id="edit-budget-limit" inputmode="decimal" autocomplete="off" aria-describedby="edit-budget-limit-error" required>
                         </div>
-                        <span id="edit-budget-limit-error" class="input-error hidden" data-i18n="budgetModal.limitError"></span>
+                        <span id="edit-budget-limit-error" class="input-error hidden" role="alert" data-i18n="budgetModal.limitError"></span>
                         <span id="edit-budget-limit-note" class="transaction-meta hidden"></span>
                     </div>
 
                     <div class="form-group">
                         <label data-i18n="budgetModal.renews"></label>
-                        <div class="type-toggle">
+                        <div class="type-toggle" role="radiogroup" data-i18n-aria="budgetModal.renews">
                             <input type="radio" id="edit-budget-period-recurring" name="edit-budget-period" value="recurring" checked>
                             <label for="edit-budget-period-recurring" class="type-option budget-period-recurring">
                                 <i class="bi bi-arrow-repeat" aria-hidden="true"></i> <span data-i18n="budgetModal.everySoOften"></span>
@@ -311,8 +311,8 @@
 
                     <div class="form-group budget-end-date-group">
                         <label for="edit-budget-end-date" data-i18n="budgetModal.endDate"></label>
-                        <input type="date" id="edit-budget-end-date">
-                        <span id="edit-budget-end-date-error" class="input-error hidden" data-i18n="budgetModal.endDateError"></span>
+                        <input type="date" id="edit-budget-end-date" aria-describedby="edit-budget-end-date-error">
+                        <span id="edit-budget-end-date-error" class="input-error hidden" role="alert" data-i18n="budgetModal.endDateError"></span>
                     </div>
 
                     <div class="modal-actions">
@@ -326,7 +326,7 @@
         </div>
 
         <div id="confirm-modal-overlay" class="modal-overlay">
-            <div id="confirm-modal" class="modal" role="dialog" aria-modal="true">
+            <div id="confirm-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title" aria-describedby="confirm-modal-message">
                 <div class="modal-header">
                     <h1 id="confirm-modal-title" class="container-title" data-i18n="common.confirm"></h1>
                 </div>
@@ -351,7 +351,7 @@
                 <form id="export-form" class="modal-form">
                     <div class="form-group">
                         <label data-i18n="exportModal.format"></label>
-                        <div class="type-toggle settings-toggle">
+                        <div class="type-toggle settings-toggle" role="radiogroup" data-i18n-aria="exportModal.format">
                             <input type="radio" id="export-format-json" name="export-format" value="json" checked>
                             <label for="export-format-json" class="type-option">
                                 <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON

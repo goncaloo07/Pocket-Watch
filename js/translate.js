@@ -171,7 +171,13 @@ const TRANSLATIONS = {
         'toast.importInvalid': 'This file is not a valid Pocket Watch export.',
         'confirm.importJSON': 'This replaces your current data with {transactions} transactions and {budgets} budgets from the file. This cannot be undone. Continue?',
         'confirm.importCSV': 'This replaces your current transactions with the {transactions} from the file. Your budgets stay as they are. This cannot be undone. Continue?',
-        'toast.importDone': 'Data imported.'
+        'toast.importDone': 'Data imported.',
+        'header.navAria': 'Top bar',
+        'menu.navAria': 'Main menu',
+        'balance.periodAria': 'Balance period',
+        'balance.chartAria': 'Line chart of your balance over time',
+        'transactions.minAmount': 'Minimum amount',
+        'transactions.maxAmount': 'Maximum amount',
     },
     pt: {
         'menu.home': 'Início',
@@ -345,6 +351,12 @@ const TRANSLATIONS = {
         'confirm.importJSON': 'Isto substitui os teus dados atuais por {transactions} transações e {budgets} orçamentos do ficheiro. Isto não se pode desfazer. Continuar?',
         'confirm.importCSV': 'Isto substitui as tuas transações atuais pelas {transactions} do ficheiro. Os teus orçamentos ficam como estão. Isto não se pode desfazer. Continuar?',
         'toast.importDone': 'Dados importados.',
+        'header.navAria': 'Barra superior',
+        'menu.navAria': 'Menu principal',
+        'balance.periodAria': 'Período do saldo',
+        'balance.chartAria': 'Gráfico de linha do teu saldo ao longo do tempo',
+        'transactions.minAmount': 'Valor mínimo',
+        'transactions.maxAmount': 'Valor máximo',
     } 
 };
 

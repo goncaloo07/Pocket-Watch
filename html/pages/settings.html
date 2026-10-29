@@ -1,14 +1,14 @@
 <div id="settings-page" class="settings-page">
     <h1 class="container-title" data-i18n="settings.title"></h1>
 
-    <section id="settings-appearance" class="container settings-section">
-        <h2 class="settings-section-title" data-i18n="settings.appearance"></h2>
+    <section id="settings-appearance" class="container settings-section" aria-labelledby="settings-appearance-title">
+        <h2 class="settings-section-title" id="settings-appearance-title" data-i18n="settings.appearance"></h2>
         <div class="settings-row">
             <div class="settings-row-text">
-                <span class="settings-row-label" data-i18n="settings.theme"></span>
+                <span id="settings-theme-label" class="settings-row-label" data-i18n="settings.theme"></span>
                 <span class="settings-row-hint" data-i18n="settings.themeHint"></span>
             </div>
-            <div class="type-toggle settings-toggle">
+            <div class="type-toggle settings-toggle" role="radiogroup" aria-labelledby="settings-theme-label">
                 <input type="radio" id="settings-theme-light" name="settings-theme" value="light">
                 <label for="settings-theme-light" class="type-option">
                     <i class="bi bi-sun" aria-hidden="true"></i> <span data-i18n="settings.light"></span>
@@ -27,8 +27,8 @@
         </div>
     </section>
 
-    <section id="settings-currency-section" class="container settings-section">
-        <h2 class="settings-section-title" data-i18n="settings.currency"></h2>
+    <section id="settings-currency-section" class="container settings-section" aria-labelledby="settings-currency-title">
+        <h2 class="settings-section-title" id="settings-currency-title" data-i18n="settings.currency"></h2>
         <div class="settings-row">
             <div class="settings-row-text">
                 <label for="settings-currency" class="settings-row-label" data-i18n="settings.currency"></label>
@@ -41,8 +41,8 @@
         </div>
     </section>
 
-    <section id="settings-language-section" class="container settings-section">
-        <h2 class="settings-section-title" data-i18n="settings.language"></h2>
+    <section id="settings-language-section" class="container settings-section" aria-labelledby="settings-language-title">
+        <h2 class="settings-section-title" id="settings-language-title" data-i18n="settings.language"></h2>
         <div class="settings-row">
             <div class="settings-row-text">
                 <label for="settings-language" class="settings-row-label" data-i18n="settings.appLanguage"></label>
@@ -57,8 +57,8 @@
         </div>
     </section>
 
-    <section id="settings-data-section" class="container settings-section">
-        <h2 class="settings-section-title" data-i18n="settings.data"></h2>
+    <section id="settings-data-section" class="container settings-section" aria-labelledby="settings-data-title">
+        <h2 class="settings-section-title" id="settings-data-title" data-i18n="settings.data"></h2>
 
         <div class="settings-row">
             <div class="settings-row-text">

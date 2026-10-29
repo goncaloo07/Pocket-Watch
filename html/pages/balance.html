@@ -2,7 +2,7 @@
     <div id="balance-chart-div" class="container balance-chart-div">
         <div class="balance-chart-header">
             <h1 class="container-title" data-i18n="menu.balance"></h1>
-            <div class="balance-period-toggle">
+            <div class="balance-period-toggle" role="radiogroup" data-i18n-aria="balance.periodAria">
                 <input type="radio" id="balance-period-7d" name="balance-period" value="7d">
                 <label for="balance-period-7d" class="balance-period-option" data-i18n="balance.period7d"></label>
 
@@ -17,9 +17,9 @@
             </div>
         </div>
         <div class="balance-chart-svg-wrap">
-            <div id="balance-grid-labels" class="balance-grid-labels"></div>
+            <div id="balance-grid-labels" class="balance-grid-labels" aria-hidden="true"></div>
             <div class="balance-chart-svg-inner">
-                <svg id="balance-chart-svg" viewBox="0 0 600 200" class="balance-chart-svg" preserveAspectRatio="none">
+                <svg id="balance-chart-svg" viewBox="0 0 600 200" class="balance-chart-svg" preserveAspectRatio="none" role="img" data-i18n-aria="balance.chartAria">
                     <g id="balance-grid"></g>
                     <path id="balance-line" d="" fill="none" stroke="var(--accent-color)" stroke-width="2"/>
                     <g id="balance-hover-points"></g>

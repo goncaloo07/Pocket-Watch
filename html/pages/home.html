@@ -3,7 +3,7 @@
             <div id="balance-column" class="balance-column">
                 <a href="/balance" class="balance-link">
                     <div id="balance-div" class="container balance-div">
-                        <svg class="balance-dial" style="bottom: -45px; left: -25px;" width="150" height="150" viewBox="0 0 150 150">
+                        <svg class="balance-dial" aria-hidden="true" style="bottom: -45px; left: -25px;" width="150" height="150" viewBox="0 0 150 150">
                             <circle cx="75" cy="75" r="66" fill="none" stroke="var(--border-color)" stroke-width="2"/>
                             <circle cx="75" cy="75" r="46" fill="none" stroke="var(--border-color)" stroke-width="1.5"/>
                             <g class="dial-crack">
@@ -50,7 +50,7 @@
 
                 <a href="/budgets" class="budget-link">
                     <div id="budget-div" class="container budget-div">
-                        <h2 class="container-title"><span data-i18n="home.budget"></span> <button id="add-budget-btn" class="add-btn">+</button></h2>
+                        <h2 class="container-title"><span data-i18n="home.budget"></span> <button id="add-budget-btn" class="add-btn" data-i18n-aria="budgets.add">+</button></h2>
                         <div id="budget-empty" class="budget-empty">
                             <i class="bi bi-piggy-bank budget-empty-icon" aria-hidden="true"></i>
                             <p class="transactions-empty-title" data-i18n="budgets.emptyTitle"></p>
@@ -65,7 +65,7 @@
             <div id="transactions-column" class="transactions-column">
                 <a href="/transactions" class="transactions-link">
                     <div id="transactions-div" class="container transactions-div">
-                        <h2 class="container-title"><span data-i18n="menu.transactions"></span> <button id="add-transaction-btn" class="add-btn">+</button></h2>
+                        <h2 class="container-title"><span data-i18n="menu.transactions"></span> <button id="add-transaction-btn" class="add-btn" data-i18n-aria="transactionModal.add">+</button></h2>
                         <div id="transactions-empty" class="transactions-empty hidden">
                             <i class="bi bi-receipt transactions-empty-icon" aria-hidden="true"></i>
                             <p class="transactions-empty-title" data-i18n="transactions.emptyTitle"></p>
@@ -79,7 +79,7 @@
                 <div id="chart-div" class="container chart-div">
                     <div class="chart-header">
                         <h2 class="container-title" data-i18n="home.breakdown"></h2>
-                        <div class="chart-toggle">
+                        <div class="chart-toggle" role="radiogroup" data-i18n-aria="home.breakdown">
                             <input type="radio" id="chart-mode-category" name="chart-mode" value="category" checked>
                             <label for="chart-mode-category" class="chart-toggle-option" data-i18n="home.byCategory"></label>
 

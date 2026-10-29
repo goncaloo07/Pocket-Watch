@@ -321,7 +321,7 @@ const renderActiveFilters = () => {
     }
     activeFiltersDiv.classList.remove('hidden');
     activeFiltersDiv.innerHTML = active.map(a => `
-        <span class="active-filter-chip" data-key="${a.key}"><i class="bi bi-x"></i>${a.label}</span>
+        <span class="active-filter-chip" data-key="${a.key}"><i class="bi bi-x" aria-hidden="true"></i>${a.label}</span>
     `).join('');
 };
 
