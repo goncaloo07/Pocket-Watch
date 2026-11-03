@@ -178,6 +178,8 @@ const TRANSLATIONS = {
         'balance.chartAria': 'Line chart of your balance over time',
         'transactions.minAmount': 'Minimum amount',
         'transactions.maxAmount': 'Maximum amount',
+        'toast.offlineReady': 'Ready to use offline. Pocket Watch now works without internet.',
+        'toast.ratesOld': 'Exchange rates are from {date}. Converted amounts may be slightly off.',
     },
     pt: {
         'menu.home': 'Início',
@@ -357,6 +359,8 @@ const TRANSLATIONS = {
         'balance.chartAria': 'Gráfico de linha do teu saldo ao longo do tempo',
         'transactions.minAmount': 'Valor mínimo',
         'transactions.maxAmount': 'Valor máximo',
+        'toast.offlineReady': 'Pronto para usar offline. O Pocket Watch já funciona sem internet.',
+        'toast.ratesOld': 'As taxas de câmbio são de {date}. Os valores convertidos podem não estar certos.',
     } 
 };
 

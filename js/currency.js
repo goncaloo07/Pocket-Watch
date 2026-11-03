@@ -1,6 +1,7 @@
 let ratesCache = null; // loaded once, then reused
 let pastRates = {}; // rates of past days, like { "2026-06-05": { EUR: 1, USD: 1.08, ... } }
 const monthRequests = new Map(); // month -> its request, so each month is only asked once
+const RATES_MAX_AGE_DAYS = 5; // weekends and bank holidays have no new rates, so a few days is normal  
 
 // reads data/rates.json, returns { date, base, rates } or null if it fails
 const loadRates = async () => {
@@ -133,6 +134,16 @@ const getBudgetSliderRange = () => {
     const max = roundNice(1000 * rate); // the slider goes up to what 1000€ is worth
     const step = Math.max(1, roundNice(max / 200)); // about 200 positions along the slider
     return { max, step, start: max / 10 }; // starts at a tenth of the max (100 in euros)
+};
+
+// shows a warning if the saved rates are too old. Only once per session
+const checkRatesAge = () => {
+    if (!ratesCache || sessionStorage.getItem('oldRatesWarned')) return;
+    // difference in days between today and the rates date. Example: rates from the 1st, today the 10th -> 9
+    const days = Math.round((parseDateISO(getTodayISO()) - parseDateISO(ratesCache.date)) / (1000 * 60 * 60 * 24));
+    if (days <= RATES_MAX_AGE_DAYS) return;
+    try { sessionStorage.setItem('oldRatesWarned', '1'); } catch {}
+    showToast(t('toast.ratesOld').replace('{date}', formatDateDMY(ratesCache.date)), 7000, 'warning');
 };
 
 // just the symbol of the active currency, like "€"

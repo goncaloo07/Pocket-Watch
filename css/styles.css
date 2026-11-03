@@ -2078,6 +2078,11 @@ input.input-invalid {
     background-color: var(--positive-color);
 }
 
+.toast.warning {
+    background-color: #e0a72e;
+    color: #1f1f1f;
+}
+
 .toast.hidden {
     opacity: 0;
     pointer-events: none;

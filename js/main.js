@@ -358,6 +358,7 @@ const handleExportSubmit = (e) => {
 const showToast = (message, duration = 4000, type = 'error') => {
     toastEl.textContent = message;
     toastEl.classList.toggle('success', type === 'success'); // green only for success
+    toastEl.classList.toggle('warning', type === 'warning');
     toastEl.classList.remove("hidden");
     clearTimeout(toastTimeout); // if another toast is still showing, its timer is cancelled
     toastTimeout = setTimeout(() => {
@@ -402,6 +403,7 @@ initExportModal();
 // so this decides which page's init function to run based on the current path
 document.addEventListener('page:loaded', async (e) => {
     await loadRates(); // the exchange rates must be ready before anything shows an amount
+    checkRatesAge();
     await ensureAllRates();
     if (e.detail.path === '/') initHomePage();
     if (e.detail.path === '/balance') initBalancePage();
@@ -415,3 +417,20 @@ window.addEventListener('storage', () => {
     transactionsCache = null;
     budgetsCache = null;
 });
+
+// registers the service worker so the app works offline
+if ('serviceWorker' in navigator) {
+    // the worker sends this message when all files are saved
+    navigator.serviceWorker.addEventListener('message', (e) => {
+        if (e.data?.type !== 'OFFLINE_READY') return;
+        if (localStorage.getItem('offlineReadyShown')) return; // only the first time
+        safeSetItem('offlineReadyShown', '1');
+        showToast(t('toast.offlineReady'), 5000, 'success');
+    });
+
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((error) => {
+            console.error('Service worker failed:', error);
+        });
+    });
+}
