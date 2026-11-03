@@ -420,17 +420,16 @@ window.addEventListener('storage', () => {
 
 // registers the service worker so the app works offline
 if ('serviceWorker' in navigator) {
-    // the worker sends this message when all files are saved
-    navigator.serviceWorker.addEventListener('message', (e) => {
-        if (e.data?.type !== 'OFFLINE_READY') return;
-        if (localStorage.getItem('offlineReadyShown')) return; // only the first time
-        safeSetItem('offlineReadyShown', '1');
-        showToast(t('toast.offlineReady'), 5000, 'success');
-    });
-
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch((error) => {
             console.error('Service worker failed:', error);
+        });
+
+        // "ready" waits until the worker is installed and active, so all files are saved
+        navigator.serviceWorker.ready.then(() => {
+            if (localStorage.getItem('offlineReadyShown')) return; // only the first time
+            safeSetItem('offlineReadyShown', '1');
+            showToast(t('toast.offlineReady'), 5000, 'success');
         });
     });
 }
